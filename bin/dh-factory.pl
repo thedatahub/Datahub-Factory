@@ -65,6 +65,7 @@ $catmandu_fixer->fixer->fix($catmandu_importer->importer)->each(sub {
             $logger->error($msg);
         }
     ];
+    die;
 });
 
 1;

@@ -1,4 +1,4 @@
-package Adlib::Export;
+package Lido::Export;
 
 use Moo;
 use Catmandu;
