@@ -55,17 +55,30 @@ $catmandu_fixer->fixer->fix($catmandu_importer->importer)->each(sub {
     try {
         $catmandu_out->out->add($item);
         $logger->info(sprintf("Adding item %s.", $item_id));
-    } catch_case [
-        'Catmandu::HTTPError' => sub {
-            my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-            $logger->error($msg);
-        },
-        'Lido::XML::Error' => sub {
-            my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-            $logger->error($msg);
+  #  } catch_case [
+  #      'Catmandu::HTTPError' => sub {
+  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
+  #          $logger->error($msg);
+  #      },
+  #      'Lido::XML::Error' => sub {
+  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
+  #          $logger->error($msg);
+  #      },
+  # DOESN'T WORK
+  #      '*' => sub {
+  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
+  #          $logger->error($msg);
+  #      }
+  #  ];
+    } catch {
+        my $msg;
+        if ($_->can('message')) {
+            $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
+        } else {
+            $msg = sprintf("Error while adding item %s: %s", $item_id, $_);
         }
-    ];
-    die;
+        $logger->error($msg);
+    };
 });
 
 1;
