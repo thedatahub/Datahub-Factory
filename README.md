@@ -5,7 +5,7 @@ to an output format before pushing it to a Datahub instance.
 
 # SYNOPSIS
 
-    Datahub::Factory consists of two elements: a library (`Datahub::Factory`) and a conversion script (`dh-factory.pl`).
+Datahub::Factory consists of two elements: a library (`Datahub::Factory`) and a conversion script (`dh-factory.pl`).
 
 # DESCRIPTION
 
