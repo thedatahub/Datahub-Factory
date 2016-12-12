@@ -46,7 +46,16 @@ perl bin/dh-factory.pl \
 #### Specific options
 ##### Importer
 
+###### Adlib
+
 * `file_name`: path of the XML dump that the `--importer` will import from.
+
+###### TMS
+
+* `db_host`
+* `db_name`
+* `db_user`
+* `db_pass`
 
 ##### Exporter
 
