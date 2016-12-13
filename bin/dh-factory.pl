@@ -34,7 +34,7 @@ my $import_module = sprintf("%s::Import", $importer);
 autoload $import_module;
 
 my $export_module;
-if ($exporter ne '') {
+if (defined($exporter) && $exporter ne '') {
     $export_module = sprintf("%s::Export", $exporter);
     autoload $export_module;
 }

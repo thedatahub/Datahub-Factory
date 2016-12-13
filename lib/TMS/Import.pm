@@ -4,7 +4,12 @@ use Moo;
 use Catmandu;
 use strict;
 
+use DBI;
+use Log::Log4perl;
+
 use Data::Dumper qw(Dumper);
+
+use TMS::Import::Index;
 
 has db_host     => (is => 'ro', required => 1);
 has db_name     => (is => 'ro', required => 1);
@@ -13,6 +18,13 @@ has db_password => (is => 'ro', required => 1);
 
 
 has importer  => (is => 'lazy');
+
+has logger => (is => 'lazy');
+
+sub _build_logger {
+    my $self = shift;
+    return Log::Log4perl->get_logger('datahub');
+}
 
 sub _build_importer {
     my $self = shift;
@@ -25,9 +37,22 @@ sub _build_importer {
 
 sub prepare {
     my $self = shift;
+    # Add indices
+    $self->logger->info('Creating indices on TMS tables.');
+    TMS::Import::Index->new(
+        db_host => $self->db_host,
+        db_name => $self->db_name,
+        db_user => $self->db_user,
+        db_password => $self->db_password
+    );
+    # Create temporary tables
+    $self->logger->info('Adding "classifications" temporary table.');
     $self->__classifications();
+    $self->logger->info('Adding "periods" temporary table.');
     $self->__period();
+    $self->logger->info('Adding "dimensions" temporary table.');
     $self->__dimensions();
+    $self->logger->info('Adding "subjects" temporary table.');
     $self->__subjects();
 }
 
@@ -99,9 +124,6 @@ sub __period {
 
 sub __dimensions {
     my $self = shift;
-    # NEIN NEIN NEIN: mergen op _id!
-    # tijdelijk object met alles tesamen
-    # select o.ObjectNumber
     my $query = "SELECT o.ObjectID as objectid, d.Dimension as dimension, t.DimensionType as type, e.Element as element, u.UnitName as unit
     FROM Dimensions d, DimItemElemXrefs x, vgsrpObjTombstoneD_RO o, DimensionUnits u, DimensionElements e, DimensionTypes t
     WHERE
