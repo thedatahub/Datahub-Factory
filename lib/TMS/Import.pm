@@ -1,7 +1,6 @@
 package TMS::Import;
 
 use Moo;
-use JSON;
 use Catmandu;
 use strict;
 
@@ -18,7 +17,7 @@ has importer  => (is => 'lazy');
 sub _build_importer {
     my $self = shift;
     my $dsn = sprintf('dbi:mysql:%s', $self->db_name);
-    my $query = 'select * from objects where ObjectNumber = 5';
+    my $query = 'select * from objects';
     my $importer = Catmandu->importer('DBI', dsn => $dsn, host => $self->db_host, user => $self->db_user, password => $self->db_password, query => $query, encoding => ':iso-8859-1');
     $self->prepare();
     return $importer;
@@ -26,8 +25,8 @@ sub _build_importer {
 
 sub prepare {
     my $self = shift;
-    #$self->__classifications();
-    #$self->__period();
+    $self->__classifications();
+    $self->__period();
     $self->__dimensions();
 }
 
