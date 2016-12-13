@@ -17,7 +17,7 @@ has importer  => (is => 'lazy');
 sub _build_importer {
     my $self = shift;
     my $dsn = sprintf('dbi:mysql:%s', $self->db_name);
-    my $query = 'select * from objects';
+    my $query = 'select * from vgsrpObjTombstoneD_RO';
     my $importer = Catmandu->importer('DBI', dsn => $dsn, host => $self->db_host, user => $self->db_user, password => $self->db_password, query => $query, encoding => ':iso-8859-1');
     $self->prepare();
     return $importer;
@@ -28,6 +28,7 @@ sub prepare {
     $self->__classifications();
     $self->__period();
     $self->__dimensions();
+    $self->__subjects();
 }
 
 sub prepare_call {
@@ -52,6 +53,40 @@ sub prepare_call {
         });
 }
 
+sub merge_call {
+    my ($self, $query, $key, $out_name) = @_;
+    my $importer = Catmandu->importer(
+        'DBI',
+        dsn      => sprintf('dbi:mysql:%s', $self->db_name),
+        host     => $self->db_host,
+        user     => $self->db_user,
+        password => $self->db_password,
+        query    => $query
+    );
+    my $merged = {};
+    $importer->each(sub {
+        my $item = shift;
+        my $objectid = $item->{'objectid'};
+        if (exists($merged->{$objectid})) {
+            push @{$merged->{$objectid}->{$key}}, $item;
+        } else {
+            $merged->{$objectid} = {
+                $key => [$item]
+            };
+        }
+    });
+    my $store = Catmandu->store(
+        'DBI',
+        data_source => sprintf('dbi:SQLite:/tmp/tms_import.%s.sqlite', $out_name),
+    );
+    while (my ($object_id, $data) = each %{$merged}) {
+        $store->bag->add({
+            '_id' => $object_id,
+            $key => $data->{$key}
+        });
+    }
+}
+
 sub __classifications {
     my $self = shift;
     $self->prepare_call('select ClassificationID as _id, Classification as term from Classifications', 'classifications');
@@ -67,8 +102,8 @@ sub __dimensions {
     # NEIN NEIN NEIN: mergen op _id!
     # tijdelijk object met alles tesamen
     # select o.ObjectNumber
-    my $query = "SELECT o.ObjectNumber as objectid, d.Dimension as dimension, t.DimensionType as type, e.Element as element, u.UnitName as unit
-    FROM Dimensions d, DimItemElemXrefs x, objects o, DimensionUnits u, DimensionElements e, DimensionTypes t
+    my $query = "SELECT o.ObjectID as objectid, d.Dimension as dimension, t.DimensionType as type, e.Element as element, u.UnitName as unit
+    FROM Dimensions d, DimItemElemXrefs x, vgsrpObjTombstoneD_RO o, DimensionUnits u, DimensionElements e, DimensionTypes t
     WHERE
     x.TableID = '108' and
     x.ID = o.ObjectID and
@@ -76,36 +111,17 @@ sub __dimensions {
     d.PrimaryUnitID = u.UnitID and
     x.ElementID = e.ElementID and
     d.DimensionTypeID = t.DimensionTypeID;";
-    my $importer = Catmandu->importer(
-        'DBI',
-        dsn      => sprintf('dbi:mysql:%s', $self->db_name),
-        host     => $self->db_host,
-        user     => $self->db_user,
-        password => $self->db_password,
-        query    => $query
-    );
-    my $merged = {};
-    $importer->each(sub {
-        my $item = shift;
-        my $objectid = $item->{'objectid'};
-        if (exists($merged->{$objectid})) {
-            push @{$merged->{$objectid}->{'dimensions'}}, $item;
-        } else {
-            $merged->{$objectid} = {
-                'dimensions' => [$item]
-            };
-        }
-    });
-    my $store = Catmandu->store(
-        'DBI',
-        data_source => sprintf('dbi:SQLite:/tmp/tms_import.%s.sqlite', 'dimensions'),
-    );
-    while (my ($object_id, $data) = each %{$merged}) {
-        $store->bag->add({
-            '_id' => $object_id,
-            'dimensions' => $data->{'dimensions'}
-        });
-    }
+    $self->merge_call($query, 'dimensions', 'dimensions');
+}
+
+sub __subjects {
+    my $self = shift;
+    my $query = "SELECT o.ObjectID as objectid, t.Term as subject
+    FROM Terms t, vgsrpObjTombstoneD_RO o, ThesXrefs x
+    WHERE
+    x.TermID = t.TermID and
+    x.ID = o.ObjectID;";
+    $self->merge_call($query, 'subjects', 'subjects');
 }
 
 1;
