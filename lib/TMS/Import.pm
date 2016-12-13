@@ -117,10 +117,12 @@ sub __dimensions {
 sub __subjects {
     my $self = shift;
     my $query = "SELECT o.ObjectID as objectid, t.Term as subject
-    FROM Terms t, vgsrpObjTombstoneD_RO o, ThesXrefs x
+    FROM Terms t, vgsrpObjTombstoneD_RO o, ThesXrefs x, ThesXrefTypes y
     WHERE
     x.TermID = t.TermID and
-    x.ID = o.ObjectID;";
+    x.ID = o.ObjectID and
+    x.ThesXrefTypeID = y.ThesXrefTypeID and
+    y.ThesXrefTypeID = 30;"; # Only those from the VKC website
     $self->merge_call($query, 'subjects', 'subjects');
 }
 
