@@ -47,10 +47,10 @@ sub _build_index_commands {
             'ALTER TABLE `DimensionUnits` ADD INDEX ( `UnitID` ) ;'
         ],
         'DimItemElemXrefs' => [
-            'ALTER TABLE `DimItemElemXrefs` CHANGE `DimItemElemXrefID` `DimItemElemXrefID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
-            'ALTER TABLE `DimItemElemXrefs` CHANGE `TableID` `TableID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
-            'ALTER TABLE `DimItemElemXrefs` CHANGE `ID` `ID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
-            'ALTER TABLE `DimItemElemXrefs` CHANGE `ElementID` `ElementID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
+            'ALTER TABLE `DimItemElemXrefs` CHANGE `DimItemElemXrefID` `DimItemElemXrefID` INT( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
+            'ALTER TABLE `DimItemElemXrefs` CHANGE `TableID` `TableID` INT( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
+            'ALTER TABLE `DimItemElemXrefs` CHANGE `ID` `ID` INT( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
+            'ALTER TABLE `DimItemElemXrefs` CHANGE `ElementID` `ElementID` INT( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ;',
             'ALTER TABLE `DimItemElemXrefs` ADD INDEX ( `DimItemElemXrefID` , `TableID` , `ID` , `ElementID` ) ;'
         ],
         'Terms' => [

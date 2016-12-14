@@ -29,7 +29,7 @@ sub _build_logger {
 sub _build_importer {
     my $self = shift;
     my $dsn = sprintf('dbi:mysql:%s', $self->db_name);
-    my $query = 'select * from vgsrpObjTombstoneD_RO';
+    my $query = 'select * from vgsrpObjTombstoneD_RO;';
     my $importer = Catmandu->importer('DBI', dsn => $dsn, host => $self->db_host, user => $self->db_user, password => $self->db_password, query => $query, encoding => ':iso-8859-1');
     $self->prepare();
     return $importer;
@@ -125,14 +125,21 @@ sub __period {
 sub __dimensions {
     my $self = shift;
     my $query = "SELECT o.ObjectID as objectid, d.Dimension as dimension, t.DimensionType as type, e.Element as element, u.UnitName as unit
-    FROM Dimensions d, DimItemElemXrefs x, vgsrpObjTombstoneD_RO o, DimensionUnits u, DimensionElements e, DimensionTypes t
+    FROM vgsrpObjTombstoneD_RO o
+    LEFT JOIN
+        DimItemElemXrefs x ON x.ID = o.ObjectID
+    INNER JOIN
+        Dimensions d ON d.DimItemElemXrefID = x.DimItemElemXrefID
+    INNER JOIN
+        DimensionUnits u ON u.UnitID = d.PrimaryUnitID
+    INNER JOIN
+        DimensionTypes t ON t.DimensionTypeID = d.DimensionTypeID
+    INNER JOIN
+        DimensionElements e ON e.ElementID = x.ElementID
     WHERE
-    x.TableID = '108' and
-    x.ID = o.ObjectID and
-    x.DimItemElemXrefID = d.DimItemElemXrefID and
-    d.PrimaryUnitID = u.UnitID and
-    x.ElementID = e.ElementID and
-    d.DimensionTypeID = t.DimensionTypeID;";
+        x.TableID = '108'
+    AND 
+        x.ElementID = '3';";
     $self->merge_call($query, 'dimensions', 'dimensions');
 }
 
