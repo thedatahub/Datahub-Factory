@@ -54,8 +54,11 @@ sub _build_logger {
 
 sub prepare {
     my $self = shift;
+    $self->logger->info('Creating "pids" temporary table.');
     $self->__pids();
+    $self->logger->info('Creating "creators" temporary table.');
     $self->__creators();
+    $self->logger->info('Creating "aat" temporary table.');
     $self->__aat();
 }
 
