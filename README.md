@@ -46,11 +46,11 @@ perl bin/dh-factory.pl \
 #### Specific options
 ##### Importer
 
-###### Adlib
+###### Adlib/MSK/Groeninge
 
 * `file_name`: path of the XML dump that the `--importer` will import from.
 
-###### TMS
+###### TMS/KMSKA
 
 * `db_host`
 * `db_name`
