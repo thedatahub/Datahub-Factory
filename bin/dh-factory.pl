@@ -12,6 +12,7 @@ use Log::Log4perl;
 use Catmandu;
 use Catmandu::Sane;
 
+
 # Logger
 Log::Any::Adapter->set('Log4perl');
 Log::Log4perl::init('conf/log4perl.conf');
@@ -52,9 +53,6 @@ if (defined($exporter) && $exporter ne '') {
 $catmandu_fixer->fixer->fix($catmandu_importer->importer)->each(sub {
     my $item = shift;
     my $item_id = $item->{'administrativeMetadata'}->{'recordWrap'}->{'recordID'}->[0]->{'_'};
-     $catmandu_out->out->add($item);
-    $logger->info(sprintf("Adding item %s.", $item_id));
-    return;
     try {
         $catmandu_out->out->add($item);
         $logger->info(sprintf("Adding item %s.", $item_id));

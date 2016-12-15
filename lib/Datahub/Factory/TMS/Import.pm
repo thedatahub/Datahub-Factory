@@ -32,9 +32,9 @@ sub _build_logger {
 sub _build_importer {
     my $self = shift;
     my $dsn = sprintf('dbi:mysql:%s', $self->db_name);
-    my $query = 'select * from vgsrpObjTombstoneD_RO limit 10;';
+    my $query = 'select * from vgsrpObjTombstoneD_RO;';
     my $importer = Catmandu->importer('DBI', dsn => $dsn, host => $self->db_host, user => $self->db_user, password => $self->db_password, query => $query, encoding => ':iso-8859-1');
-    $self->prepare();
+    #$self->prepare();
     return $importer;
 }
 
