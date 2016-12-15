@@ -1,4 +1,4 @@
-package TMS::Import;
+package Datahub::Factory::TMS::Import;
 
 use Moo;
 use Catmandu;
@@ -10,8 +10,8 @@ use Config::Simple;
 
 use Data::Dumper qw(Dumper);
 
-use TMS::Import::Index;
-use Import::PIDS;
+use Datahub::Factory::TMS::Import::Index;
+use Datahub::Factory::Import::PIDS;
 
 has db_host     => (is => 'ro', required => 1);
 has db_name     => (is => 'ro', required => 1);
@@ -32,7 +32,7 @@ sub _build_logger {
 sub _build_importer {
     my $self = shift;
     my $dsn = sprintf('dbi:mysql:%s', $self->db_name);
-    my $query = 'select * from vgsrpObjTombstoneD_RO limit 1;';
+    my $query = 'select * from vgsrpObjTombstoneD_RO limit 10;';
     my $importer = Catmandu->importer('DBI', dsn => $dsn, host => $self->db_host, user => $self->db_user, password => $self->db_password, query => $query, encoding => ':iso-8859-1');
     $self->prepare();
     return $importer;
@@ -40,7 +40,7 @@ sub _build_importer {
 
 sub _build_pids {
     my $self = shift;
-    return Import::PIDS->new(
+    return Datahub::Factory::Import::PIDS->new(
         username => $self->config->param('PIDS.username'),
         api_key  => $self->config->param('PIDS.api_key')
     );
@@ -55,7 +55,7 @@ sub prepare {
     my $self = shift;
     # Add indices
     $self->logger->info('Creating indices on TMS tables.');
-    TMS::Import::Index->new(
+    Datahub::Factory::TMS::Import::Index->new(
         db_host => $self->db_host,
         db_name => $self->db_name,
         db_user => $self->db_user,

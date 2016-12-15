@@ -1,4 +1,4 @@
-package Adlib::Import;
+package Datahub::Factory::Adlib::Import;
 
 use Moo;
 use Catmandu;

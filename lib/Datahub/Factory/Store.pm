@@ -1,4 +1,4 @@
-package Datahub::Store;
+package Datahub::Factory::Store;
 
 use Moo;
 use Catmandu;

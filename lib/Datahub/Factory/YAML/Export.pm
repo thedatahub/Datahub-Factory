@@ -1,4 +1,4 @@
-package YAML::Export;
+package Datahub::Factory::YAML::Export;
 
 use Moo;
 use Catmandu;

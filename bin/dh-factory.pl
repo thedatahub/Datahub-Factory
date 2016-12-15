@@ -25,17 +25,17 @@ my ($importer, $exporter, $fixes, $import_options, $export_options, $store_optio
 GetOptions("importer=s" => \$importer, "exporter:s" => \$exporter, "fixes=s" => \$fixes, "oimport=s%" => \$import_options, "oexport:s%" => \$export_options, "ostore=s%" => \$store_options);
 
 # Load modules
-my $store_module = 'Datahub::Store';
+my $store_module = 'Datahub::Factory::Store';
 autoload $store_module;
-my $fix_module = 'Datahub::Fix';
+my $fix_module = 'Datahub::Factory::Fix';
 autoload $fix_module;
 
-my $import_module = sprintf("%s::Import", $importer);
+my $import_module = sprintf("Datahub::Factory::%s::Import", $importer);
 autoload $import_module;
 
 my $export_module;
 if (defined($exporter) && $exporter ne '') {
-    $export_module = sprintf("%s::Export", $exporter);
+    $export_module = sprintf("Datahub::Factory::%s::Export", $exporter);
     autoload $export_module;
 }
 
@@ -52,6 +52,9 @@ if (defined($exporter) && $exporter ne '') {
 $catmandu_fixer->fixer->fix($catmandu_importer->importer)->each(sub {
     my $item = shift;
     my $item_id = $item->{'administrativeMetadata'}->{'recordWrap'}->{'recordID'}->[0]->{'_'};
+     $catmandu_out->out->add($item);
+    $logger->info(sprintf("Adding item %s.", $item_id));
+    return;
     try {
         $catmandu_out->out->add($item);
         $logger->info(sprintf("Adding item %s.", $item_id));

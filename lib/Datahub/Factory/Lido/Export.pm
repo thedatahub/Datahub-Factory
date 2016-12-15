@@ -1,4 +1,4 @@
-package Lido::Export;
+package Datahub::Factory::Lido::Export;
 
 use Moo;
 use Catmandu;

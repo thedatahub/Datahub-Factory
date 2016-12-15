@@ -1,4 +1,4 @@
-package Import::PIDS;
+package Datahub::Factory::Import::PIDS;
 
 use Moo;
 use Catmandu;
@@ -40,7 +40,10 @@ sub temporary_table {
     my ($self, $csv_location, $id_column) = @_;
     my $store_table = fileparse($csv_location, '.csv');
 
-    my $importer = Catmandu->importer('CSV', file => $csv_location);
+    my $importer = Catmandu->importer(
+        'CSV',
+        file => $csv_location
+    );
     my $store = Catmandu->store(
         'DBI',
         data_source => sprintf('dbi:SQLite:/tmp/import.%s.sqlite', $store_table),

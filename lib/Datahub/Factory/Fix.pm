@@ -1,4 +1,4 @@
-package Datahub::Fix;
+package Datahub::Factory::Fix;
 
 use Moo;
 use Catmandu;

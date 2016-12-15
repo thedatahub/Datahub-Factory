@@ -1,4 +1,4 @@
-package TMS::Import::Index;
+package Datahub::Factory::TMS::Import::Index;
 
 use Moo;
 use Catmandu;
