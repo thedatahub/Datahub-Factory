@@ -17,7 +17,7 @@ to an output format before pushing it to a Datahub instance.
 
 =head1 SYNOPSIS
 
-    Datahub::Factory consists of two elements: a library (C<Datahub::FactoryC<) and a conversion script (C<dh-factory.plC<).
+Datahub::Factory consists of two elements: a library (C<Datahub::Factory>) and a conversion script (C<dh-factory.pl>).
 
 =head1 DESCRIPTION
 
