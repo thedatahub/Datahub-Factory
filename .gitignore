@@ -14,3 +14,11 @@ local
 .perl-version
 cpanfile.snapshot
 demo.pl
+*.sqlite
+*.csv
+*.sh
+*.fix
+*.xml
+conf/settings.ini
+*.tar.gz
+Datahub-Factory-*
