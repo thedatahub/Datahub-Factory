@@ -1,4 +1,5 @@
 # NAME
+[![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
 
 Datahub::Factory - A conveyor belt which transforms data from an input format
 to an output format before pushing it to a Datahub instance.
