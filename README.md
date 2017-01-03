@@ -55,7 +55,7 @@ Invoke the perl script in `bin`.
 
 #### Store
 
-- `datahub_url`. URL of the datahub (e.g. \_http://www.datahub.app\_).
+- `datahub_url`. URL of the datahub (e.g. _http://www.datahub.app_).
 - `oauth_client_id`. OAuth2 client\_id.
 - `oauth_client_secret`. OAuth2 client\_secret.
 - `oauth_username`. OAuth2 username.
