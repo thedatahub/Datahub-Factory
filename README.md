@@ -37,10 +37,10 @@ Invoke the perl script in `bin`.
 
 - `--importer`: select the importer to use. Supported importers are in `lib`and are of the form `$importer_name::Import.pm`. You only have to provide `$importer_name` By default `Adlib`is the only supported importer.
 - `--fixes`: location (path) of the file containing the fixes that have to be applied.
-- `--exporter`: select the exporter to use. Uses the same format as ``` --importer`` , but only supports `Lido` Optional, if it isn't set, the default internal store is used. If it is set, the store isn't used. `` ```
+- `--exporter`: select the exporter to use. Uses the same format as `--importer`, but only supports `Lido` Optional, if it isn't set, the default internal store is used. If it is set, the store isn't used.
 - `--oimport`: set `--importer`options like `--oimport _option_=_value_` Options are specific to the importer used (see below).
 - `--ostore`: set options for the default Datahub store. Uses the same syntax as `--oimport`.
-- `--oexport`: set options for `--exporter`using the same syntax as ``` --oimport`` , but is only required if `--exporter`is used. `` ```
+- `--oexport`: set options for `--exporter`using the same syntax as `--oimport`, but is only required if `--exporter`is used.
 
 ### Specific options
 
@@ -73,15 +73,3 @@ Copyright 2016 - PACKED vzw
 
 This library is free software; you can redistribute it and/or modify
 it under the terms of the GPLv3.
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 55:
-
-    Unterminated C<C<...>> sequence
-
-- Around line 61:
-
-    Unterminated C<C<...>> sequence

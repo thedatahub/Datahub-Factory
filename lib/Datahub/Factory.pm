@@ -59,13 +59,13 @@ Invoke the perl script in C<bin>.
 
 =item C<--fixes>: location (path) of the file containing the fixes that have to be applied.
 
-=item C<--exporter>: select the exporter to use. Uses the same format as C<--importerC<, but only supports C<Lido> Optional, if it isn't set, the default internal store is used. If it is set, the store isn't used.
+=item C<--exporter>: select the exporter to use. Uses the same format as C<--importer>, but only supports C<Lido> Optional, if it isn't set, the default internal store is used. If it is set, the store isn't used.
 
 =item C<--oimport>: set C<--importer>options like C<--oimport _option_=_value_> Options are specific to the importer used (see below).
 
 =item C<--ostore>: set options for the default Datahub store. Uses the same syntax as C<--oimport>.
 
-=item C<--oexport>: set options for C<--exporter>using the same syntax as C<--oimportC<, but is only required if C<--exporter>is used.
+=item C<--oexport>: set options for C<--exporter>using the same syntax as C<--oimport>, but is only required if C<--exporter>is used.
 
 =back
 
