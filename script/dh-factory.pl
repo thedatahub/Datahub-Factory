@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!perl
 
 use strict;
 use warnings;
@@ -11,7 +11,7 @@ use Log::Log4perl;
 
 use Catmandu;
 use Catmandu::Sane;
-
+use Cwd ();
 
 # Logger
 Log::Any::Adapter->set('Log4perl');
