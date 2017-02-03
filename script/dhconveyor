@@ -1,0 +1,4 @@
+#!perl
+
+use Datahub::Factory;
+Datahub::Factory->run;

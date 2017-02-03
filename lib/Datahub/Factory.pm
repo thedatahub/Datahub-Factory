@@ -1,7 +1,8 @@
 package Datahub::Factory;
 
-use strict;
-use 5.008_005;
+use strict; use warnings;
+use App::Cmd::Setup -app;
+
 our $VERSION = '0.01';
 
 1;
