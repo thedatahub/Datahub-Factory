@@ -81,6 +81,12 @@ push the data to a Datahub instance.
   The password of the Datahub user. Used for OAuth authentication of the Datahub
   endpoint.
 
+# EXAMPLE
+
+```
+dhconveyor transport --importer=Adlib --fixes=myfixes.fix --oimport file_name=adlibexport.xml --datahub=http://datahub/ --ostore oauth_client_id=slightlylesssecretpublicid --ostore oauth_client_secret=supersecretsecretphrase --ostore oauth_password=password1 --ostore oauth_username=admin
+```
+
 # AUTHORS
 
 - Pieter De Praetere <pieter@packed.be>
