@@ -159,3 +159,38 @@ sub execute {
 }
 
 1;
+
+=head1 NAME
+
+Datahub::Factory::Command::transport - Implements the 'transport' command.
+
+=head1 DESCRIPTION
+This command allows datamanagers to (a) fetch data from a (local) source (b)
+transform the data to LIDO using a fix (c) upload the LIDO transformed data to
+a Datahub instance.
+
+=head1 METHODS
+
+=head2 abstract
+
+ abstract();
+
+=head2 description
+
+ description();
+
+=head2 execute
+
+ execute();
+
+=head2 opt_spec
+
+ opt_spec();
+
+=head2 validate_args
+
+ validate_args();
+
+
+=cut
+
