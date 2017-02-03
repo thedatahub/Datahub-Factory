@@ -84,7 +84,10 @@ push the data to a Datahub instance.
 # EXAMPLE
 
 ```
-dhconveyor transport --importer=Adlib --fixes=myfixes.fix --oimport file_name=adlibexport.xml --datahub=http://datahub/ --ostore oauth_client_id=slightlylesssecretpublicid --ostore oauth_client_secret=supersecretsecretphrase --ostore oauth_password=password1 --ostore oauth_username=admin
+dhconveyor transport --importer=Adlib --fixes=myfixes.fix
+--oimport file_name=adlibexport.xml --datahub=http://datahub/
+--ostore oauth_client_id=slightlylesssecretpublicid --ostore oauth_client_secret=supersecretsecretphrase --ostore oauth_password=password1
+--ostore oauth_username=admin
 ```
 
 # AUTHORS
