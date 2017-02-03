@@ -31,6 +31,29 @@ sub opt_spec {
 	);
 }
 
+sub default_log4perl_config {
+    my $config = <<EOF;
+# STDERR
+log4perl.rootLogger=WARN,STDERR
+
+# Datahub-specific
+log4perl.category.datahub=INFO,STDERR
+
+# Catmandu
+
+# Output STDERR
+log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
+log4perl.appender.STDERR.stderr=1
+log4perl.appender.STDERR.utf8=1
+
+log4perl.appender.STDERR.layout=PatternLayout
+
+log4perl.appender.STDERR.layout.ConversionPattern=%d [%P] - %p %l time=%r : %m%n
+
+EOF
+    \$config;
+}
+
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
@@ -95,7 +118,7 @@ sub execute {
 
   # Logger
   Log::Any::Adapter->set('Log4perl');
-  Log::Log4perl::init('conf/log4perl.conf');
+  Log::Log4perl::init(default_log4perl_config());
 
   my $logger = Log::Log4perl->get_logger('datahub');
 
