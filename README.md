@@ -1,4 +1,4 @@
-# NAME
+## NAME
 [![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
 
 Datahub::Factory - A conveyor belt which transports data from a data source to
