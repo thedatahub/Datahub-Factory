@@ -6,6 +6,7 @@ use parent 'Datahub::Factory::Cmd';
 
 use Module::Load;
 use Catmandu;
+use Datahub::Factory;
 use namespace::clean;
 
 sub abstract { "Transport data from a data source to a datahub instance" }
@@ -86,11 +87,7 @@ sub validate_args {
 sub execute {
   my ($self, $opt, $args) = @_;
 
-  # Logger
-  # Log::Any::Adapter->set('Log4perl');
-  # Log::Log4perl::init(default_log4perl_config());
-
-  my $logger = Log::Log4perl->get_logger('datahub');
+  my $logger = Datahub::Factory->log;
 
   # Load modules
   my $store_module = 'Datahub::Factory::Store';
