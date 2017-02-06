@@ -1,8 +1,10 @@
 package Datahub::Factory::Store;
 
+use Datahub::Factory::Sane;
+
 use Moo;
 use Catmandu;
-use strict;
+use namespace::clean;
 
 has datahub_url         => (is => 'ro', required => 1);
 has datahub_format      => (is => 'ro', default => sub { return 'LIDO'; });

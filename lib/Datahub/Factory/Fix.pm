@@ -1,11 +1,12 @@
 package Datahub::Factory::Fix;
 
+use Datahub::Factory::Sane;
+
 use Moo;
 use Catmandu;
-use strict;
+use namespace::clean;
 
 has file_name => (is => 'ro', required => 1);
-
 has fixer => (is => 'lazy');
 
 sub _build_fixer {

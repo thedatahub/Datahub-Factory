@@ -1,19 +1,12 @@
 package Datahub::Factory::Command::transport;
 
-use Datahub::Factory -command;
+use Datahub::Factory::Sane;
 
-use strict;
-use warnings;
-use diagnostics;
+use parent 'Datahub::Factory::Cmd';
 
 use Module::Load;
-use Log::Any::Adapter;
-use Log::Log4perl;
 use Catmandu;
-use Catmandu::Sane;
-use Cwd ();
-
-use Data::Dumper;
+use namespace::clean;
 
 sub abstract { "Transport data from a data source to a datahub instance" }
 
@@ -29,29 +22,6 @@ sub opt_spec {
 		[ "oexport|oe:s%",  "export options"],
 		[ "ostore|os=s%",  "Store options"],
 	);
-}
-
-sub default_log4perl_config {
-    my $config = <<EOF;
-# STDERR
-log4perl.rootLogger=WARN,STDERR
-
-# Datahub-specific
-log4perl.category.datahub=INFO,STDERR
-
-# Catmandu
-
-# Output STDERR
-log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
-log4perl.appender.STDERR.stderr=1
-log4perl.appender.STDERR.utf8=1
-
-log4perl.appender.STDERR.layout=PatternLayout
-
-log4perl.appender.STDERR.layout.ConversionPattern=%d [%P] - %p %l time=%r : %m%n
-
-EOF
-    \$config;
 }
 
 sub validate_args {
@@ -117,8 +87,8 @@ sub execute {
   my ($self, $opt, $args) = @_;
 
   # Logger
-  Log::Any::Adapter->set('Log4perl');
-  Log::Log4perl::init(default_log4perl_config());
+  # Log::Any::Adapter->set('Log4perl');
+  # Log::Log4perl::init(default_log4perl_config());
 
   my $logger = Log::Log4perl->get_logger('datahub');
 
@@ -182,6 +152,8 @@ sub execute {
 }
 
 1;
+
+__END__
 
 =head1 NAME
 
