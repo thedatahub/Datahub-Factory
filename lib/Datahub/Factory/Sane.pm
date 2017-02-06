@@ -26,11 +26,11 @@ __END__
 
 =head1 NAME
 
-Catmandu::Sane - Package boilerplate
+Datahub::Factory::Sane - Package boilerplate
 
 =head1 SYNOPSIS
 
-    use Catmandu::Sane;
+    use Datahub::Factory::Sane;
 
     # Provides all the 5.10 features.
     say("what");
@@ -49,12 +49,6 @@ Catmandu::Sane - Package boilerplate
     try {
     } catch {};
 
-    # Provides
-    Catmandu::Error->throw("error");
-    Catmandu::BadVal->throw("eek val");
-    Catmandu::BadArg->throw("eek arg");
-    Catmandu::NotImplemented->throw("can't do that!");
-
 =head1 DESCRIPTION
 
 Package boilerplate equivalent to:
@@ -66,6 +60,5 @@ Package boilerplate equivalent to:
     use IO::File ();
     use IO::Handle ();
     use Try::Tiny::ByClass;
-    use Catmandu::Error;
 
 =cut

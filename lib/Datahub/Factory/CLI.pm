@@ -81,3 +81,14 @@ sub run {
 1;
 
 __END__
+
+=head1 NAME
+
+Datahub::Factory::CLI - The App::Cmd class for the Datahub::Factory aplpication
+
+=head1 SEE ALSO
+
+L<factory>
+
+=cut
+
