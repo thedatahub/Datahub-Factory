@@ -1,74 +1,103 @@
-# NAME
+## NAME
 [![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
 
-Datahub::Factory - A conveyor belt which transforms data from an input format
-to an output format before pushing it to a Datahub instance.
+Datahub::Factory - A conveyor belt which transports data from a data source to
+a Datahub instance.
 
 # SYNOPSIS
 
-Datahub::Factory consists of two elements: a library (C<Datahub::Factory>) and a conversion script (C<dh-factory.pl>).
+dhconveyor [ARGUMENTS] [OPTIONS]
 
 # DESCRIPTION
 
-Datahub::Factory is a conveyor belt which does two things:
+Datahub::Factory is a command line conveyor belt which automates three tasks:
 
-- Data is converted from an input format to an output format leveraging
-  Catmandu.
-- The output is pushed to an instance of the Datahub.
+- Data is fetched automatically from a local or remote data source.
+- Data is converted to an exchange format.
+- The output is pushed to an operational Datahub instance.
 
-Internally, Datahub::Factory uses Catmandu modules.
+Internally, Datahub::Factory uses Catmandu modules to transform the data, and
+implements the Datahub REST API. Datahub::Factory stitches the transformation
+and push tasks seamlessly together.
 
-# USAGE
+Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
 
-Invoke the perl script in `bin`.
+Note: This toolset is not a generic tool. It has been tailored towards the
+functional requirements of the Flemish Art Collection use case.
 
-    perl bin/dh-factory.pl \
-      --importer=Adlib \
-      --fixes=/path/to/catmandufixfile.fix \
-      --oimport file_name=/path/to/importfile.xml \
-      --ostore datahub_url="http://www.datahub.app" \
-      --ostore oauth_client_id=client_id \
-      --ostore oauth_client_secret=client_secret \
-      --ostore oauth_username=user \
-      --ostore oauth_password=password
+# COMMANDS
 
-## CLI
+## help COMMAND
 
-### Options
+Documentation about command line options.
 
-- `--importer`: select the importer to use. Supported importers are in `lib`and are of the form `$importer_name::Import.pm`. You only have to provide `$importer_name` By default `Adlib`is the only supported importer.
-- `--fixes`: location (path) of the file containing the fixes that have to be applied.
-- `--exporter`: select the exporter to use. Uses the same format as `--importer`, but only supports `Lido` Optional, if it isn't set, the default internal store is used. If it is set, the store isn't used.
-- `--oimport`: set `--importer`options like `--oimport _option_=_value_` Options are specific to the importer used (see below).
-- `--ostore`: set options for the default Datahub store. Uses the same syntax as `--oimport`.
-- `--oexport`: set options for `--exporter`using the same syntax as `--oimport`, but is only required if `--exporter`is used.
+## transport [OPTIONS]
 
-### Specific options
+Fetch data from a local or remote source, convert it to an exchange format and
+push the data to a Datahub instance.
 
-#### Importer
+--importer NAME
+   The importer which fetches data from a Collection Registration system.
+   Currently only "Adlib" and "TMS" are supported options.
 
-- `file_name`: path of the XML dump that the `--importer`will import from.
+--fixes PATH
+  The path to the Catmandu Fix files to transform the data.
 
-#### Exporter
+--oimport file_name=PATH
+  The path to a flat file containing data. This option is only relevant when
+  the input is an Adlib XML export file.
 
-- `file_name`: path of the file the `--exporter`will write to.
+--oimport db_user=VALUE
+  The database user. This option is only relevant when
+  the input is an TMS database.
 
-#### Store
+--oimport db_passowrd=VALUE
+  The database user password. This option is only relevant when
+  the input is an TMS database.
 
-- `datahub_url`. URL of the datahub (e.g. _http://www.datahub.app_).
-- `oauth_client_id`. OAuth2 client\_id.
-- `oauth_client_secret`. OAuth2 client\_secret.
-- `oauth_username`. OAuth2 username.
-- `oauth_password`. OAuth2 password.
+--oimport db_name=VALUE
+  The database name. This option is only relevant when
+  the input is an TMS database.
 
-# AUTHOR
+--oimport db_host=VALUE
+  The database host. This option is only relevant when
+  the input is an TMS database.
+
+--ostore datahub_url=VALUE
+  The URL to the datahub instance. This should be a FQDN ie. http://datahub.lan/
+
+--ostore oauth_client_id=VALUE
+  The client public ID. Used for OAuth authentication of the Datahub endpoint.
+
+--ostore oauth_client_secret=VALUE
+  The client secret passphrase. Used for OAuth authentication of the Datahub
+  endpoint.
+
+--ostore oauth_username=VALUE
+  The username of the Datahub user. Used for OAuth authentication of the Datahub
+  endpoint.
+
+--ostore oauth_password=VALUE
+  The password of the Datahub user. Used for OAuth authentication of the Datahub
+  endpoint.
+
+# EXAMPLE
+
+```
+dhconveyor transport --importer=Adlib --fixes=myfixes.fix
+--oimport file_name=adlibexport.xml --datahub=http://datahub/
+--ostore oauth_client_id=slightlylesssecretpublicid --ostore oauth_client_secret=supersecretsecretphrase --ostore oauth_password=password1
+--ostore oauth_username=admin
+```
+
+# AUTHORS
 
 - Pieter De Praetere <pieter@packed.be>
 - Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
 
 # COPYRIGHT
 
-Copyright 2016 - PACKED vzw
+Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
 
 # LICENSE
 

@@ -7,6 +7,7 @@ requires 'Log::Any';
 requires 'Log::Log4perl';
 requires 'Moo';
 requires 'LWP::UserAgent';
+requires 'App::Cmd';
 
 requires 'WebService::Rackspace::CloudFiles', '1.10';
 requires 'Catmandu', '1.0304';
