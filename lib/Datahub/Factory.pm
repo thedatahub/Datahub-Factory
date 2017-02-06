@@ -1,9 +1,37 @@
 package Datahub::Factory;
 
-use strict; use warnings;
-use App::Cmd::Setup -app;
-
 our $VERSION = '0.01';
+
+use Datahub::Factory::Sane;
+
+use Datahub::Factory::Env;
+use namespace::clean;
+use Sub::Exporter::Util qw(curry_method);
+use Sub::Exporter -setup => {
+    exports => [
+        log              => curry_method,
+    ],
+    collectors => {'-load' => \'_import_load', ':load' => \'_import_load',},
+};
+
+sub _import_load {
+  my $class = shift;
+  my $env   = Datahub::Factory::Env->new();
+  $class->_env($env);
+  $class;
+}
+
+sub _env {
+    my ($class, $env) = @_;
+    state $loaded_env;
+    $loaded_env = $env if defined $env;
+    $loaded_env
+        ||= Datahub::Factory::Env->new();
+}
+
+sub log {
+	$_[0]->_env->log;
+}
 
 1;
 __END__
