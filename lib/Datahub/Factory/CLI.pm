@@ -18,8 +18,8 @@ sub global_opt_spec {
 }
 
 sub default_log4perl_config {
-    my $level    = shift // 'DEBUG';
-    my $appender = shift // 'STDERR';
+    my $level    = shift || 'DEBUG';
+    my $appender = shift || 'STDERR';
 
     my $config = <<EOF;
 log4perl.rootLogger=$level,$appender
@@ -46,7 +46,7 @@ EOF
 sub setup_logging {
   my %LEVELS = (1 => 'WARN', 2 => 'INFO', 3 => 'DEBUG');
   my $logging = shift;
-  my $level  = $LEVELS{$logging} // 'WARN';
+  my $level  = $LEVELS{$logging} || 'WARN';
 
   Log::Log4perl::init(default_log4perl_config($level, 'STDERR'));
   Log::Any::Adapter->set('Log4perl');
@@ -63,9 +63,7 @@ sub run {
       $class->_global_option_processing_params);
 
   # Setup logging
-  if (exists $global_opts->{logging}) {
-    setup_logging($global_opts->{logging} // 1);
-  }
+  setup_logging($global_opts->{logging} || 1);
 
   my $self = ref $class ? $class : $class->new;
   $self->set_global_options($global_opts);
