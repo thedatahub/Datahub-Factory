@@ -9,6 +9,8 @@ use Catmandu;
 use Datahub::Factory;
 use namespace::clean;
 
+use Data::Dumper qw(Dumper);
+
 sub abstract { "Transport data from a data source to a datahub instance" }
 
 sub description { "Long description on blortex algorithm" }
@@ -17,11 +19,10 @@ sub opt_spec {
 	return (
 		[ "importer|i=s",  "The importer" ],
 		[ "datahub|d=s",  "The datahub instance" ],
-		[ "exporter|e:s",  "The exporter"],
+		[ "exporter|e=s",  "The exporter"],
 		[ "fixes|f=s",  "Fixes"],
 		[ "oimport|oi=s%",  "import options"],
-		[ "oexport|oe:s%",  "export options"],
-		[ "ostore|os=s%",  "Store options"],
+		[ "oexport|oe=s%",  "export options"],
 	);
 }
 
@@ -30,6 +31,10 @@ sub validate_args {
 
 	if ( ! $opt->{importer} ) {
 		$self->usage_error("Importer is missing");
+	}
+
+	if ( ! $opt->{exporter} ) {
+		$self->usage_error("Exporter is missing");
 	}
 
 	if ( ! $opt->{fixes} ) {
@@ -60,24 +65,27 @@ sub validate_args {
 		}
 	}
 
-	if ( ! $opt->{ostore}->{datahub_url} ) {
-		$self->usage_error("Datahub: the URL to the datahub instance is missing")
-	}
+	if ( $opt->{exporter} eq "Datahub" ) {
+		# This should move to a separate module
+		if ( ! $opt->{oexport}->{datahub_url} ) {
+			$self->usage_error("Datahub: the URL to the datahub instance is missing")
+		}
 
-	if ( ! $opt->{ostore}->{oauth_client_id} ) {
-		$self->usage_error("Datahub OAUTH: the client id is missing")
-	}
+		if ( ! $opt->{oexport}->{oauth_client_id} ) {
+			$self->usage_error("Datahub OAUTH: the client id is missing")
+		}
 
-	if ( ! $opt->{ostore}->{oauth_client_secret} ) {
-		$self->usage_error("Datahub OAUTH: the client secret is missing")
-	}
+		if ( ! $opt->{oexport}->{oauth_client_secret} ) {
+			$self->usage_error("Datahub OAUTH: the client secret is missing")
+		}
 
-	if ( ! $opt->{ostore}->{oauth_username} ) {
-		$self->usage_error("Datahub OAUTH: the client username is missing")
-	}
+		if ( ! $opt->{oexport}->{oauth_username} ) {
+			$self->usage_error("Datahub OAUTH: the client username is missing")
+		}
 
-	if ( ! $opt->{ostore}->{oauth_password} ) {
-		$self->usage_error("Datahub OAUTH: the client passowrd is missing")
+		if ( ! $opt->{oexport}->{oauth_password} ) {
+			$self->usage_error("Datahub OAUTH: the client passowrd is missing")
+		}
 	}
 
 	# no args allowed but options!
@@ -90,50 +98,38 @@ sub execute {
   my $logger = Datahub::Factory->log;
 
   # Load modules
-  my $store_module = 'Datahub::Factory::Store';
-  autoload $store_module;
+  my $export_module = sprintf("Datahub::Factory::Exporter::%s", $opt->{exporter});;
+  autoload $export_module;
 
-  my $fix_module = 'Datahub::Factory::Fix';
+  my $fix_module = 'Datahub::Factory::Fixer';
   autoload $fix_module;
 
-  my $import_module = sprintf("Datahub::Factory::%s::Import", $opt->{importer});
+  my $import_module = sprintf("Datahub::Factory::Importer::%s", $opt->{importer});
   autoload $import_module;
 
-  # my $export_module;
-  # if (defined($exporter) && $exporter ne '') {
-  #   $export_module = sprintf("Datahub::Factory::%s::Export", $exporter);
-  #   autoload $export_module;
-  # }
+  # Perform import/fix/export
+  my $catmandu_input;
+  if (! defined($opt->{oimport}) || ! %{$opt->{oimport}}) {
+	  $catmandu_input = $import_module->new();
+  } else {
+	  $catmandu_input = $import_module->new($opt->{oimport});
+  }
 
-  # Perform import/fix/store/export
-  my $catmandu_input = $import_module->new($opt->{oimport});
   my $catmandu_fixer = $fix_module->new("file_name" => $opt->{fixes});
-  my $catmandu_output = $store_module->new($opt->{ostore});
-  # if (defined($exporter) && $exporter ne '') {
-  #   $catmandu_output = $export_module->new(%$export_options);
-  # }
+
+  my $catmandu_output;
+  if (! defined($opt->{oexport}) || ! %{$opt->{oexport}}) {
+	  $catmandu_output = $export_module->new();
+  } else {
+	  $catmandu_output = $export_module->new($opt->{oexport});
+  }
 
   $catmandu_fixer->fixer->fix($catmandu_input->importer)->each(sub {
     my $item = shift;
     my $item_id = $item->{'administrativeMetadata'}->{'recordWrap'}->{'recordID'}->[0]->{'_'};
     try {
-        $catmandu_output->out->add($item);
+    	$catmandu_output->out->add($item);
         $logger->info(sprintf("Adding item %s.", $item_id));
-  #  } catch_case [
-  #      'Catmandu::HTTPError' => sub {
-  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-  #          $logger->error($msg);
-  #      },
-  #      'Lido::XML::Error' => sub {
-  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-  #          $logger->error($msg);
-  #      },
-  # DOESN'T WORK
-  #      '*' => sub {
-  #          my $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-  #          $logger->error($msg);
-  #      }
-  #  ];
     } catch {
         my $msg;
         if ($_->can('message')) {
@@ -145,7 +141,6 @@ sub execute {
     };
   });
 
-	print "Everything has been initialized.  (Not really.)\n";
 }
 
 1;

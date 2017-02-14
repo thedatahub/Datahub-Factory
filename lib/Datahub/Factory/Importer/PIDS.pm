@@ -1,8 +1,10 @@
-package Datahub::Factory::Import::PIDS;
+package Datahub::Factory::Importer::PIDS;
+
+use strict;
+use warnings;
 
 use Moo;
 use Catmandu;
-use strict;
 
 use WebService::Rackspace::CloudFiles;
 use File::Basename;

@@ -1,13 +1,17 @@
-package Datahub::Factory::KMSKA::Import;
+package Datahub::Factory::Importer::KMSKA;
+
+use strict;
+use warnings;
 
 use Moo;
 use Catmandu;
-use strict;
 
 use Config::Simple;
 
 use Datahub::Factory::TMS::Import;
-use Datahub::Factory::Import::PIDS;
+use Datahub::Factory::Importer::PIDS;
+
+with 'Datahub::Factory::Importer';
 
 has db_host     => (is => 'ro', required => 1);
 has db_name     => (is => 'ro', required => 1);
@@ -17,13 +21,6 @@ has db_password => (is => 'ro', required => 1);
 has importer => (is => 'lazy');
 has tms      => (is => 'lazy');
 has pids     => (is => 'lazy');
-has config   => (is => 'lazy');
-has logger   => (is => 'lazy');
-
-sub _build_logger {
-    my $self = shift;
-    return Log::Log4perl->get_logger('datahub');
-}
 
 sub _build_importer {
     my $self = shift;
@@ -45,15 +42,10 @@ sub _build_tms {
 
 sub _build_pids {
     my $self = shift;
-    return Datahub::Factory::Import::PIDS->new(
+    return Datahub::Factory::Importer::PIDS->new(
         username => $self->config->param('PIDS.username'),
         api_key  => $self->config->param('PIDS.api_key')
     );
-}
-
-sub _build_config {
-    my $self = shift;
-    return new Config::Simple('conf/settings.ini');
 }
 
 sub prepare {

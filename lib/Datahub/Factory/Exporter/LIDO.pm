@@ -1,12 +1,14 @@
-package Datahub::Factory::Lido::Export;
+package Datahub::Factory::Exporter::LIDO;
+
+use strict;
+use warnings;
 
 use Moo;
 use Catmandu;
-use strict;
 
 has file_name => (is => 'ro');
 
-has out  => (is => 'lazy');
+with 'Datahub::Factory::Exporter';
 
 sub _build_out {
     my $self = shift;

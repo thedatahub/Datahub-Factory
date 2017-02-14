@@ -65,6 +65,8 @@ sub run {
   # Setup logging
   if (exists $global_opts->{logging}) {
     setup_logging($global_opts->{logging} // 1);
+  } else {
+    setup_logging(1);
   }
 
   my $self = ref $class ? $class : $class->new;

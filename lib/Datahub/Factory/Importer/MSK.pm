@@ -1,22 +1,23 @@
-package Datahub::Factory::MSK::Import;
+package Datahub::Factory::Importer::MSK;
+
+use strict;
+use warnings;
 
 use Moo;
 use Catmandu;
-use strict;
 
 use Config::Simple;
 
-use Datahub::Factory::Adlib::Import;
-use Datahub::Factory::Import::PIDS;
+use Datahub::Factory::Importer::Adlib;
+use Datahub::Factory::Importer::PIDS;
+
+with 'Datahub::Factory::Importer';
 
 has file_name => (is => 'ro', required => 1);
 has data_path => (is => 'ro', default => sub { return 'recordList.record.*'; });
 
-has importer => (is => 'lazy');
 has adlib    => (is => 'lazy');
 has pids     => (is => 'lazy');
-has config   => (is => 'lazy');
-has logger   => (is => 'lazy');
 
 sub _build_importer {
     my $self = shift;
@@ -27,7 +28,7 @@ sub _build_importer {
 
 sub _build_adlib {
     my $self = shift;
-    my $adlib = Datahub::Factory::Adlib::Import->new(
+    my $adlib = Datahub::Factory::Importer::Adlib->new(
         file_name => $self->file_name,
         data_path => $self->data_path
     );
@@ -36,20 +37,10 @@ sub _build_adlib {
 
 sub _build_pids {
     my $self = shift;
-    return Datahub::Factory::Import::PIDS->new(
+    return Datahub::Factory::Importer::PIDS->new(
         username => $self->config->param('PIDS.username'),
         api_key  => $self->config->param('PIDS.api_key')
     );
-}
-
-sub _build_config {
-    my $self = shift;
-    return new Config::Simple('conf/settings.ini');
-}
-
-sub _build_logger {
-    my $self = shift;
-    return Log::Log4perl->get_logger('datahub');
 }
 
 sub prepare {

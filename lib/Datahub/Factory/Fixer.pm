@@ -1,4 +1,4 @@
-package Datahub::Factory::Fix;
+package Datahub::Factory::Fixer;
 
 use Datahub::Factory::Sane;
 

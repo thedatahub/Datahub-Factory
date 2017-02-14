@@ -1,4 +1,7 @@
-package Datahub::Factory::Store;
+package Datahub::Factory::Exporter::Datahub;
+
+use strict;
+use warnings;
 
 use Datahub::Factory::Sane;
 
@@ -6,14 +9,14 @@ use Moo;
 use Catmandu;
 use namespace::clean;
 
+with 'Datahub::Factory::Exporter';
+
 has datahub_url         => (is => 'ro', required => 1);
 has datahub_format      => (is => 'ro', default => sub { return 'LIDO'; });
 has oauth_client_id     => (is => 'ro', required => 1);
 has oauth_client_secret => (is => 'ro', required => 1);
 has oauth_username      => (is => 'ro', required => 1);
 has oauth_password      => (is => 'ro', required => 1);
-
-has out => (is => 'lazy');
 
 sub _build_out {
     my $self = shift;
