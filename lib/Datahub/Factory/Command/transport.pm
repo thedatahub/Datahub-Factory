@@ -8,6 +8,7 @@ use Module::Load;
 use Catmandu;
 use Datahub::Factory;
 use namespace::clean;
+use Datahub::Factory::PipelineConfig;
 
 use Data::Dumper qw(Dumper);
 
@@ -30,76 +31,22 @@ sub opt_spec {
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
-	if ( ! $opt->{pipeline} ) {
-		# Only require the CLI switches if no pipeline file was specified
-		if ( ! $opt->{importer} ) {
-			$self->usage_error("Importer is missing");
-		}
-
-		if ( ! $opt->{exporter} ) {
-			$self->usage_error("Exporter is missing");
-		}
-
-		if ( ! $opt->{fixes} ) {
-			$self->usage_error("Fixes are missing");
-		}
-
-		if ( $opt->{importer} eq "Adlib" ) {
-			if ( ! $opt->{oimport}->{file_name} ) {
-				$self->usage_error("Adlib: Import file is missing")
-			}
-		}
-
-		if ( $opt->{importer} eq "TMS" ) {
-			if ( ! $opt->{oimport}->{db_name} ) {
-				$self->usage_error("TMS: database name is missing")
-			}
-
-			if ( ! $opt->{oimport}->{db_user} ) {
-				$self->usage_error("TMS: database user is missing")
-			}
-
-			if ( ! $opt->{oimport}->{db_password} ) {
-				$self->usage_error("TMS: database user password is missing")
-			}
-
-			if ( ! $opt->{oimport}->{db_host} ) {
-				$self->usage_error("TMS: database host is missing")
-			}
-		}
-
-		if ( $opt->{exporter} eq "Datahub" ) {
-			# This should move to a separate module
-			if ( ! $opt->{oexport}->{datahub_url} ) {
-				$self->usage_error("Datahub: the URL to the datahub instance is missing")
-			}
-
-			if ( ! $opt->{oexport}->{oauth_client_id} ) {
-				$self->usage_error("Datahub OAUTH: the client id is missing")
-			}
-
-			if ( ! $opt->{oexport}->{oauth_client_secret} ) {
-				$self->usage_error("Datahub OAUTH: the client secret is missing")
-			}
-
-			if ( ! $opt->{oexport}->{oauth_username} ) {
-				$self->usage_error("Datahub OAUTH: the client username is missing")
-			}
-
-			if ( ! $opt->{oexport}->{oauth_password} ) {
-				$self->usage_error("Datahub OAUTH: the client passowrd is missing")
-			}
-		}
-	} else {
-		
+	my $pc = Datahub::Factory::PipelineConfig->new(conf_object => $opt);
+	if (defined($pc->check_object())) {
+		$self->usage_error($pc->check_object())
 	}
+	
 
 	# no args allowed but options!
 	$self->usage_error("No args allowed") if @$args;
 }
 
 sub execute {
-  my ($self, $opt, $args) = @_;
+  my ($self, $arguments, $args) = @_;
+
+  my $cfg = Datahub::Factory::PipelineConfig->new(conf_object => $arguments);
+
+  my $opt = $cfg->opt;
 
   my $logger = Datahub::Factory->log;
 

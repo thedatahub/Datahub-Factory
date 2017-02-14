@@ -3,6 +3,7 @@ requires 'perl', '5.008005';
 # requires 'Some::Module', 'VERSION';
 
 requires 'App::Cmd';
+requires 'Config::Simple';
 requires 'Catmandu', '1.0304';
 requires 'Catmandu::LIDO';
 requires 'Catmandu::Store::Datahub';
