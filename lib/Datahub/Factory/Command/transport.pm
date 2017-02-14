@@ -17,75 +17,81 @@ sub description { "Long description on blortex algorithm" }
 
 sub opt_spec {
 	return (
-		[ "importer|i=s",  "The importer" ],
-		[ "datahub|d=s",  "The datahub instance" ],
-		[ "exporter|e=s",  "The exporter"],
-		[ "fixes|f=s",  "Fixes"],
-		[ "oimport|oi=s%",  "import options"],
-		[ "oexport|oe=s%",  "export options"],
+		[ "pipeline|i:s", "Location of the pipeline configuration file"],
+		[ "importer|i:s",  "The importer" ],
+		[ "datahub|d:s",  "The datahub instance" ],
+		[ "exporter|e:s",  "The exporter"],
+		[ "fixes|f:s",  "Fixes"],
+		[ "oimport|oi:s%",  "import options"],
+		[ "oexport|oe:s%",  "export options"],
 	);
 }
 
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
-	if ( ! $opt->{importer} ) {
-		$self->usage_error("Importer is missing");
-	}
-
-	if ( ! $opt->{exporter} ) {
-		$self->usage_error("Exporter is missing");
-	}
-
-	if ( ! $opt->{fixes} ) {
-		$self->usage_error("Fixes are missing");
-	}
-
-	if ( $opt->{importer} eq "Adlib" ) {
-		if ( ! $opt->{oimport}->{file_name} ) {
-			 $self->usage_error("Adlib: Import file is missing")
-		}
-	}
-
-	if ( $opt->{importer} eq "TMS" ) {
-		if ( ! $opt->{oimport}->{db_name} ) {
-			 $self->usage_error("TMS: database name is missing")
+	if ( ! $opt->{pipeline} ) {
+		# Only require the CLI switches if no pipeline file was specified
+		if ( ! $opt->{importer} ) {
+			$self->usage_error("Importer is missing");
 		}
 
-		if ( ! $opt->{oimport}->{db_user} ) {
-			 $self->usage_error("TMS: database user is missing")
+		if ( ! $opt->{exporter} ) {
+			$self->usage_error("Exporter is missing");
 		}
 
-		if ( ! $opt->{oimport}->{db_password} ) {
-			 $self->usage_error("TMS: database user password is missing")
+		if ( ! $opt->{fixes} ) {
+			$self->usage_error("Fixes are missing");
 		}
 
-		if ( ! $opt->{oimport}->{db_host} ) {
-			 $self->usage_error("TMS: database host is missing")
-		}
-	}
-
-	if ( $opt->{exporter} eq "Datahub" ) {
-		# This should move to a separate module
-		if ( ! $opt->{oexport}->{datahub_url} ) {
-			$self->usage_error("Datahub: the URL to the datahub instance is missing")
+		if ( $opt->{importer} eq "Adlib" ) {
+			if ( ! $opt->{oimport}->{file_name} ) {
+				$self->usage_error("Adlib: Import file is missing")
+			}
 		}
 
-		if ( ! $opt->{oexport}->{oauth_client_id} ) {
-			$self->usage_error("Datahub OAUTH: the client id is missing")
+		if ( $opt->{importer} eq "TMS" ) {
+			if ( ! $opt->{oimport}->{db_name} ) {
+				$self->usage_error("TMS: database name is missing")
+			}
+
+			if ( ! $opt->{oimport}->{db_user} ) {
+				$self->usage_error("TMS: database user is missing")
+			}
+
+			if ( ! $opt->{oimport}->{db_password} ) {
+				$self->usage_error("TMS: database user password is missing")
+			}
+
+			if ( ! $opt->{oimport}->{db_host} ) {
+				$self->usage_error("TMS: database host is missing")
+			}
 		}
 
-		if ( ! $opt->{oexport}->{oauth_client_secret} ) {
-			$self->usage_error("Datahub OAUTH: the client secret is missing")
-		}
+		if ( $opt->{exporter} eq "Datahub" ) {
+			# This should move to a separate module
+			if ( ! $opt->{oexport}->{datahub_url} ) {
+				$self->usage_error("Datahub: the URL to the datahub instance is missing")
+			}
 
-		if ( ! $opt->{oexport}->{oauth_username} ) {
-			$self->usage_error("Datahub OAUTH: the client username is missing")
-		}
+			if ( ! $opt->{oexport}->{oauth_client_id} ) {
+				$self->usage_error("Datahub OAUTH: the client id is missing")
+			}
 
-		if ( ! $opt->{oexport}->{oauth_password} ) {
-			$self->usage_error("Datahub OAUTH: the client passowrd is missing")
+			if ( ! $opt->{oexport}->{oauth_client_secret} ) {
+				$self->usage_error("Datahub OAUTH: the client secret is missing")
+			}
+
+			if ( ! $opt->{oexport}->{oauth_username} ) {
+				$self->usage_error("Datahub OAUTH: the client username is missing")
+			}
+
+			if ( ! $opt->{oexport}->{oauth_password} ) {
+				$self->usage_error("Datahub OAUTH: the client passowrd is missing")
+			}
 		}
+	} else {
+		
 	}
 
 	# no args allowed but options!
