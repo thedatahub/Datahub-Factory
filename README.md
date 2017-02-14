@@ -41,55 +41,43 @@ push the data to a Datahub instance.
 
 ### Command line options
 
-\--importer NAME
+- `--importer NAME`
    The importer which fetches data from a Collection Registration system.
    Currently only "Adlib" and "TMS" are supported options.
    All `--oimport` arguments are tied to the specific importer used.
-
-\--fixes PATH
+- `--fixes PATH`
   The path to the Catmandu Fix files to transform the data.
-
-\--exporter NAME
+- `--exporter NAME`
   The exporter that will do something with your data. It is possible to
   print to `STDOUT` in a specific format ("YAML" and "LIDO" are supported)
   or to export to a Datahub instance.
   All `--oexport` arguments are tied to the specific exporter used.
-
-\--oimport file\_name=PATH
+- `--oimport file_name=PATH`
   The path to a flat file containing data. This option is only relevant when
   the input is an Adlib XML export file.
-
-\--oimport db\_user=VALUE
+- `--oimport db_user=VALUE`
   The database user. This option is only relevant when
   the input is an TMS database.
-
-\--oimport db\_passowrd=VALUE
+- `--oimport db_passowrd=VALUE`
   The database user password. This option is only relevant when
   the input is an TMS database.
-
-\--oimport db\_name=VALUE
+- `--oimport db_name=VALUE`
   The database name. This option is only relevant when
   the input is an TMS database.
-
-\--oimport db\_host=VALUE
+- `--oimport db_host=VALUE`
   The database host. This option is only relevant when
   the input is an TMS database.
-
-\--oexport datahub\_url=VALUE
+- `--oexport datahub_url=VALUE`
   The URL to the datahub instance. This should be a FQDN ie. http://datahub.lan/
-
-\--oexport oauth\_client\_id=VALUE
+- `--oexport oauth_client_id=VALUE`
   The client public ID. Used for OAuth authentication of the Datahub endpoint.
-
-\--oexport oauth\_client\_secret=VALUE
+- `--oexport oauth_client_secret=VALUE`
   The client secret passphrase. Used for OAuth authentication of the Datahub
   endpoint.
-
-\--oexport oauth\_username=VALUE
+- `--oexport oauth_username=VALUE`
   The username of the Datahub user. Used for OAuth authentication of the Datahub
   endpoint.
-
-\--oexport oauth\_password=VALUE
+- `--oexport oauth_password=VALUE`
   The password of the Datahub user. Used for OAuth authentication of the Datahub
   endpoint.
 
