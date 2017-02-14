@@ -1,5 +1,5 @@
 {
-   "abstract" : "A conveyor belt which transforms data from an input format to an output format before pushing it to a Datahub instance.",
+   "abstract" : "A conveyor belt which transports data from a data source to a Datahub instance.",
    "author" : [
       "=over"
    ],
@@ -37,17 +37,23 @@
       },
       "runtime" : {
          "requires" : {
+            "App::Cmd" : "0",
             "Catmandu" : "1.0304",
             "Catmandu::LIDO" : "0",
             "Catmandu::Store::Datahub" : "0",
             "Catmandu::Store::Resolver" : "0",
+            "Config::Simple" : "0",
             "LWP::UserAgent" : "0",
             "Lido::XML" : "0",
             "Log::Any" : "0",
             "Log::Log4perl" : "0",
             "Module::Load" : "0",
             "Moo" : "0",
+            "MooX::Aliases" : "0",
+            "MooX::Role::Logger" : "0",
+            "Sub::Exporter" : "0",
             "WebService::Rackspace::CloudFiles" : "1.10",
+            "namespace::clean" : "0",
             "perl" : "5.008005"
          }
       },
@@ -69,7 +75,7 @@
          "web" : "https://github.com/thedatahub/Datahub-Factory"
       }
    },
-   "version" : "0.02",
+   "version" : "0.01",
    "x_contributors" : [
       "Matthias Vandermaesen <matthias@colada.be>",
       "Pieter De Praetere <pieter.de.praetere@helptux.be>",
