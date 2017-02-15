@@ -5,11 +5,13 @@ our $VERSION = '0.01';
 use Datahub::Factory::Sane;
 
 use Datahub::Factory::Env;
+use Datahub::Factory::Config;
 use namespace::clean;
 use Sub::Exporter::Util qw(curry_method);
 use Sub::Exporter -setup => {
     exports => [
         log              => curry_method,
+        cfg              => curry_method,
     ],
     collectors => {'-load' => \'_import_load', ':load' => \'_import_load',},
 };
@@ -31,6 +33,11 @@ sub _env {
 
 sub log {
 	$_[0]->_env->log;
+}
+
+sub cfg {
+    my $cfg = Datahub::Factory::Config->new();
+    return $cfg->config;
 }
 
 1;

@@ -1,11 +1,15 @@
 package Datahub::Factory::CLI;
 
+use strict;
+use warnings;
+
 use Datahub::Factory::Sane;
 
 use Datahub::Factory;
 use Log::Any::Adapter;
 use Log::Log4perl;
 use namespace::clean;
+
 
 use parent qw(App::Cmd);
 

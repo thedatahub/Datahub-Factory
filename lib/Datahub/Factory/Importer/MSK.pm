@@ -6,7 +6,7 @@ use warnings;
 use Moo;
 use Catmandu;
 
-use Config::Simple;
+use Datahub::Factory;
 
 use Datahub::Factory::Importer::Adlib;
 use Datahub::Factory::Importer::PIDS;
@@ -38,8 +38,8 @@ sub _build_adlib {
 sub _build_pids {
     my $self = shift;
     return Datahub::Factory::Importer::PIDS->new(
-        username => $self->config->param('PIDS.username'),
-        api_key  => $self->config->param('PIDS.api_key')
+        username => Datahub::Factory::cfg->param('module_PIDS.username'),
+        api_key  => Datahub::Factory::cfg->param('module_PIDS.api_key')
     );
 }
 

@@ -44,11 +44,12 @@ sub validate_args {
 sub execute {
   my ($self, $arguments, $args) = @_;
 
-  my $cfg = Datahub::Factory::PipelineConfig->new(conf_object => $arguments);
+  my $pcfg = Datahub::Factory::PipelineConfig->new(conf_object => $arguments);
 
-  my $opt = $cfg->opt;
+  my $opt = $pcfg->opt;
 
   my $logger = Datahub::Factory->log;
+  my $cfg = Datahub::Factory->cfg;
 
   # Load modules
   my $export_module = sprintf("Datahub::Factory::Exporter::%s", $opt->{exporter});;

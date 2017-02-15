@@ -7,7 +7,7 @@ use Moo;
 use Catmandu;
 
 use WebService::Rackspace::CloudFiles;
-use File::Basename;
+use File::Basename qw(fileparse);
 
 has username       => (is => 'ro', required => 1);
 has api_key        => (is => 'ro', required => 1);

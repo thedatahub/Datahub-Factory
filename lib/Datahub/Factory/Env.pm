@@ -5,9 +5,12 @@ use Datahub::Factory::Sane;
 use Config::Simple;
 
 use Moo;
+use Catmandu;
 use namespace::clean;
 
 with 'Datahub::Factory::Logger';
+
+
 
 1;
 
