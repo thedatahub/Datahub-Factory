@@ -1,4 +1,4 @@
-package Datahub::Factory::Importer::VKC;
+package Datahub::Factory::Importer::CollectiveAccess;
 
 use strict;
 use warnings;
@@ -19,26 +19,25 @@ __END__
 
 =head1 NAME
 
-Datahub::Factory::Importer::VKC - Import data from the L<CollectiveAccess|http://collectiveaccess.org/> instance of the L<VKC|http://www.vlaamsekunstcollectie.be/>
+Datahub::Factory::Importer::CollectiveAccess - Import data from a L<CollectiveAccess|http://collectiveaccess.org/> instance
 
 =head1 SYNOPSIS
 
-    use Datahub::Factory::Importer::VKC;
+    use Datahub::Factory::Importer::CollectiveAccess;
     use Data::Dumper qw(Dumper);
 
-    my $vkc = Datahub::Factory::Importer::VKC->new(
+    my $ca = Datahub::Factory::Importer::CollectiveAccess->new(
     );
 
-    $vkc->importer->each(sub {
+    $ca->importer->each(sub {
         my $item = shift;
         print Dumper($item);
     });
 
 =head1 DESCRIPTION
 
-Datahub::Factory::Importer::VKC uses L<Catmandu|http://librecat.org/Catmandu/> to fetch a list of records
-from the  L<CollectiveAccess|http://collectiveaccess.org/> instance of the L<VKC|http://www.vlaamsekunstcollectie.be/>.
-It returns an L<Importer|Catmandu::Importer>.
+Datahub::Factory::Importer::CollectiveAccess uses L<Catmandu|http://librecat.org/Catmandu/> to fetch a list of records
+from a  L<CollectiveAccess|http://collectiveaccess.org/> instance. It returns an L<Importer|Catmandu::Importer>.
 
 =head1 PARAMETERS
 
@@ -72,7 +71,6 @@ it under the same terms as Perl itself.
 =head1 SEE ALSO
 
 L<Datahub::Factory>
-L<Datahub::Factory::CollectiveAccess>
 L<Catmandu>
 
 =cut

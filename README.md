@@ -24,6 +24,38 @@ Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
 Note: This toolset is not a generic tool. It has been tailored towards the
 functional requirements of the Flemish Art Collection use case.
 
+# CONFIGURATION
+
+Datahub::Factory uses a general configuration file called _settings.ini_. It
+can be located at `/etc/datahub-factory/settings.ini` or `conf/settings.ini`.
+The one in `/etc` takes priority. An example file is provided at
+[conf/settings.example.ini](https://github.com/thedatahub/Datahub-Factory/blob/master/conf/settings.example.ini). It is in [INI format](http://search.cpan.org/~sherzodr/Config-Simple-4.59/Simple.pm#INI-FILE).
+
+It has two parts, a `[General]` block that contains some generic options, and
+(optionally) multiple module-specific blocks called `[module_Module_name]`.
+For a list of module options, see the documentation for every module.
+
+Supported modules
+
+- [PIDS](https://metacpan.org/pod/Datahub::Factory::Importer::PIDS)
+
+## General options
+
+- `log_level`
+
+    Set the log\_level. Takes a numeric parameter. Supported levels are:
+    1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
+
+## Example
+
+    [General]
+    # 1 => WARN; 2 => INFO; 3 => DEBUG
+    log_level = 1
+
+    [module_PIDS]
+    username = username
+    api_key = api_key
+
 # COMMANDS
 
 ## help COMMAND
@@ -108,7 +140,7 @@ push the data to a Datahub instance.
 
 ### Pipeline configuration file
 
-The _pipeline configuration file_ is in the `INI` format and its location is
+The _pipeline configuration file_ is in the [INI format](http://search.cpan.org/~sherzodr/Config-Simple-4.59/Simple.pm#INI-FILE) and its location is
 provided to the application using the `--pipeline` switch.
 
 The file is broadly divided in two parts: the first (shortest) part configures
