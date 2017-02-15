@@ -1,9 +1,12 @@
-package Datahub::Factory::YAML::Export;
+package Datahub::Factory::Exporter::YAML;
+
+use strict;
+use warnings;
 
 use Moo;
 use Catmandu;
-use strict;
-has out  => (is => 'lazy');
+
+with 'Datahub::Factory::Exporter';
 
 sub _build_out {
     my $self = shift;
