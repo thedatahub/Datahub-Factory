@@ -106,6 +106,7 @@ Pieter De Praetere E<lt>pieter at packed.be E<gt>
 =head1 COPYRIGHT
 
 Copyright 2017- PACKED vzw
+
 =head1 LICENSE
 
 This library is free software; you can redistribute it and/or modify
