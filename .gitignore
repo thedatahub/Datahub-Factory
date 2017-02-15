@@ -22,3 +22,7 @@ demo.pl
 conf/settings.ini
 *.tar.gz
 Datahub-Factory-*
+debian
+*.log
+test.json
+conf/pipelines.d/*.ini
