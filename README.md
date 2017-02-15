@@ -1,7 +1,9 @@
 # NAME
 
+\[!\[Build Status\](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)\](https://travis-ci.org/thedatahub/Datahub-Factory)
+
 Datahub::Factory - A conveyor belt which transports data from a data source to
-a Datahub instance.
+a data sink.
 
 # SYNOPSIS
 
@@ -13,11 +15,12 @@ Datahub::Factory is a command line conveyor belt which automates three tasks:
 
 - Data is fetched automatically from a local or remote data source.
 - Data is converted to an exchange format.
-- The output is pushed to an operational Datahub instance.
+- The output is pushed to a data sink.
 
-Internally, Datahub::Factory uses Catmandu modules to transform the data, and
-implements the Datahub REST API. Datahub::Factory stitches the transformation
-and push tasks seamlessly together.
+Datahub::Factory fetches data from several sources as specified by the
+_Importer_ settings, executes a [Fix](https://metacpan.org/pod/Catmandu::Fix) and sends it to
+a data sink, set by _Exporter_. Several importer and exporter modules
+are supported.
 
 Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
 

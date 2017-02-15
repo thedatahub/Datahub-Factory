@@ -2,6 +2,13 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+0.02  2017-02-15 10:13:05 UTC
+        - Refactor to use scripts/dhconveyor
+        - Refactor to use App::Cmd
+        - Updated logging
+        - Refactor to use configuration file
+        - Refactor to use pipeline configuration file
+
 0.01  2017-01-03 10:42:51 UTC
 	- Bugfix
         - Initial release
