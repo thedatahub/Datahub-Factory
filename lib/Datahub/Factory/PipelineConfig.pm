@@ -27,6 +27,7 @@ sub parse_conf_file {
 		'importer' => $cfg->param('Importer.plugin'),
 		'exporter' => $cfg->param('Exporter.plugin'),
 		'fixes' => $cfg->param('plugin_fixer_Fix.fix_file'),
+		'id_path' => $cfg->param('Fixer.id_path'),
 		'oimport' => $cfg->get_block(sprintf('plugin_importer_%s', $cfg->param('Importer.plugin'))),
 		'oexport' => $cfg->get_block(sprintf('plugin_exporter_%s', $cfg->param('Exporter.plugin')))
 	};

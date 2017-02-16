@@ -6,6 +6,7 @@ use parent 'Datahub::Factory::Cmd';
 
 use Module::Load;
 use Catmandu;
+use Catmandu::Util qw(data_at);
 use Datahub::Factory;
 use namespace::clean;
 use Datahub::Factory::PipelineConfig;
@@ -80,10 +81,9 @@ sub execute {
 
   $catmandu_fixer->fixer->fix($catmandu_input->importer)->each(sub {
     my $item = shift;
-    my $item_id = $item->{'administrativeMetadata'}->{'recordWrap'}->{'recordID'}->[0]->{'_'};
+    my $item_id = data_at($opt->{'id_path'}, $item);
     try {
     	$catmandu_output->out->add($item);
-        $logger->info(sprintf("Adding item %s.", $item_id));
     } catch {
         my $msg;
         if ($_->can('message')) {
@@ -92,6 +92,11 @@ sub execute {
             $msg = sprintf("Error while adding item %s: %s", $item_id, $_);
         }
         $logger->error($msg);
+        $logger->error(sprintf("Item: ", $item));
+    } finally {
+        if (!@_) {
+            $logger->info(sprintf("Added item %s.", $item_id));
+        }
     };
   });
 
