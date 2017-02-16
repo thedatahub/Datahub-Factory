@@ -225,6 +225,11 @@ want to use for every action.
 All current supported plugins are in the C<Importer> and C<Exporter> folders.
 For the C<[Fixer]>, only the I<Fix> plugin is supported.
 
+The C<[Fixer]> has an additional option, C<id_path>. This options contains the
+path (in Fix syntax) of the identifier of each record in your data after the
+fix has been applied, but before it is submitted to the I<Exporter>. It is used
+for reporting and logging.
+
 Supported I<Importer> plugins:
 
 =over
@@ -268,6 +273,7 @@ For a list of supported and required options, see the plugin documentation.
 
   [Fixer]
   plugin = Fix
+  id_path = 'administrativeMetadata.recordWrap.recordID.0._'
 
   [Exporter]
   plugin = Datahub
