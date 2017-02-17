@@ -40,6 +40,7 @@
             "App::Cmd" : "0",
             "Catmandu" : "1.0304",
             "Catmandu::LIDO" : "0",
+            "Catmandu::OAI" : "0",
             "Catmandu::Store::Datahub" : "0",
             "Catmandu::Store::Resolver" : "0",
             "Config::Simple" : "0",

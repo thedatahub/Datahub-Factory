@@ -244,6 +244,8 @@ Supported I<Importer> plugins:
 
 =item L<VKC|Datahub::Factory::Importer::VKC>
 
+=item L<OAI|Datahub::Factory::Importer::OAI>
+
 =back
 
 Supported I<Exporter> plugins:

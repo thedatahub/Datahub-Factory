@@ -1,6 +1,8 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+	- Configuratble id_path for transport.pm
+        - Added Importer::OAI
 
 0.02  2017-02-15 10:13:05 UTC
         - Refactor to use scripts/dhconveyor

@@ -171,6 +171,7 @@ Supported _Importer_ plugins:
 - [KMSKA](https://metacpan.org/pod/Datahub::Factory::Importer::KMSKA)
 - [MSK](https://metacpan.org/pod/Datahub::Factory::Importer::MSK)
 - [VKC](https://metacpan.org/pod/Datahub::Factory::Importer::VKC)
+- [OAI](https://metacpan.org/pod/Datahub::Factory::Importer::OAI)
 
 Supported _Exporter_ plugins:
 

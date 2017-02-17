@@ -19,6 +19,7 @@ requires 'MooX::Role::Logger';
 requires 'namespace::clean';
 requires 'Sub::Exporter';
 requires 'WebService::Rackspace::CloudFiles', '1.10';
+requires 'Catmandu::OAI';
 
 on test => sub {
     requires 'Test::More', '0.96';
