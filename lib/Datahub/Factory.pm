@@ -138,7 +138,7 @@ export the data.
 
 L<Datahub::Factory::Command::transport>
 
-=head2 merge [OPTIONS]
+=head2 merge [OPTIONS] (experimental)
 
 Fetch data from two sources, convert it to an exchange format, merge the
 two records and export the data.

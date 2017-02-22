@@ -76,7 +76,7 @@ export the data.
 
 [Datahub::Factory::Command::transport](https://metacpan.org/pod/Datahub::Factory::Command::transport)
 
-## merge \[OPTIONS\]
+## merge \[OPTIONS\] (experimental)
 
 Fetch data from two sources, convert it to an exchange format, merge the
 two records and export the data.
