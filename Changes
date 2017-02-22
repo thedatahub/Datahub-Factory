@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
         - Added Importer::Datahub
+        - Added merge command
 
 0.03  2017-02-17 09:09:06 UTC
 	- Configuratble id_path for transport.pm
