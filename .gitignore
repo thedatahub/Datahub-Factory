@@ -26,3 +26,4 @@ debian
 *.log
 conf/pipelines.d/*.ini
 test.json
+test.pl

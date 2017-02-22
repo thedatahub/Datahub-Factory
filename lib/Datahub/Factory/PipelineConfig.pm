@@ -6,6 +6,7 @@ use warnings;
 use Moo;
 use namespace::clean;
 use Config::Simple;
+use Switch;
 
 has conf_object => (is => 'ro', required => 1);
 
@@ -24,13 +25,20 @@ sub parse_conf_file {
 	my $self = shift;
 	my $cfg = new Config::Simple($self->conf_object->{pipeline});
 	my $opt = {
-		'importer' => $cfg->param('Importer.plugin'),
+		'fixer'    => $cfg->param('Fixer.plugin'),
 		'exporter' => $cfg->param('Exporter.plugin'),
-		'fixes' => $cfg->param('plugin_fixer_Fix.fix_file'),
-		'id_path' => $cfg->param('Fixer.id_path'),
-		'oimport' => $cfg->get_block(sprintf('plugin_importer_%s', $cfg->param('Importer.plugin'))),
-		'oexport' => $cfg->get_block(sprintf('plugin_exporter_%s', $cfg->param('Exporter.plugin')))
+		'oexport'  => $cfg->get_block(sprintf('plugin_exporter_%s', $cfg->param('Exporter.plugin'))),
+		'ofixer'   => $cfg->get_block(sprintf('plugin_fixer_%s', $cfg->param('Fixer.plugin')))
 	};
+	if ($opt->{'fixer'} eq 'Fix') {
+			$opt->{'fixes'} = $opt->{'ofixer'}->{'file_name'};
+			$opt->{'id_path'} = $opt->{'ofixer'}->{'id_path'};
+			$opt->{'importer'} = $cfg->param('Importer.plugin');
+			$opt->{'oimport'} = $cfg->get_block(sprintf('plugin_importer_%s', $cfg->param('Importer.plugin')));
+	} elsif($opt->{'fixer'} eq 'Merge') {
+			$opt->{'o_left_importer'} = $cfg->get_block(sprintf('plugin_importer_%s', $opt->{'ofixer'}->{'left_record_plugin'}));
+			$opt->{'o_right_importer'} = $cfg->get_block(sprintf('plugin_importer_%s', $opt->{'ofixer'}->{'right_record_plugin'}));
+	}
 	return $opt;
 }
 
