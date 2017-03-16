@@ -1,0 +1,1 @@
+_Datahub::Factory_ is an application that extracts data from _Collection Management Systems_, converts it to [LIDO](http://network.icom.museum/cidoc/working-groups/lido/what-is-lido/) and submits it to a [Datahub for Museums](https://github.com/thedatahub/Datahub).
