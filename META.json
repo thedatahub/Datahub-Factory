@@ -20,7 +20,8 @@
          "inc",
          "share",
          "t",
-         "xt"
+         "xt",
+	 "docs"
       ]
    },
    "prereqs" : {
