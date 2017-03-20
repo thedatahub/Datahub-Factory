@@ -1,6 +1,7 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+        - Moved all institution-specific importers (MSK, KMSKA, VKC) to separate modules
 
 0.6  2017-03-20 11:03:57 UTC
 	- Removed unused Switch import

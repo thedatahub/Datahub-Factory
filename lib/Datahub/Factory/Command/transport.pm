@@ -214,12 +214,6 @@ Supported I<Importer> plugins:
 
 =item L<Adlib|Datahub::Factory::Importer::Adlib>
 
-=item L<KMSKA|Datahub::Factory::Importer::KMSKA>
-
-=item L<MSK|Datahub::Factory::Importer::MSK>
-
-=item L<VKC|Datahub::Factory::Importer::VKC>
-
 =item L<OAI|Datahub::Factory::Importer::OAI>
 
 =back
