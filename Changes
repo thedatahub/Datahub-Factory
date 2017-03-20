@@ -2,6 +2,9 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+0.6  2017-03-20 11:03:57 UTC
+	- Removed unused Switch import
+
 0.5  2017-02-22 11:09:26 UTC
         - Added Importer::Datahub
         - Added merge command
