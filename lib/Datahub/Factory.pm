@@ -1,6 +1,6 @@
 package Datahub::Factory;
 
-our $VERSION = '0.6';
+our $VERSION = '0.7';
 
 use Datahub::Factory::Sane;
 

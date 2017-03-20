@@ -1,6 +1,8 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+
+0.7  2017-03-20 12:54:37 UTC
         - Moved all institution-specific importers (MSK, KMSKA, VKC) to separate modules
 
 0.6  2017-03-20 11:03:57 UTC
