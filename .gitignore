@@ -27,3 +27,5 @@ debian
 conf/pipelines.d/*.ini
 test.json
 test.pl
+docs/_site
+docs/Gemfile.lock
