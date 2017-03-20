@@ -6,7 +6,6 @@ use warnings;
 use Moo;
 use namespace::clean;
 use Config::Simple;
-use Switch;
 
 has conf_object => (is => 'ro', required => 1);
 
