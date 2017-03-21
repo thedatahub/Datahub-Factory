@@ -55,9 +55,11 @@ sub setup_logging {
   Log::Log4perl::init(default_log4perl_config($level, 'STDERR'));
   Log::Any::Adapter->set('Log4perl');
 
-  Datahub::Factory->log->warn(
-    "Logger activated - level $level"
-  );
+  if ($level eq 'DEBUG') {
+    Datahub::Factory->log->warn(
+      "Logger activated - level $level"
+    );
+  }
 }
 
 sub run {
