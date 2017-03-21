@@ -27,6 +27,9 @@ It is possible to extend the program by adding more plugins, see [this guide](ex
 
 All configuration (which plugin to use for importing and exporting, the location of the fixes file and any plugin-specific options) are set in a _Pipeline file_ that is provided to the application via the `--pipeline` switch. For more information, consult the [pipeline documentation](pipeline).
 
+## Puppet
+A [puppet module](https://forge.puppet.com/packedvzw/datahub_factory/readme) exists for this application and can be used to create and manage [pipeline](pipeline) configuration files.
+
 ## Under the hood
 _Datahub::Factory_ is built on [Catmandu](http://librecat.org) and uses its Fix language and plugin architecture to support its operation.
 
