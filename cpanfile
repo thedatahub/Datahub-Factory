@@ -20,6 +20,7 @@ requires 'namespace::clean';
 requires 'Sub::Exporter';
 requires 'Catmandu::OAI';
 requires 'Hash::Merge';
+requires "Ref::Util";
 
 on test => sub {
     requires 'Test::More', '0.96';

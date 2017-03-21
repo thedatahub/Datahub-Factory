@@ -12,15 +12,31 @@ use Sub::Exporter -setup => {
     exports => [
         log              => curry_method,
         cfg              => curry_method,
+        importer         => curry_method
+        fixer            => curry_method
+        store            => curry_method
     ],
     collectors => {'-load' => \'_import_load', ':load' => \'_import_load',},
 };
 
 sub _import_load {
-  my $class = shift;
-  my $env   = Datahub::Factory::Env->new();
-  $class->_env($env);
-  $class;
+    my ($self, $value, $data) = @_;
+
+    if (is_array_ref $value) {
+      self->load(@$value);
+    }
+    else {
+      $self->load;
+    }
+
+    1;
+}
+
+sub load {
+    my $class = shift;
+    my $env   = Datahub::Factory::Env->new();
+    $class->_env($env);
+    $class;
 }
 
 sub _env {
@@ -29,6 +45,21 @@ sub _env {
     $loaded_env = $env if defined $env;
     $loaded_env
         ||= Datahub::Factory::Env->new();
+}
+
+sub store {
+    my $class = shift;
+    $class->_env->store(@_);
+}
+
+sub importer {
+    my $class = shift;
+    $class->_env->importer(@_);
+}
+
+sub fixer {
+    my $class = shift;
+    $class->_env->fixer(@_);
 }
 
 sub log {

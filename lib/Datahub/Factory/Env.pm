@@ -2,15 +2,29 @@ package Datahub::Factory::Env;
 
 use Datahub::Factory::Sane;
 
-use Config::Simple;
-
+use Datahub::Factory::Util qw(require_package);
 use Moo;
 use Catmandu;
 use namespace::clean;
+use Config::Simple;
 
 with 'Datahub::Factory::Logger';
 
+sub  importer {
+    my $self = shift;
+    my $name = shift;
+    my $ns = "Datahub::Factory::Importer";
 
+    require_package($name, $ns)->new(@_);
+}
+
+sub fixer {
+    require_package('Fix', 'Datahub::Factory')->new('file_name' => {@_});
+}
+
+sub store {
+    require_package('Store', 'Datahub::Factory')->new($_[1]);
+}
 
 1;
 

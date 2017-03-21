@@ -1,16 +1,16 @@
 package Datahub::Factory::Importer;
 
-use strict;
-use warnings;
+use Datahub::Factory::Sane;
 
 use Catmandu;
 use Moose::Role;
+use namespace::clean;
 
-has importer => (
-    is  => 'lazy'
-);
+has importer => (is  => 'lazy');
 has logger   => (is => 'lazy');
 has config   => (is => 'lazy');
+
+after _build_importer => sub { };
 
 sub _build_logger {
     my $self = shift;

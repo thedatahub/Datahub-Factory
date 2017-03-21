@@ -1,16 +1,15 @@
 package Datahub::Factory::Importer::Adlib;
 
-use strict;
-use warnings;
+use Datahub::Factory::Sane;
 
 use Moo;
 use Catmandu;
+use namespace::clean;
 
 with 'Datahub::Factory::Importer';
 
 has file_name => (is => 'ro', required => 1);
 has data_path => (is => 'ro', default => sub { return 'recordList.record.*'; });
-
 
 sub _build_importer {
     my $self = shift;
@@ -19,6 +18,7 @@ sub _build_importer {
 }
 
 1;
+
 __END__
 
 =encoding utf-8
