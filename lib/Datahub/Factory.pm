@@ -85,7 +85,7 @@ __END__
 
 =head1 NAME
 
-[![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
+=for html <a href="https://travis-ci.org/thedatahub/Datahub-Factory"><img src="https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master"></a>
 
 Datahub::Factory - A conveyor belt which transports data from a data source to
 a data sink.
@@ -174,13 +174,6 @@ Fetch data from a local or remote source, convert it to an exchange format and
 export the data.
 
 L<Datahub::Factory::Command::transport>
-
-=head2 merge [OPTIONS] (experimental)
-
-Fetch data from two sources, convert it to an exchange format, merge the
-two records and export the data.
-
-L<Datahub::Factory::Command::merge>
 
 =head1 AUTHORS
 
