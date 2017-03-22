@@ -1,6 +1,8 @@
 # NAME
 
-\[!\[Build Status\](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)\](https://travis-ci.org/thedatahub/Datahub-Factory)
+<div>
+    <a href="https://travis-ci.org/thedatahub/Datahub-Factory"><img src="https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master"></a>
+</div>
 
 Datahub::Factory - A conveyor belt which transports data from a data source to
 a data sink.
@@ -75,13 +77,6 @@ Fetch data from a local or remote source, convert it to an exchange format and
 export the data.
 
 [Datahub::Factory::Command::transport](https://metacpan.org/pod/Datahub::Factory::Command::transport)
-
-## merge \[OPTIONS\] (experimental)
-
-Fetch data from two sources, convert it to an exchange format, merge the
-two records and export the data.
-
-[Datahub::Factory::Command::merge](https://metacpan.org/pod/Datahub::Factory::Command::merge)
 
 # AUTHORS
 
