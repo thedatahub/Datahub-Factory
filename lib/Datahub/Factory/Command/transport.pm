@@ -271,7 +271,7 @@ C<file_name> points to the location of your Fix file.
   id_path = ''
 
   [plugin_exporter_Datahub]
-  datahub_url = my.thedatahub.io
+  datahub_url = https://my.thedatahub.io
   datahub_format = LIDO
   oauth_client_id = datahub
   oauth_client_secret = datahub

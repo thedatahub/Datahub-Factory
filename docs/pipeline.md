@@ -33,7 +33,7 @@ data_path = 'recordList.record.*'
 file_name = '/tmp/msk.fix'
 
 [plugin_exporter_Datahub]
-datahub_url = my.thedatahub.io
+datahub_url = https://my.thedatahub.io
 datahub_format = LIDO
 oauth_client_id = datahub
 oauth_client_secret = datahub
