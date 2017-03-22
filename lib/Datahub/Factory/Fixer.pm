@@ -2,17 +2,15 @@ package Datahub::Factory::Fixer;
 
 use Datahub::Factory::Sane;
 
-use Moo;
 use Catmandu;
-use namespace::clean;
+use Moose::Role;
 
-has file_name => (is => 'ro', required => 1);
 has fixer => (is => 'lazy');
+has logger    => (is => 'lazy');
 
-sub _build_fixer {
+sub _build_logger {
     my $self = shift;
-    my $fixer = Catmandu->fixer($self->file_name);
-    return $fixer;
+    return Log::Log4perl->get_logger('datahub');
 }
 
 1;

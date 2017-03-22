@@ -19,13 +19,7 @@ sub description { "Long description on blortex algorithm" }
 
 sub opt_spec {
 	return (
-		[ "pipeline|p:s", "Location of the pipeline configuration file"],
-		[ "importer|i:s",  "The importer" ],
-		[ "datahub|d:s",  "The datahub instance" ],
-		[ "exporter|e:s",  "The exporter"],
-		[ "fixes|f:s",  "Fixes"],
-		[ "oimport|oi:s%",  "import options"],
-		[ "oexport|oe:s%",  "export options"],
+		[ "pipeline|p:s", "Location of the pipeline configuration file"]
 	);
 }
 
@@ -54,40 +48,17 @@ sub execute {
 
   # Load modules
   my $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});
-  my $fix_module = Datahub::Factory->fixer($opt->{fixes});
-
-  # To be integrated
-  # my $store_module = Datahub::Factory->store($opt->{ostore});
-
-  # Needs to be replaced
-  my $export_module = sprintf("Datahub::Factory::Exporter::%s", $opt->{exporter});;
-  autoload $export_module;
+  my $fix_module = Datahub::Factory->fixer($opt->{fixer}, {"file_name" => $opt->{fixes}});
+  my $export_module = Datahub::Factory->exporter($opt->{exporter}, $opt->{oexport});
 
   # Do we still need next two code blocks?
   # Perform import/fix/export
-  my $catmandu_input;
-  if (! defined($opt->{oimport}) || ! %{$opt->{oimport}}) {
-	  $catmandu_input = $import_module->new();
-  } else {
-	  $catmandu_input = $import_module->new($opt->{oimport});
-  }
 
-  my $catmandu_output;
-  if (! defined($opt->{oexport}) || ! %{$opt->{oexport}}) {
-	  $catmandu_output = $export_module->new();
-  } else {
-	  $catmandu_output = $export_module->new($opt->{oexport});
-  }
-
-  my $catmandu_fixer = $fix_module->new("file_name" => $opt->{fixes});
-
-  $catmandu_fixer->fixer->fix($catmandu_input->importer)->each(sub {
+  $fix_module->fixer->fix($import_module->importer)->each(sub {
     my $item = shift;
     my $item_id = data_at($opt->{'id_path'}, $item);
     try {
-    	# to be replaced
-    	$catmandu_output->out->add($item);
-    	# $store_module->out->add($item);
+    	$export_module->out->add($item);
     } catch {
         my $msg;
         if ($_->can('message')) {

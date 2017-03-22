@@ -1,5 +1,7 @@
 package Datahub::Factory::TMS::Importer::Index;
 
+# TODO: to datahub-factory-kmska
+
 use Moo;
 use Catmandu;
 use strict;

@@ -31,7 +31,11 @@ sub parse_conf_file {
 	};
 	if ($opt->{'fixer'} eq 'Fix') {
 			$opt->{'fixes'} = $opt->{'ofixer'}->{'file_name'};
-			$opt->{'id_path'} = $opt->{'ofixer'}->{'id_path'};
+			if (defined($opt->{'ofixer'}->{'id_path'})) {
+				$opt->{'id_path'} = $opt->{'ofixer'}->{'id_path'};
+			} else {
+				$opt->{'id_path'} = $cfg->param('Fixer.id_path');
+			}
 			$opt->{'importer'} = $cfg->param('Importer.plugin');
 			$opt->{'oimport'} = $cfg->get_block(sprintf('plugin_importer_%s', $cfg->param('Importer.plugin')));
 	} elsif($opt->{'fixer'} eq 'Merge') {

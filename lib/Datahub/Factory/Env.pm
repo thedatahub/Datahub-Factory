@@ -10,7 +10,7 @@ use Config::Simple;
 
 with 'Datahub::Factory::Logger';
 
-sub  importer {
+sub importer {
     my $self = shift;
     my $name = shift;
     my $ns = "Datahub::Factory::Importer";
@@ -19,11 +19,23 @@ sub  importer {
 }
 
 sub fixer {
-    require_package('Fix', 'Datahub::Factory')->new('file_name' => {@_});
+    my $self = shift;
+    my $name = shift;
+    my $ns = "Datahub::Factory::Fixer";
+    
+    require_package($name, $ns)->new(@_);
 }
 
 sub store {
     require_package('Store', 'Datahub::Factory')->new($_[1]);
+}
+
+sub exporter {
+    my $self = shift;
+    my $name = shift;
+    my $ns = "Datahub::Factory::Exporter";
+    
+    require_package($name, $ns)->new(@_);
 }
 
 1;

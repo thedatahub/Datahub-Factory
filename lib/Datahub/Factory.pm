@@ -12,9 +12,10 @@ use Sub::Exporter -setup => {
     exports => [
         log              => curry_method,
         cfg              => curry_method,
-        importer         => curry_method
-        fixer            => curry_method
-        store            => curry_method
+        importer         => curry_method,
+        fixer            => curry_method,
+        store            => curry_method,
+        exporter         => curry_method,
     ],
     collectors => {'-load' => \'_import_load', ':load' => \'_import_load',},
 };
@@ -60,6 +61,11 @@ sub importer {
 sub fixer {
     my $class = shift;
     $class->_env->fixer(@_);
+}
+
+sub exporter {
+    my $class = shift;
+    $class->_env->exporter(@_);
 }
 
 sub log {
