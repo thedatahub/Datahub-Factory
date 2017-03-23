@@ -19,19 +19,23 @@ sub description { "Long description on blortex algorithm" }
 
 sub opt_spec {
 	return (
-		[ "pipeline|p:s", "Location of the pipeline configuration file"]
+		[ "pipeline|p=s", "Location of the pipeline configuration file"]
 	);
 }
 
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
+    if (! $opt->{'pipeline'}) {
+        $self->usage_error('The --pipeline flag is required.');
+    }
+
 	my $pcfg = Datahub::Factory->pipeline($opt);
-	if (defined($pcfg->check_object())) {
-		$self->usage_error($pcfg->check_object())
-	}
-
-
+    try {
+        $pcfg->check_object();
+    } catch {
+        $self->usage_error($_);
+    }
 	# no args allowed but options!
 	$self->usage_error("No args allowed") if @$args;
 }
@@ -39,16 +43,27 @@ sub validate_args {
 sub execute {
   my ($self, $arguments, $args) = @_;
 
-  my $pcfg = Datahub::Factory->pipeline($arguments);
-
-  my $opt = $pcfg->opt;
-
   my $logger = Datahub::Factory->log;
 
+  my ($pcfg, $opt);
+  try {
+      $pcfg = Datahub::Factory->pipeline($arguments);
+      $opt = $pcfg->opt;
+  } catch {
+      $logger->fatal($_);
+      exit 1;
+  };
+
   # Load modules
-  my $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});
-  my $fix_module = Datahub::Factory->fixer($opt->{fixer}, {"file_name" => $opt->{fixes}});
-  my $export_module = Datahub::Factory->exporter($opt->{exporter}, $opt->{oexport});
+  my ($import_module, $fix_module, $export_module);
+  try {
+        $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});
+        $fix_module = Datahub::Factory->fixer($opt->{fixer}, {"file_name" => $opt->{fixes}});
+        $export_module = Datahub::Factory->exporter($opt->{exporter}, $opt->{oexport});
+  } catch {
+      $logger->fatal($_);
+      exit 1;
+  };
 
   # Do we still need next two code blocks?
   # Perform import/fix/export

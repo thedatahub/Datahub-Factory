@@ -7,6 +7,7 @@ use Moo;
 use Catmandu;
 use namespace::clean;
 use Config::Simple;
+use Data::Dumper qw(Dumper);
 
 with 'Datahub::Factory::Logger';
 
@@ -14,6 +15,10 @@ sub importer {
     my $self = shift;
     my $name = shift;
     my $ns = "Datahub::Factory::Importer";
+    # If the "plugin" in [Importer] is empty, $name is an empty array
+    if (!defined($name) || scalar @{$name} == 0) {
+        die 'Undefined value for plugin at [Importer]';
+    }
 
     require_package($name, $ns)->new(@_);
 }
@@ -22,18 +27,22 @@ sub fixer {
     my $self = shift;
     my $name = shift;
     my $ns = "Datahub::Factory::Fixer";
+    # If the "plugin" in [Fixer] is empty, $name is an empty array
+    if (!defined($name) || scalar @{$name} == 0) {
+        die 'Undefined value for plugin at [Fixer]';
+    }
     
     require_package($name, $ns)->new(@_);
-}
-
-sub store {
-    require_package('Store', 'Datahub::Factory')->new($_[1]);
 }
 
 sub exporter {
     my $self = shift;
     my $name = shift;
     my $ns = "Datahub::Factory::Exporter";
+    # If the "plugin" in [Exporter] is empty, $name is an empty array
+    if (!defined($name) || scalar @{$name} == 0) {
+        die 'Undefined value for plugin at [Exporter]';
+    }
     
     require_package($name, $ns)->new(@_);
 }

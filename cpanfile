@@ -19,8 +19,8 @@ requires 'MooX::Role::Logger';
 requires 'namespace::clean';
 requires 'Sub::Exporter';
 requires 'Catmandu::OAI';
-requires 'Hash::Merge';
 requires "Ref::Util";
+requires "DateTime";
 
 on test => sub {
     requires 'Test::More', '0.96';

@@ -50,11 +50,6 @@ sub _env {
         ||= Datahub::Factory::Env->new();
 }
 
-sub store {
-    my $class = shift;
-    $class->_env->store(@_);
-}
-
 sub importer {
     my $class = shift;
     $class->_env->importer(@_);
