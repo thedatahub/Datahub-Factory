@@ -19,6 +19,7 @@ requires 'MooX::Role::Logger';
 requires 'namespace::clean';
 requires 'Sub::Exporter';
 requires 'Catmandu::OAI';
+requires 'Catmandu::Solr';
 requires 'Hash::Merge';
 requires "Ref::Util";
 
