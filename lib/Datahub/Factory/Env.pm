@@ -38,6 +38,11 @@ sub exporter {
     require_package($name, $ns)->new(@_);
 }
 
+sub pipeline {
+    my $self = shift;
+    require_package('PipelineConfig', 'Datahub::Factory')->new({'conf_object' => @_});
+}
+
 1;
 
 __END__

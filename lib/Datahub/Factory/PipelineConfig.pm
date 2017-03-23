@@ -10,6 +10,12 @@ use Config::Simple;
 has conf_object => (is => 'ro', required => 1);
 
 has opt => (is => 'lazy');
+has cfg => (is => 'lazy');
+
+sub _build_cfg {
+	my $self = shift;
+	return new Config::Simple($self->conf_object->{pipeline});
+}
 
 sub _build_opt {
     my $self = shift;
@@ -20,29 +26,37 @@ sub _build_opt {
 	}
 }
 
+sub parse {
+	my $self = shift;
+	my $options;
+
+	# Collect all plugins
+	$options->{$self->cfg->param('Importer.plugin')} = $self->plugin_options($self->cfg->param('Importer.plugin'), 'importer');
+	$options->{$self->cfg->param('Fixer.plugin')} = $self->plugin_options($self->cfg->param('Fixer.plugin'), 'fixer');
+	$options->{$self->cfg->param('Exporter.plugin')} = $self->plugin_options($self->cfg->param('Exporter.plugin'), 'exporter');
+
+	# Legacy options
+	$options->{'importer'} = $self->cfg->param('Importer.plugin');
+	$options->{'fixer'} = $self->cfg->param('Fixer.plugin');
+	$options->{'exporter'} = $self->cfg->param('Exporter.plugin');
+	$options->{'oimport'} = $options->{$options->{'importer'}};
+	$options->{'ofixer'} = $options->{$options->{'fixer'}};
+	$options->{'oexport'} = $options->{$options->{'exporter'}};
+	# Even more legacy
+	$options->{'fixes'} = $options->{$options->{'fixer'}}->{'file_name'};
+	$options->{'id_path'} = $options->{$options->{'fixer'}}->{'id_path'};
+
+	return $options;
+}
+
+sub plugin_options {
+	my ($self, $plugin_name, $plugin_type) = @_;
+	return $self->cfg->get_block(sprintf('plugin_%s_%s', $plugin_type, $plugin_name));
+}
+
 sub parse_conf_file {
 	my $self = shift;
-	my $cfg = new Config::Simple($self->conf_object->{pipeline});
-	my $opt = {
-		'fixer'    => $cfg->param('Fixer.plugin'),
-		'exporter' => $cfg->param('Exporter.plugin'),
-		'oexport'  => $cfg->get_block(sprintf('plugin_exporter_%s', $cfg->param('Exporter.plugin'))),
-		'ofixer'   => $cfg->get_block(sprintf('plugin_fixer_%s', $cfg->param('Fixer.plugin')))
-	};
-	if ($opt->{'fixer'} eq 'Fix') {
-			$opt->{'fixes'} = $opt->{'ofixer'}->{'file_name'};
-			if (defined($opt->{'ofixer'}->{'id_path'})) {
-				$opt->{'id_path'} = $opt->{'ofixer'}->{'id_path'};
-			} else {
-				$opt->{'id_path'} = $cfg->param('Fixer.id_path');
-			}
-			$opt->{'importer'} = $cfg->param('Importer.plugin');
-			$opt->{'oimport'} = $cfg->get_block(sprintf('plugin_importer_%s', $cfg->param('Importer.plugin')));
-	} elsif($opt->{'fixer'} eq 'Merge') {
-			$opt->{'o_left_importer'} = $cfg->get_block(sprintf('plugin_importer_%s', $opt->{'ofixer'}->{'left_record_plugin'}));
-			$opt->{'o_right_importer'} = $cfg->get_block(sprintf('plugin_importer_%s', $opt->{'ofixer'}->{'right_record_plugin'}));
-	}
-	return $opt;
+	return $self->parse();
 }
 
 sub from_cli_args {

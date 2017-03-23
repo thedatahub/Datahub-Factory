@@ -26,9 +26,9 @@ sub opt_spec {
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
-	my $pc = Datahub::Factory::PipelineConfig->new(conf_object => $opt);
-	if (defined($pc->check_object())) {
-		$self->usage_error($pc->check_object())
+	my $pcfg = Datahub::Factory->pipeline($opt);
+	if (defined($pcfg->check_object())) {
+		$self->usage_error($pcfg->check_object())
 	}
 
 
@@ -39,12 +39,11 @@ sub validate_args {
 sub execute {
   my ($self, $arguments, $args) = @_;
 
-  my $pcfg = Datahub::Factory::PipelineConfig->new(conf_object => $arguments);
+  my $pcfg = Datahub::Factory->pipeline($arguments);
 
   my $opt = $pcfg->opt;
 
   my $logger = Datahub::Factory->log;
-  my $cfg = Datahub::Factory->cfg;
 
   # Load modules
   my $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});

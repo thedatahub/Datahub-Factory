@@ -6,6 +6,7 @@ use Datahub::Factory::Sane;
 
 use Datahub::Factory::Env;
 use Datahub::Factory::Config;
+use Datahub::Factory::PipelineConfig;
 use namespace::clean;
 use Sub::Exporter::Util qw(curry_method);
 use Sub::Exporter -setup => {
@@ -16,8 +17,9 @@ use Sub::Exporter -setup => {
         fixer            => curry_method,
         store            => curry_method,
         exporter         => curry_method,
+        pipeline         => curry_method,
     ],
-    collectors => {'-load' => \'_import_load', ':load' => \'_import_load',},
+    collectors => {'-load' => \'_import_load', ':load' => \'_import_load'},
 };
 
 sub _import_load {
@@ -75,6 +77,11 @@ sub log {
 sub cfg {
     my $cfg = Datahub::Factory::Config->new();
     return $cfg->config;
+}
+
+sub pipeline {
+    my $class = shift;
+    return $class->_env->pipeline(@_);
 }
 
 1;
