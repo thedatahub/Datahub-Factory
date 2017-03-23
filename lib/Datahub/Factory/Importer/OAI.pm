@@ -12,6 +12,7 @@ has endpoint        => (is => 'ro', required => 1);
 has metadata_prefix => (is => 'ro', default => sub {
     return 'oai_lido';
 });
+has handler         => (is => 'ro');
 has set             => (is => 'ro');
 has from            => (is => 'ro');
 has until           => (is => 'ro');
@@ -20,7 +21,8 @@ has until           => (is => 'ro');
 sub _build_importer {
     my $self = shift;
     my $importer = Catmandu::Importer::OAI->new(
-        url            => $self->url,
+        url            => $self->endpoint,
+        handler        => $self->handler,
         metadataPrefix => $self->metadata_prefix,
         from           => $self->from,
         until          => $self->until,
@@ -71,6 +73,22 @@ Only the C<endpoint> parameter is required.
 =item C<endpoint>
 
 URL of the OAI endpoint.
+
+=item handler( sub {} | $object | 'NAME' | '+NAME' )
+Handler to transform each record from XML DOM (L<XML::LibXML::Element>) into
+Perl hash.
+
+Handlers can be provided as function reference, an instance of a Perl
+package that implements 'parse', or by a package NAME. Package names should
+be prepended by C<+> or prefixed with C<Catmandu::Importer::OAI::Parser>. E.g
+C<foobar> will create a C<Catmandu::Importer::OAI::Parser::foobar> instance.
+By default the handler L<Catmandu::Importer::OAI::Parser::oai_dc> is used for
+metadataPrefix C<oai_dc>,  L<Catmandu::Importer::OAI::Parser::marcxml> for
+C<marcxml>, L<Catmandu::Importer::OAI::Parser::mods> for
+C<mods>, L<Catmandu::Importer::OAI::Parser::Lido> for
+C<Lido> and L<Catmandu::Importer::OAI::Parser::struct> for other formats.
+In addition there is L<Catmandu::Importer::OAI::Parser::raw> to return the XML
+as it is.
 
 =item C<metadata_prefix>
 
