@@ -22,6 +22,7 @@ requires 'Catmandu::OAI';
 requires 'Catmandu::Solr';
 requires 'Hash::Merge';
 requires "Ref::Util";
+requires "DateTime";
 
 on test => sub {
     requires 'Test::More', '0.96';
