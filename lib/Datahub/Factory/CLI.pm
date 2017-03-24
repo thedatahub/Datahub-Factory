@@ -9,6 +9,7 @@ use Datahub::Factory;
 use Log::Any::Adapter;
 use Log::Log4perl;
 use namespace::clean;
+use DateTime;
 
 
 use parent qw(App::Cmd);
@@ -25,6 +26,9 @@ sub default_log4perl_config {
     my $level    = shift || 'DEBUG';
     my $appender = shift || 'STDERR';
 
+    my $date = DateTime->now()->dmy();
+    my $import_log_header = sprintf('DATAHUB FACTORY IMPORT LOG FOR %s', DateTime->now()->datetime());
+
     my $config = <<EOF;
 log4perl.rootLogger=$level,$appender
 log4perl.category.datahub=$level,$appender
@@ -34,7 +38,7 @@ log4perl.appender.STDOUT.stderr=0
 log4perl.appender.STDOUT.utf8=1
 
 log4perl.appender.STDOUT.layout=PatternLayout
-log4perl.appender.STDOUT.layout.ConversionPattern=%d [%P] - %p %l %M time=%r : %m%n
+log4perl.appender.STDOUT.layout.ConversionPattern=%d [%P] - %p : %m%n
 
 log4perl.appender.STDERR=Log::Log4perl::Appender::Screen
 log4perl.appender.STDERR.stderr=1
@@ -42,6 +46,15 @@ log4perl.appender.STDERR.utf8=1
 
 log4perl.appender.STDERR.layout=PatternLayout
 log4perl.appender.STDERR.layout.ConversionPattern=%d [%P] - %p %l time=%r : %m%n
+
+log4perl.appender.STATISTICS=Log::Log4perl::Appender::File
+log4perl.appender.STATISTICS.filename=logs/import_$date.log
+log4perl.appender.STATISTICS.utf8=1
+log4perl.appender.STATISTICS.mkpath=1
+log4perl.appender.STATISTICS.header_text=$import_log_header
+
+log4perl.appender.STATISTICS.layout=PatternLayout
+log4perl.appender.STATISTICS.layout.ConversionPattern=%d [%P] - %p : %m%n
 
 EOF
     \$config;
@@ -52,7 +65,7 @@ sub setup_logging {
   my $logging = shift;
   my $level  = $LEVELS{$logging} || 'WARN';
 
-  Log::Log4perl::init(default_log4perl_config($level, 'STDERR'));
+  Log::Log4perl::init(default_log4perl_config($level, 'STATISTICS'));
   Log::Any::Adapter->set('Log4perl');
 
   if ($level eq 'DEBUG') {
