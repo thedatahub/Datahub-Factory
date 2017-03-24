@@ -31,4 +31,9 @@ sub _build_out {
     return $store;
 }
 
+sub add {
+    my ($self, $item) = @_;
+    $self->out->add($item);
+}
+
 1;

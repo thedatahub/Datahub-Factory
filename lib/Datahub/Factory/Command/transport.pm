@@ -57,7 +57,8 @@ sub execute {
     my $item = shift;
     my $item_id = data_at($opt->{'id_path'}, $item);
     try {
-    	$export_module->out->add($item);
+      # $export_module->out->add($item);
+      $export_module->add($item);
     } catch {
         my $msg;
         if ($_->can('message')) {

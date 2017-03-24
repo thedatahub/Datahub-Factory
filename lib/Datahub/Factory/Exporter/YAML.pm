@@ -14,4 +14,9 @@ sub _build_out {
     return $exporter;
 }
 
+sub add {
+    my ($self, $item) = @_;
+    $self->out->add($item);
+}
+
 1;
