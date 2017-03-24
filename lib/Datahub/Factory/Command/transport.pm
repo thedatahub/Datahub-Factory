@@ -107,16 +107,23 @@ sub execute {
           $export_module->add($item);
       } catch {
           my $error_msg;
+          # $item_id can be undefined if it isn't set in the source, but this
+          # is only discovered when exporting (and not during fixing)
+          my $id_type = 'id';
+          if (!defined($item_id)) {
+              $item_id = $counter;
+              $id_type = 'counted';
+          }
           if ($_->can('message')) {
-              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_->message);
+              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_->message);
           } else {
-              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_);
+              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_);
           }
           $logger->error($error_msg);
           return 1;
       };
 
-      if (defined($f) && $f == 1) {
+      if (defined($e) && $e == 1) {
           # End the processing of this record, go to the next one.
           return;
       }
