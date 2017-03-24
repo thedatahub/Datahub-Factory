@@ -83,11 +83,10 @@ sub execute {
   # till all records have been processed
   my $counter = 0;
   $import_module->importer->each(sub {
-      my $raw_item = shift;
+      my $item = shift;
       $counter++;
-      my $item;
       my $f = try {
-          $item = $fix_module->fixer->fix($raw_item);
+          $fix_module->fixer->fix($item);
       } catch {
           my $error_msg;
           if ($_->can('message')) {
