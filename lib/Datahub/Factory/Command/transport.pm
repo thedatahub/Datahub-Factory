@@ -19,19 +19,23 @@ sub description { "Long description on blortex algorithm" }
 
 sub opt_spec {
 	return (
-		[ "pipeline|p:s", "Location of the pipeline configuration file"]
+		[ "pipeline|p=s", "Location of the pipeline configuration file"]
 	);
 }
 
 sub validate_args {
 	my ($self, $opt, $args) = @_;
 
+    if (! $opt->{'pipeline'}) {
+        $self->usage_error('The --pipeline flag is required.');
+    }
+
 	my $pcfg = Datahub::Factory->pipeline($opt);
-	if (defined($pcfg->check_object())) {
-		$self->usage_error($pcfg->check_object())
-	}
-
-
+    try {
+        $pcfg->check_object();
+    } catch {
+        $self->usage_error($_);
+    }
 	# no args allowed but options!
 	$self->usage_error("No args allowed") if @$args;
 }
@@ -39,39 +43,84 @@ sub validate_args {
 sub execute {
   my ($self, $arguments, $args) = @_;
 
-  my $pcfg = Datahub::Factory->pipeline($arguments);
-
-  my $opt = $pcfg->opt;
-
   my $logger = Datahub::Factory->log;
 
-  # Load modules
-  my $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});
-  my $fix_module = Datahub::Factory->fixer($opt->{fixer}, {"file_name" => $opt->{fixes}});
-  my $export_module = Datahub::Factory->exporter($opt->{exporter}, $opt->{oexport});
+  my ($pcfg, $opt);
+  try {
+      $pcfg = Datahub::Factory->pipeline($arguments);
+      $opt = $pcfg->opt;
+  } catch {
+      $logger->fatal($_);
+      exit 1;
+  };
 
-  # Do we still need next two code blocks?
+  # Load modules
+  my ($import_module, $fix_module, $export_module);
+  try {
+      $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
+  } catch {
+      $logger->fatal(sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'}));
+      exit 1;
+  };
+  try {
+      $fix_module = Datahub::Factory->fixer($opt->{fixer})->new({"file_name" => $opt->{fixes}});
+  } catch {
+      $logger->fatal(sprintf('%s at [plugin_fixter_%s]', $_, $opt->{'fixer'}));
+      exit 1;
+  };
+  try {
+      $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
+  } catch {
+      $logger->fatal(sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'}));
+      exit 1;
+  };
+
   # Perform import/fix/export
 
-  $fix_module->fixer->fix($import_module->importer)->each(sub {
-    my $item = shift;
-    my $item_id = data_at($opt->{'id_path'}, $item);
-    try {
-    	$export_module->out->add($item);
-    } catch {
-        my $msg;
-        if ($_->can('message')) {
-            $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-        } else {
-            $msg = sprintf("Error while adding item %s: %s", $item_id, $_);
-        }
-        $logger->error($msg);
-        $logger->error(sprintf("Item: ", $item));
-    } finally {
-        if (!@_) {
-            $logger->info(sprintf("Added item %s.", $item_id));
-        }
-    };
+  # Catmandu::Fix treats all warnings as fatal errors (this is good)
+  # so we can catch them with try-catch
+  # Not that errors here are _not_ fatal => continue running
+  # till all records have been processed
+  my $counter = 0;
+  $import_module->importer->each(sub {
+      my $item = shift;
+      $counter++;
+      my $f = try {
+          $fix_module->fixer->fix($item);
+      } catch {
+          my $error_msg;
+          if ($_->can('message')) {
+              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
+          } else {
+              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
+          }
+          $logger->error($error_msg);
+          return 1;
+      };
+      if (defined($f) && $f == 1) {
+          # End the processing of this record, go to the next one.
+          return;
+      }
+
+      my $item_id = data_at($opt->{'id_path'}, $item);
+      my $e = try {
+          $export_module->out->add($item);
+      } catch {
+          my $error_msg;
+          if ($_->can('message')) {
+              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_->message);
+          } else {
+              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_);
+          }
+          $logger->error($error_msg);
+          return 1;
+      };
+
+      if (defined($f) && $f == 1) {
+          # End the processing of this record, go to the next one.
+          return;
+      }
+      $logger->info(sprintf('Item %s (id): exported.', $item_id));
   });
 
 }

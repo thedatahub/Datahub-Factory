@@ -6,6 +6,7 @@ use warnings;
 use Moo;
 use namespace::clean;
 use Config::Simple;
+use Data::Dumper qw(Dumper);
 
 has conf_object => (is => 'ro', required => 1);
 
@@ -31,9 +32,23 @@ sub parse {
 	my $options;
 
 	# Collect all plugins
-	$options->{$self->cfg->param('Importer.plugin')} = $self->plugin_options($self->cfg->param('Importer.plugin'), 'importer');
-	$options->{$self->cfg->param('Fixer.plugin')} = $self->plugin_options($self->cfg->param('Fixer.plugin'), 'fixer');
-	$options->{$self->cfg->param('Exporter.plugin')} = $self->plugin_options($self->cfg->param('Exporter.plugin'), 'exporter');
+	my $importer_plugin = $self->cfg->param('Importer.plugin');
+	if (!defined($importer_plugin)) {
+		die 'Undefined value for plugin at [Importer]';
+	}
+	$options->{$importer_plugin} = $self->plugin_options('importer', $importer_plugin);
+
+	my $fixer_plugin = $self->cfg->param('Fixer.plugin');
+	if (!defined($fixer_plugin)) {
+		die 'Undefined value for plugin at [Fixer]';
+	}
+	$options->{$fixer_plugin} = $self->plugin_options('fixer', $fixer_plugin);
+
+	my $exporter_plugin = $self->cfg->param('Exporter.plugin');
+	if (!defined($exporter_plugin)) {
+		die 'Undefined value for plugin at [Exporter]';
+	}
+	$options->{$exporter_plugin} = $self->plugin_options('exporter', $exporter_plugin);
 
 	# Legacy options
 	$options->{'importer'} = $self->cfg->param('Importer.plugin');
@@ -50,8 +65,9 @@ sub parse {
 }
 
 sub plugin_options {
-	my ($self, $plugin_name, $plugin_type) = @_;
-	return $self->cfg->get_block(sprintf('plugin_%s_%s', $plugin_type, $plugin_name));
+	my ($self, $plugin_type, $plugin_name) = @_;
+	my $block = $self->cfg->get_block(sprintf('plugin_%s_%s', $plugin_type, $plugin_name));
+	return $block;
 }
 
 sub parse_conf_file {
@@ -67,69 +83,71 @@ sub from_cli_args {
 
 sub check_object {
     my $self = shift;
+
+
     if ( ! $self->conf_object->{pipeline} ) {
 		# Only require the CLI switches if no pipeline file was specified
 		if ( ! $self->conf_object->{importer} ) {
-			return "Importer is missing";
+			die "Importer is missing";
 		}
 
 		if ( ! $self->conf_object->{exporter} ) {
-			return "Exporter is missing";
+			die "Exporter is missing";
 		}
 
 		if ( ! $self->conf_object->{fixes} ) {
-			return "Fixes are missing";
+			die "Fixes are missing";
 		}
 
 		if ( $self->conf_object->{importer} eq "Adlib" ) {
 			if ( ! $self->conf_object->{oimport}->{file_name} ) {
-				return "Adlib: Import file is missing";
+				die "Adlib: Import file is missing";
 			}
 		}
 
 		if ( $self->conf_object->{importer} eq "TMS" ) {
 			if ( ! $self->conf_object->{oimport}->{db_name} ) {
-				return "TMS: database name is missing";
+				die "TMS: database name is missing";
 			}
 
 			if ( ! $self->conf_object->{oimport}->{db_user} ) {
-				return "TMS: database user is missing";
+				die "TMS: database user is missing";
 			}
 
 			if ( ! $self->conf_object->{oimport}->{db_password} ) {
-				return "TMS: database user password is missing";
+				die "TMS: database user password is missing";
 			}
 
 			if ( ! $self->conf_object->{oimport}->{db_host} ) {
-				return "TMS: database host is missing";
+				die "TMS: database host is missing";
 			}
 		}
 
 		if ( $self->conf_object->{exporter} eq "Datahub" ) {
 			# This should move to a separate module
 			if ( ! $self->conf_object->{oexport}->{datahub_url} ) {
-				return "Datahub: the URL to the datahub instance is missing";
+				die "Datahub: the URL to the datahub instance is missing";
 			}
 
 			if ( ! $self->conf_object->{oexport}->{oauth_client_id} ) {
-				return "Datahub OAUTH: the client id is missing";
+				die "Datahub OAUTH: the client id is missing";
 			}
 
 			if ( ! $self->conf_object->{oexport}->{oauth_client_secret} ) {
-				return "Datahub OAUTH: the client secret is missing";
+				die "Datahub OAUTH: the client secret is missing";
 			}
 
 			if ( ! $self->conf_object->{oexport}->{oauth_username} ) {
-				return "Datahub OAUTH: the client username is missing";
+				die "Datahub OAUTH: the client username is missing";
 			}
 
 			if ( ! $self->conf_object->{oexport}->{oauth_password} ) {
-				return "Datahub OAUTH: the client passowrd is missing";
+				die "Datahub OAUTH: the client passowrd is missing";
 			}
 		}
 	} else {
 		if ( ! -f $self->conf_object->{pipeline} ) {
-			return sprintf('The configuration file %s does not exist', $self->conf_object->{pipeline});
+			die sprintf('The configuration file %s does not exist', $self->conf_object->{pipeline});
 		}
 	}
     return undef;
