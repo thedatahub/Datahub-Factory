@@ -57,36 +57,71 @@ sub execute {
   # Load modules
   my ($import_module, $fix_module, $export_module);
   try {
-        $import_module = Datahub::Factory->importer($opt->{importer}, $opt->{oimport});
-        $fix_module = Datahub::Factory->fixer($opt->{fixer}, {"file_name" => $opt->{fixes}});
-        $export_module = Datahub::Factory->exporter($opt->{exporter}, $opt->{oexport});
+      $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
   } catch {
-      $logger->fatal($_);
+      $logger->fatal(sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'}));
+      exit 1;
+  };
+  try {
+      $fix_module = Datahub::Factory->fixer($opt->{fixer})->new({"file_name" => $opt->{fixes}});
+  } catch {
+      $logger->fatal(sprintf('%s at [plugin_fixter_%s]', $_, $opt->{'fixer'}));
+      exit 1;
+  };
+  try {
+      $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
+  } catch {
+      $logger->fatal(sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'}));
       exit 1;
   };
 
-  # Do we still need next two code blocks?
   # Perform import/fix/export
 
-  $fix_module->fixer->fix($import_module->importer)->each(sub {
-    my $item = shift;
-    my $item_id = data_at($opt->{'id_path'}, $item);
-    try {
-    	$export_module->out->add($item);
-    } catch {
-        my $msg;
-        if ($_->can('message')) {
-            $msg = sprintf("Error while adding item %s: %s", $item_id, $_->message);
-        } else {
-            $msg = sprintf("Error while adding item %s: %s", $item_id, $_);
-        }
-        $logger->error($msg);
-        $logger->error(sprintf("Item: ", $item));
-    } finally {
-        if (!@_) {
-            $logger->info(sprintf("Added item %s.", $item_id));
-        }
-    };
+  # Catmandu::Fix treats all warnings as fatal errors (this is good)
+  # so we can catch them with try-catch
+  # Not that errors here are _not_ fatal => continue running
+  # till all records have been processed
+  my $counter = 0;
+  $import_module->importer->each(sub {
+      my $raw_item = shift;
+      $counter++;
+      my $item;
+      my $f = try {
+          $item = $fix_module->fixer->fix($raw_item);
+      } catch {
+          my $error_msg;
+          if ($_->can('message')) {
+              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
+          } else {
+              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
+          }
+          $logger->error($error_msg);
+          return 1;
+      };
+      if (defined($f) && $f == 1) {
+          # End the processing of this record, go to the next one.
+          return;
+      }
+
+      my $item_id = data_at($opt->{'id_path'}, $item);
+      my $e = try {
+          $export_module->out->add($item);
+      } catch {
+          my $error_msg;
+          if ($_->can('message')) {
+              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_->message);
+          } else {
+              $error_msg = sprintf('Item %s (id): could not export item: %s', $item_id, $_);
+          }
+          $logger->error($error_msg);
+          return 1;
+      };
+
+      if (defined($f) && $f == 1) {
+          # End the processing of this record, go to the next one.
+          return;
+      }
+      $logger->info(sprintf('Item %s (id): exported.', $item_id));
   });
 
 }

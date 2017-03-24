@@ -66,7 +66,8 @@ sub parse {
 
 sub plugin_options {
 	my ($self, $plugin_type, $plugin_name) = @_;
-	return $self->cfg->get_block(sprintf('plugin_%s_%s', $plugin_type, $plugin_name));
+	my $block = $self->cfg->get_block(sprintf('plugin_%s_%s', $plugin_type, $plugin_name));
+	return $block;
 }
 
 sub parse_conf_file {

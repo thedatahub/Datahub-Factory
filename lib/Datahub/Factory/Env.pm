@@ -16,11 +16,11 @@ sub importer {
     my $name = shift;
     my $ns = "Datahub::Factory::Importer";
     # If the "plugin" in [Importer] is empty, $name is an empty array
-    if (!defined($name) || scalar @{$name} == 0) {
+    if (!defined($name) || (ref $name eq 'ARRAY' && scalar @{$name} == 0)) {
         die 'Undefined value for plugin at [Importer]';
     }
 
-    require_package($name, $ns)->new(@_);
+    return require_package($name, $ns);
 }
 
 sub fixer {
@@ -28,11 +28,11 @@ sub fixer {
     my $name = shift;
     my $ns = "Datahub::Factory::Fixer";
     # If the "plugin" in [Fixer] is empty, $name is an empty array
-    if (!defined($name) || scalar @{$name} == 0) {
+    if (!defined($name) || (ref $name eq 'ARRAY' && scalar @{$name} == 0)) {
         die 'Undefined value for plugin at [Fixer]';
     }
     
-    require_package($name, $ns)->new(@_);
+    return require_package($name, $ns);
 }
 
 sub exporter {
@@ -40,11 +40,11 @@ sub exporter {
     my $name = shift;
     my $ns = "Datahub::Factory::Exporter";
     # If the "plugin" in [Exporter] is empty, $name is an empty array
-    if (!defined($name) || scalar @{$name} == 0) {
+    if (!defined($name) || (ref $name eq 'ARRAY' && scalar @{$name} == 0)) {
         die 'Undefined value for plugin at [Exporter]';
     }
     
-    require_package($name, $ns)->new(@_);
+    return require_package($name, $ns);
 }
 
 sub pipeline {
