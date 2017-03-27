@@ -137,6 +137,7 @@ Set the log_level. Takes a numeric parameter. Supported levels are:
 
 Selects an output for the log messages. By default, it will send them to STDERR (pass C<STDERR> as parameter), but STDOUT (C<STDOUT>) and a log file (C<logs/import_-date-.log>) (C<STATISTICS>) are also supported.
 
+=back
 
 =head1 COMMANDS
 
