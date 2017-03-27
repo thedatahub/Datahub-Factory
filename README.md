@@ -74,11 +74,3 @@ Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
 
 This library is free software; you can redistribute it and/or modify
 it under the terms of the GPLv3.
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 59:
-
-    You forgot a '=back' before '=head1'
