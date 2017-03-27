@@ -122,43 +122,21 @@ functional requirements of the Flemish Art Collection use case.
 
 =head1 CONFIGURATION
 
-Datahub::Factory uses a general configuration file called I<settings.ini>. It
-can be located at C</etc/datahub-factory/settings.ini> or C<conf/settings.ini>.
-The one in C</etc> takes priority. An example file is provided at
-L<conf/settings.example.ini|https://github.com/thedatahub/Datahub-Factory/blob/master/conf/settings.example.ini>. It is in L<INI format|http://search.cpan.org/~sherzodr/Config-Simple-4.59/Simple.pm#INI-FILE>.
+=head2 Command line options
 
-It has two parts, a C<[General]> block that contains some generic options, and
-(optionally) multiple module-specific blocks called C<[module_Module_name]>.
-For a list of module options, see the documentation for every module.
-
-Supported modules
+All commands share the following switches:
 
 =over
 
-=item L<PIDS|Datahub::Factory::Importer::PIDS>
-
-=back
-
-=head2 General options
-
-=over
-
-=item C<log_level>
+=item C<--log_level>
 
 Set the log_level. Takes a numeric parameter. Supported levels are:
 1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
 
-=back
+=item C<--log_output>
 
-=head2 Example
+Selects an output for the log messages. By default, it will send them to STDERR (pass C<STDERR> as parameter), but STDOUT (C<STDOUT>) and a log file (C<logs/import_-date-.log>) (C<STATISTICS>) are also supported.
 
-    [General]
-    # 1 => WARN; 2 => INFO; 3 => DEBUG
-    log_level = 1
-
-    [module_PIDS]
-    username = username
-    api_key = api_key
 
 =head1 COMMANDS
 
