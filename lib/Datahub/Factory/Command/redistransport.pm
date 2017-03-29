@@ -1,4 +1,4 @@
-package Datahub::Factory::Command::transport;
+package Datahub::Factory::Command::redistransport;
 
 use Datahub::Factory::Sane;
 
@@ -11,6 +11,13 @@ use Datahub::Factory;
 use namespace::clean;
 use Datahub::Factory::PipelineConfig;
 use Datahub::Factory::Redis::Jobs;
+use Datahub::Factory::Redis::Queue;
+use Redis::JobQueue::Job qw(
+    STATUS_CREATED
+    STATUS_WORKING
+    STATUS_COMPLETED
+    STATUS_FAILED
+);
 
 use Data::Dumper qw(Dumper);
 
@@ -45,7 +52,6 @@ sub execute {
   my ($self, $arguments, $args) = @_;
 
   my $logger = Datahub::Factory->log;
-  my $jq = Datahub::Factory::Redis::Jobs->new()->conn;
 
   my ($pcfg, $opt);
   try {
@@ -84,56 +90,64 @@ sub execute {
   # Not that errors here are _not_ fatal => continue running
   # till all records have been processed
   my $counter = 0;
+  my @fix_jobs;
+  my $fix_jq = Datahub::Factory::Redis::Queue->new(queue_name => 'fixer');
   $import_module->importer->each(sub {
       my $item = shift;
       $counter++;
       #https://metacpan.org/pod/Redis::JobQueue
-      my $f = try {
-          $fix_module->fixer->fix($item);
-      } catch {
-          my $error_msg;
-          if ($_->can('message')) {
-              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
-          } else {
-              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
-          }
-          $logger->error($error_msg);
-          return 1;
-      };
-      if (defined($f) && $f == 1) {
-          # End the processing of this record, go to the next one.
-          return;
-      }
+      # Add fixer job
+      # exit importer
+      # Loop to wait for finished job
+      # Add to exporter via job
+      # Loop to waint for finished job
 
-      my $item_id = data_at($opt->{'id_path'}, $item);
-      my $e = try {
-          $export_module->add($item);
-      } catch {
-          my $error_msg;
-          # $item_id can be undefined if it isn't set in the source, but this
-          # is only discovered when exporting (and not during fixing)
-          my $id_type = 'id';
-          if (!defined($item_id)) {
-              $item_id = $counter;
-              $id_type = 'counted';
-          }
-          if ($_->can('message')) {
-              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_->message);
-          } else {
-              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_);
-          }
-          $logger->error($error_msg);
-          return 1;
-      };
+      my $job = $item;
 
-      if (defined($e) && $e == 1) {
-          # End the processing of this record, go to the next one.
-          return;
-      }
-      $logger->info(sprintf('Item %s (id): exported.', $item_id));
+      my $r_job = $fix_jq->add([$fix_module, $job, $counter]);
+
+      push @fix_jobs, $r_job->{'id'};
   });
 
+# TODO: throttling
+
+  my $exp_jq = Datahub::Factory::Redis::Queue->new(queue_name => 'exporter');
+  my @export_jobs;
+  while (my $fix_job = shift @fix_jobs) {
+      my $r_f_job = $fix_jq->get($fix_job);
+      if ($r_f_job->{'status'} ne STATUS_COMPLETED && $r_f_job->{'status'} ne STATUS_FAILED) {
+          push @fix_jobs, $fix_job;
+      }
+      if (ref ($r_f_job->{'result'}) ne ref({})) {
+          $logger->error($r_f_job->{'result'});
+          next;
+      }
+      my $item = $r_f_job->{'result'};
+      my $job = $item;
+      my $item_id = data_at($opt->{'id_path'}, $item);
+
+      my $r_e_job = $exp_jq->add([$export_module, $job, $item_id]);
+
+      push @export_jobs, $r_e_job->{'id'};
+  }
+
+  while (my $export_job = shift @export_jobs) {
+      my $r_e_job = $exp_jq->get($export_job);
+      if ($r_e_job->{'status'} ne STATUS_COMPLETED && $r_e_job->{'status'} ne STATUS_FAILED) {
+          push @export_jobs, $export_job;
+      }
+      if (ref ($r_e_job->{'result'}) ne ref({})) {
+          $logger->error($r_e_job->{'result'});
+          next;
+      }
+      my $item = $r_e_job->{'result'};
+      my $item_id = data_at($opt->{'id_path'}, $item);
+      $logger->info(sprintf('Item %s (id): exported.', $item_id));
+  }
+
 }
+
+#
 
 1;
 
