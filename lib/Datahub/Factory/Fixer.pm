@@ -13,4 +13,9 @@ sub _build_logger {
     return Log::Log4perl->get_logger('datahub');
 }
 
+sub execute {
+    my ($self, $item) = @_;
+    return $self->fixer->fix($item);
+}
+
 1;

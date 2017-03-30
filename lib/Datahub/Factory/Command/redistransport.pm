@@ -91,8 +91,8 @@ sub execute {
       # Loop to waint for finished job
 
       my $job = $item;
-
-      my $r_job = $fix_jq->add([$opt->{'fixer'}, $opt->{'ofixer'}, $job, $counter]);
+      #my ($module_name, $module_plugin, $module_options, $item, $counter, $item_id) = @{$job->workload};
+      my $r_job = $fix_jq->add(['fixer', $opt->{'fixer'}, $opt->{'ofixer'}, $job, $counter]);
 
       push @fix_jobs, $r_job->{'id'};
   });
@@ -114,7 +114,8 @@ sub execute {
       my $job = $item;
       my $item_id = data_at($opt->{'id_path'}, $item);
 
-      my $r_e_job = $exp_jq->add([$opt->{'exporter'}, $opt->{'oexport'}, $job, $item_id, $counter]);
+      #my ($module_name, $module_plugin, $module_options, $item, $counter, $item_id) = @{$job->workload};
+      my $r_e_job = $exp_jq->add(['exporter', $opt->{'exporter'}, $opt->{'oexport'}, $job, $counter, $item_id]);
 
       push @export_jobs, $r_e_job->{'id'};
   }

@@ -32,4 +32,9 @@ sub _build_stdout_fh {
     return io(\*STDOUT, mode => 'w');
 }
 
+sub execute {
+    my ($self, $item) = @_;
+    return $self->out->add($item);
+}
+
 1;
