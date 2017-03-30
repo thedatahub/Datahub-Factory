@@ -4,6 +4,13 @@ use strict;
 use warnings;
 
 use Try::Tiny;
+use Datahub::Factory::Sane;
+
+use Module::Load;
+use Catmandu;
+use Catmandu::Util qw(data_at);
+use Datahub::Factory;
+use namespace::clean;
 
 use Redis::JobQueue qw(
     DEFAULT_SERVER
@@ -42,9 +49,16 @@ if (defined($r) && $r == 1) {
 
 sub exporter {
     my $job = shift;
-    my ($export_module, $workload, $item_id) = @{$job->workload};
+    my ($exporter, $export_opts, $workload, $item_id, $counter) = @{$job->workload};
+    my $export_module;
+    try {
+        $export_module = Datahub::Factory->exporter($exporter)->new($export_opts);
+    } catch {
+        $job->result(sprintf('%s at [plugin_exporter_%s]', $_, $exporter));
+        return;
+    };
     my $e = try {
-        $export_module->add($item);
+        $export_module->add($workload);
     } catch {
         my $error_msg;
         # $item_id can be undefined if it isn't set in the source, but this
@@ -66,7 +80,7 @@ sub exporter {
         # End the processing of this record, go to the next one.
         $result = $e;
     } else {
-        $result = $item;
+        $result = $workload;
     }
     $job->result($result);
 }

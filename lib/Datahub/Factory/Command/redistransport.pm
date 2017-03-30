@@ -70,18 +70,6 @@ sub execute {
       $logger->fatal(sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'}));
       exit 1;
   };
-  try {
-      $fix_module = Datahub::Factory->fixer($opt->{fixer})->new({"file_name" => $opt->{fixes}});
-  } catch {
-      $logger->fatal(sprintf('%s at [plugin_fixter_%s]', $_, $opt->{'fixer'}));
-      exit 1;
-  };
-  try {
-      $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
-  } catch {
-      $logger->fatal(sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'}));
-      exit 1;
-  };
 
   # Perform import/fix/export
 
@@ -104,7 +92,7 @@ sub execute {
 
       my $job = $item;
 
-      my $r_job = $fix_jq->add([$fix_module, $job, $counter]);
+      my $r_job = $fix_jq->add([$opt->{'fixer'}, $opt->{'ofixer'}, $job, $counter]);
 
       push @fix_jobs, $r_job->{'id'};
   });
@@ -119,14 +107,14 @@ sub execute {
           push @fix_jobs, $fix_job;
       }
       if (ref ($r_f_job->{'result'}) ne ref({})) {
-          $logger->error($r_f_job->{'result'});
+          $logger->error(${$r_f_job->{'result'}});
           next;
       }
       my $item = $r_f_job->{'result'};
       my $job = $item;
       my $item_id = data_at($opt->{'id_path'}, $item);
 
-      my $r_e_job = $exp_jq->add([$export_module, $job, $item_id]);
+      my $r_e_job = $exp_jq->add([$opt->{'exporter'}, $opt->{'oexport'}, $job, $item_id, $counter]);
 
       push @export_jobs, $r_e_job->{'id'};
   }
@@ -137,7 +125,7 @@ sub execute {
           push @export_jobs, $export_job;
       }
       if (ref ($r_e_job->{'result'}) ne ref({})) {
-          $logger->error($r_e_job->{'result'});
+          $logger->error(${$r_e_job->{'result'}});
           next;
       }
       my $item = $r_e_job->{'result'};

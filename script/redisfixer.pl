@@ -5,6 +5,15 @@ use warnings;
 
 use Try::Tiny;
 
+use Data::Dumper qw(Dumper);
+use Datahub::Factory::Sane;
+
+use Module::Load;
+use Catmandu;
+use Catmandu::Util qw(data_at);
+use Datahub::Factory;
+use namespace::clean;
+
 use Redis::JobQueue qw(
     DEFAULT_SERVER
     DEFAULT_PORT
@@ -40,9 +49,16 @@ if (defined($r) && $r == 1) {
     exit $r;
 }
 
-sub fixer {
+sub redis_fixer {
     my $job = shift;
-    my ($fix_module, $workload, $counter) = @{$job->workload};
+    my ($fixer, $fix_opts, $workload, $counter) = @{$job->workload};
+    my $fix_module;
+    try {
+        $fix_module = Datahub::Factory->fixer($fixer)->new($fix_opts);
+    } catch {
+        $job->result(sprintf('%s at [plugin_fixter_%s]', $_, $fixer));
+        return;
+    };
     my $f = try {
                 $fix_module->fixer->fix($workload);
     } catch {
@@ -69,7 +85,7 @@ while ($job = $jq->get_next_job(queue => 'fixer', blocking => 1)) {
     $job->status(STATUS_WORKING);
     $jq->update_job($job);
 
-    fixer($job);
+    redis_fixer($job);
 
     $job->status(STATUS_COMPLETED);
     $jq->update_job($job);
