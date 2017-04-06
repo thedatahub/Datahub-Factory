@@ -16,7 +16,8 @@ has handler         => (is => 'ro');
 has set             => (is => 'ro');
 has from            => (is => 'ro');
 has until           => (is => 'ro');
-
+has username        => (is => 'ro');
+has password        => (is => 'ro');
 
 sub _build_importer {
     my $self = shift;
@@ -26,7 +27,9 @@ sub _build_importer {
         metadataPrefix => $self->metadata_prefix,
         from           => $self->from,
         until          => $self->until,
-        set            => $self->set
+        set            => $self->set,
+        username       => $self->username,
+        password       => $self->password
     );
     return $importer;
 }
