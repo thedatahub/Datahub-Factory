@@ -24,6 +24,9 @@ requires 'Hash::Merge';
 requires "Ref::Util";
 requires "DateTime";
 
+# https://github.com/libwww-perl/libwww-perl/issues/201
+conflicts "LWP::Authen::Negotiate";
+
 on test => sub {
     requires 'Test::More', '0.96';
 };
