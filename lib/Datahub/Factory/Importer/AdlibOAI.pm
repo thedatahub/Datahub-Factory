@@ -10,6 +10,7 @@ with 'Datahub::Factory::Importer';
 
 has fqdn             => (is => 'ro', required => 1);
 has port             => (is => 'ro', default => '80');
+has realm            => (is => 'ro');
 has username         => (is => 'ro');
 has password         => (is => 'ro');
 has problematic_ntlm => (is => 'ro', default => 0);
@@ -50,7 +51,7 @@ sub _build_importer {
     # Adlib's particular interpretation of NTLM work
     if ((defined($self->username) && defined($self->password)) || defined($self->username)) {
         my $netloc = sprintf('%s:%s', $self->fqdn, $self->port);
-        $importer->oai->credentials($netloc, '', $self->username, $self->password);
+        $importer->oai->credentials($netloc, $self->realm, $self->username, $self->password);
         if ($self->problematic_ntlm == 1) {
             $importer->oai->add_handler(response_header => sub {
                 my ($response, $ua, $h) = @_;
@@ -78,12 +79,12 @@ Datahub::Factory::Importer::AdlibOAI - Import data from L<Adlib|http://www.adlib
 
 =head1 SYNOPSIS
 
-    use Datahub::Factory::Importer::Adlib;
+    use Datahub::Factory::Importer::AdlibOAI;
     use Data::Dumper qw(Dumper);
 
-    my $adlib = Datahub::Factory::Importer::Adlib->new(
-        file_name => '/tmp/export.xml',
-        data_path => 'recordList.record.*'
+    my $adlib = Datahub::Factory::Importer::AdlibOAI->new(
+        fqdn => adlib.example.org',
+        url  => 'http://adlib.example.org/oai'
     );
 
     $adlib->importer->each(sub {
@@ -93,21 +94,26 @@ Datahub::Factory::Importer::AdlibOAI - Import data from L<Adlib|http://www.adlib
 
 =head1 DESCRIPTION
 
-Datahub::Factory::Importer::Adlib uses L<Catmandu|http://librecat.org/Catmandu/> to fetch a list of records
-from an AdlibXML data dump. It returns an L<Importer|Catmandu::Importer>.
+Datahub::Factory::Importer::AdlibOAI uses L<Catmandu|http://librecat.org/Catmandu/> to fetch a list of records
+from an Adlib OAI endpoint. It returns an L<Importer|Catmandu::Importer>.
 
 =head1 PARAMETERS
 
+C<Datahub::Factory::Importer::AdlibOAI> supports all the options that L<Catmandu::Importer::OAI> supports, as wel as some additional options for authentication.
+
 =over
 
-=item C<file_name>
+=item C<fqdn>
 
-Location of the Adlib XML data dump. It expects AdlibXML.
+The FQDN of the OAI service you want to query. Used by L<LWP::UserAgent::credentials()|http://search.cpan.org/~oalders/libwww-perl-6.25/lib/LWP/UserAgent.pm#credentials> as part of C<$netloc>. Required.
 
-=item C<data_path>
+=item C<port>
 
-Optional parameter that indicates where the records are in the XML tree. It uses L<Catmandu::Fix|https://github.com/LibreCat/Catmandu/wiki/Fixes-Cheat-Sheet> syntax.
-By default, records are in the C<recordList.record.*> path.
+The port of the OAI service you want to query. Used by L<LWP::UserAgent::credentials()|http://search.cpan.org/~oalders/libwww-perl-6.25/lib/LWP/UserAgent.pm#credentials> as part of C<$netloc>. Optional, set to C<80> by default.
+
+=item C<problematic_ntlm>
+
+If set to C<1>, will attempt to strip C<WWW-Authenticate Negotiate> from the server response to work around L<this bug|https://github.com/libwww-perl/libwww-perl/issues/201>. Set to C<0> by default.
 
 =back
 
