@@ -6,7 +6,7 @@ use Moo;
 use Catmandu;
 use namespace::clean;
 
-has file_name => (is => 'ro', required => 1);
+has file_name     => (is => 'ro', required => 1);
 
 with 'Datahub::Factory::Fixer';
 
@@ -14,7 +14,8 @@ with 'Datahub::Factory::Fixer';
 
 sub _build_fixer {
     my $self = shift;
-    my $fixer = Catmandu->fixer($self->file_name);
+    my $fixer;
+    $fixer = Catmandu->fixer($self->file_name);
     return $fixer;
 }
 

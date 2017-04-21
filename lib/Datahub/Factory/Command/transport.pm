@@ -63,12 +63,6 @@ sub execute {
       exit 1;
   };
   try {
-      $fix_module = Datahub::Factory->fixer($opt->{fixer})->new({"file_name" => $opt->{fixes}});
-  } catch {
-      $logger->fatal(sprintf('%s at [plugin_fixter_%s]', $_, $opt->{'fixer'}));
-      exit 1;
-  };
-  try {
       $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
   } catch {
       $logger->fatal(sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'}));
@@ -84,8 +78,36 @@ sub execute {
   my $counter = 0;
   $import_module->importer->each(sub {
       my $item = shift;
+      #if ($counter == 15) {
+      #    exit;
+      #}
       $counter++;
+      #print Dumper($opt);
       my $f = try {
+          try {
+                # Load the correct fixer here, we have the data here
+                if (defined($opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'condition'})) {
+                    # Use the value at the _condition_ position to load the correct Fix file
+                    # name. The name is under [plugin_fixer_xxx] where xxx is one of the
+                    # $opt->{$opt->fixer}->fixers.
+                    my $condition_value = data_at($opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'condition'}, $item);
+                    my $fix_file_name;
+                    foreach my $conditional_fixer (@{$opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'fixers'}}) {
+                       if ($opt->{sprintf('fixer_%s', $conditional_fixer)}->{'condition'} eq $condition_value) {
+                            $fix_file_name = $opt->{sprintf('fixer_%s', $conditional_fixer)}->{'file_name'};
+                            last;
+                        }
+                    }
+                    $fix_module = Datahub::Factory->fixer($opt->{'fixer'})->new({"file_name" => $fix_file_name});
+                } else {
+                    $fix_module = Datahub::Factory->fixer($opt->{'fixer'})->new({"file_name" => $opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'file_name'}});
+                }
+          } catch {
+                $logger->fatal(sprintf('%s at [plugin_fixer_%s]', $_, $opt->{'fixer'}));
+                exit 1;
+          };
+
+          # Execute the fix
           $fix_module->fixer->fix($item);
       } catch {
           my $error_msg;
