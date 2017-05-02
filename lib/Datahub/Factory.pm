@@ -18,6 +18,7 @@ use Sub::Exporter -setup => {
         store            => curry_method,
         exporter         => curry_method,
         pipeline         => curry_method,
+        module           => curry_method,
     ],
     collectors => {'-load' => \'_import_load', ':load' => \'_import_load'},
 };
@@ -77,6 +78,11 @@ sub cfg {
 sub pipeline {
     my $class = shift;
     return $class->_env->pipeline(@_);
+}
+
+sub module {
+    my $class = shift;
+    return $class->_env->module(@_);
 }
 
 1;

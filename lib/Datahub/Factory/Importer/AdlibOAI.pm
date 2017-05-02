@@ -26,6 +26,11 @@ has resumptionToken  => (is => 'ro');
 has dry              => (is => 'ro');
 has xslt             => (is => 'ro');
 has max_retries      => (is => 'ro');
+has load_pid_module  => (is => 'ro', default => 0);
+has pid_module       => (is => 'ro', default => 'lwp');
+has pid_base_url     => (is => 'ro');
+has pid_username     => (is => 'ro');
+has pid_password     => (is => 'ro');
 
 
 sub _build_importer {
@@ -65,6 +70,11 @@ sub _build_importer {
         }
     }
     return $importer;
+}
+
+sub __pids {
+    my $self = shift;
+    my $pids = Datahub::Factory->module('PID')->new(@_);
 }
 
 1;
