@@ -31,3 +31,4 @@ test.pl
 test.py
 docs/_site
 docs/Gemfile.lock
+nytprof
