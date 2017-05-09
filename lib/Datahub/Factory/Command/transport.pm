@@ -163,6 +163,7 @@ __END__
 Datahub::Factory::Command::transport - Implements the 'transport' command.
 
 =head1 DESCRIPTION
+
 This command allows datamanagers to (a) fetch data from a (local) source (b)
 transform the data to LIDO using a fix (c) upload the LIDO transformed data to
 a Datahub instance.
