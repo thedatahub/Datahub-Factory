@@ -60,6 +60,8 @@ This module exports items to a Solr instance.
 
 URL where the Solr instance resides. Required.
 
+=back
+
 =head1 AUTHORS
 
 Pieter De Praetere <pieter@packed.be>
