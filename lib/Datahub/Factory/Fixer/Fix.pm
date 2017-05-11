@@ -54,6 +54,16 @@ Location of the fix file.
 
 =back
 
+=head1 ATTRIBUTES
+
+=over
+
+=item C<fixer>
+
+A L<Fixer|Catmandu::Fix> that can be used in your script.
+
+=back
+
 =head1 AUTHORS
 
 Pieter De Praetere <pieter@packed.be>
