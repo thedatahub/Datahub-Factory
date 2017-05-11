@@ -90,7 +90,6 @@ __END__
 
 =encoding utf-8
 
-
 =head1 NAME
 
 =for html <a href="https://travis-ci.org/thedatahub/Datahub-Factory"><img src="https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master"></a>
@@ -155,22 +154,30 @@ It is possible to provide either all importer and/or exporter options on the
 command line, or to create a I<pipeline configuration file> that sets those
 options.
 
-=head2 transport [OPTIONS]
+=head2 L<transport [OPTIONS]|Datahub::Factory::Command::transport>
 
 Fetch data from a local or remote source, convert it to an exchange format and
 export the data.
 
-L<Datahub::Factory::Command::transport>
+=head1 PLUGINS
+
+I<Datahub::Factory> uses a plugin-based architecture, making it easy to extend
+with new functionality.
+
+New commands can be added by creating a Perl module that contains a C<command_name.pm>
+file in the C<lib/Datahub/Factory/Command> path. I<Datahub::Factory> uses the 
+L<Datahub::Factory::Command> namespace and L<App::Cmd> internally.
+
+New L<Datahub::Factory::Importer>, L<Exmporter|Datahub::Factory::Exporter> and L<Fixer|Datahub::Factory::Fixer> plugins
+can be added in the same way, in the C<lib/Datahub/Factory/Importer>, C<Exporter> or C<Fixer>
+path. All plugins use the I<Datahub::Factory::Importer/Exporter/Fixer> namespace and the 
+namespace package as a L<Moose::Role>.
 
 =head1 AUTHORS
 
-=over
+Pieter De Praetere <pieter@packed.be>
 
-=item Pieter De Praetere <pieter@packed.be>
-
-=item Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
-
-=back
+Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
 
 =head1 COPYRIGHT
 

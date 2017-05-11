@@ -1,6 +1,8 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+        - Updated documentation
+        - Refactor of Exporter.pm
 
 1.1  2017-05-11 09:27:31 UTC
         - Refactor of conditional Fix modules
