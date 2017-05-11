@@ -10,6 +10,7 @@ use Catmandu::Util qw(data_at);
 use Datahub::Factory;
 use namespace::clean;
 use Datahub::Factory::PipelineConfig;
+use Datahub::Factory::Fixer::Condition;
 
 use Data::Dumper qw(Dumper);
 
@@ -85,23 +86,12 @@ sub execute {
       #print Dumper($opt);
       my $f = try {
           try {
+                my $cond = Datahub::Factory::Fixer::Condition->new(
+                    'options' => $opt,
+                    'item'    => $item
+                );
                 # Load the correct fixer here, we have the data here
-                if (defined($opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'condition'})) {
-                    # Use the value at the _condition_ position to load the correct Fix file
-                    # name. The name is under [plugin_fixer_xxx] where xxx is one of the
-                    # $opt->{$opt->fixer}->fixers.
-                    my $condition_value = data_at($opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'condition'}, $item);
-                    my $fix_file_name;
-                    foreach my $conditional_fixer (@{$opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'fixers'}}) {
-                       if ($opt->{sprintf('fixer_%s', $conditional_fixer)}->{'condition'} eq $condition_value) {
-                            $fix_file_name = $opt->{sprintf('fixer_%s', $conditional_fixer)}->{'file_name'};
-                            last;
-                        }
-                    }
-                    $fix_module = Datahub::Factory->fixer($opt->{'fixer'})->new({"file_name" => $fix_file_name});
-                } else {
-                    $fix_module = Datahub::Factory->fixer($opt->{'fixer'})->new({"file_name" => $opt->{sprintf('fixer_%s', $opt->{'fixer'})}->{'file_name'}});
-                }
+                $fix_module = $cond->fix_module;
           } catch {
                 $logger->fatal(sprintf('%s at [plugin_fixer_%s]', $_, $opt->{'fixer'}));
                 exit 1;
@@ -284,6 +274,8 @@ Supported I<Exporter> plugins:
 =back
 
 =head3 Plugin configuration
+
+! Conditional fixers
 
 All plugins have their own configuration options in sections called
 C<[plugin_type_name]> where C<type> can be I<importer>, I<exporter>

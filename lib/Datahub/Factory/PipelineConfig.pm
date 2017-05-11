@@ -54,10 +54,11 @@ sub parse {
 	}
 	$options->{sprintf('exporter_%s', $exporter_plugin)} = $self->plugin_options('exporter', $exporter_plugin);
 
-	# Legacy options
 	$options->{'importer'} = $self->cfg->param('Importer.plugin');
 	$options->{'fixer'} = $self->cfg->param('Fixer.plugin');
 	$options->{'exporter'} = $self->cfg->param('Exporter.plugin');
+
+	# Legacy options
 	$options->{'oimport'} = $options->{sprintf('importer_%s', $options->{'importer'})};
 	$options->{'ofixer'} = $options->{sprintf('fixer_%s', $options->{'fixer'})};
 	$options->{'oexport'} = $options->{sprintf('exporter_%s', $options->{'exporter'})};
