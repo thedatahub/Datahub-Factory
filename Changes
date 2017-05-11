@@ -1,6 +1,8 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+
+1.2  2017-05-11 11:48:02 UTC
         - Updated documentation
         - Refactor of Exporter.pm
 
