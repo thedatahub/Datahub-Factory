@@ -7,19 +7,15 @@ use Catmandu;
 use namespace::clean;
 #use Data::Dumper qw(Dumper);
 
-has file_name     => (is => 'ro', required => 1);
-
-with 'Datahub::Factory::Fixer';
-
-sub BUILDARGS {
-    my ($class, %args) = @_;
-    if (!defined($args{'file_name'})) {
+has file_name     => (is => 'ro', required => 1, isa => sub { 
+    if (!defined($_[0])) {
         Catmandu::BadArg->throw(
-            message => 'Missing required argument "file_name"'
+            message => 'Required argument "file_name" undefined'
         );
     }
-    return \%args;
-}
+ });
+
+with 'Datahub::Factory::Fixer';
 
 sub _build_fixer {
     my $self = shift;
