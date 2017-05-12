@@ -12,7 +12,7 @@ use namespace::clean;
 use Datahub::Factory::PipelineConfig;
 use Datahub::Factory::Fixer::Condition;
 
-use Data::Dumper qw(Dumper);
+#use Data::Dumper qw(Dumper);
 
 sub abstract { "Transport data from a data source to a datahub instance" }
 
@@ -51,8 +51,14 @@ sub execute {
       $pcfg = Datahub::Factory->pipeline($arguments);
       $opt = $pcfg->opt;
   } catch {
-      $logger->fatal($_);
-      exit 1;
+        my $error_msg;
+        if ($_->can('message')) {
+              $error_msg = $_->message;
+        } else {
+              $error_msg = $_;
+        }
+        $logger->fatal($error_msg);
+        exit 1;
   };
 
   # Load modules
@@ -60,14 +66,26 @@ sub execute {
   try {
       $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
   } catch {
-      $logger->fatal(sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'}));
-      exit 1;
+        my $error_msg;
+        if ($_->can('message')) {
+              $error_msg = sprintf('%s at [plugin_importer_%s]', $_->message, $opt->{'importer'});
+        } else {
+              $error_msg = sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'});
+        }
+        $logger->fatal($error_msg);
+        exit 1;
   };
   try {
       $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
   } catch {
-      $logger->fatal(sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'}));
-      exit 1;
+        my $error_msg;
+        if ($_->can('message')) {
+              $error_msg = sprintf('%s at [plugin_exporter_%s]', $_->message, $opt->{'exporter'});
+        } else {
+              $error_msg = sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'});
+        }
+        $logger->fatal($error_msg);
+        exit 1;
   };
 
   # Perform import/fix/export
@@ -91,7 +109,13 @@ sub execute {
                 # Load the correct fixer here, we have the data here
                 $fix_module = $cond->fix_module;
           } catch {
-                $logger->fatal(sprintf('%s at [plugin_fixer_%s]', $_, $opt->{'fixer'}));
+                my $error_msg;
+                if ($_->can('message')) {
+                    $error_msg = $_->message;
+                } else {
+                    $error_msg = $_;
+                }
+                $logger->fatal($error_msg);
                 exit 1;
           };
 
@@ -272,12 +296,10 @@ submitted to the I<Exporter>. It is used for reporting and logging.
     [plugin_fixer_GRO]
     condition = 'Groeningemuseum'
     file_name = '/home/datahub/gro.fix'
-    id_path = 'lidoRecID.0._'
 
     [plugin_fixer_MSK]
     condition = 'Museum voor Schone Kunsten Gent'
     file_name = '/home/datahub/msk.fix'
-    id_path = 'lidoRecID.0._'
 
 If you want to separate the data stream into multiple (smaller) streams with
 a different fix file for each stream, you can do this by setting the appropriate
@@ -302,8 +324,6 @@ the record to belong to this block.
 
 The location of the fix file that must be executed for every record in this
 block.
-
-=item C<id_path>
 
 =back
 

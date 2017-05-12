@@ -5,12 +5,21 @@ use Datahub::Factory::Sane;
 use Moo;
 use Catmandu;
 use namespace::clean;
+#use Data::Dumper qw(Dumper);
 
 has file_name     => (is => 'ro', required => 1);
 
 with 'Datahub::Factory::Fixer';
 
-# Make role; implement -> fixer (must work the same as CM::Fixer)
+sub BUILDARGS {
+    my ($class, %args) = @_;
+    if (!defined($args{'file_name'})) {
+        Catmandu::BadArg->throw(
+            message => 'Missing required argument "file_name"'
+        );
+    }
+    return \%args;
+}
 
 sub _build_fixer {
     my $self = shift;

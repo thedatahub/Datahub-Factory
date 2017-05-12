@@ -10,8 +10,12 @@ use Catmandu;
 use Catmandu::Util qw(data_at);
 use namespace::clean;
 
+#use Data::Dumper qw(Dumper);
+
 ##
 # Loads the correct fixer based on a condition.
+# Note that the FIX module is loaded separately for _every_ import run.
+##
 
 has options         => (is => 'ro', required => 1);
 has item            => (is => 'ro', required => 1);
@@ -37,14 +41,31 @@ sub _build_fix_module {
     # We return the Datahub::Factory->fixer with the correct filename already
     # loaded.
     ##
-    if (!defined($self->condition)) {
+    if (!defined($self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'condition'})) {
         return Datahub::Factory->fixer($self->options->{'fixer'})->new(
             'file_name' => $self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'file_name'}
         );
     }
+
+    # If fixers is empty, throw a tantrum
+    if (
+        !defined($self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'fixers'}) ||
+        scalar @{$self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'fixers'}} == 0
+        ) {
+            Catmandu::BadArg->throw(
+                'message' => sprintf('Missing or empty "fixers" option in [plugin_fixer_%s]', $self->options->{'fixer'})
+            );
+        }
+
     # Loop over all possible fixers
     my $fix_file_name;
     foreach my $fixer (@{$self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'fixers'}}) {
+        # If the condition is empty, throw a tantrum
+        if (!defined($self->options->{sprintf('fixer_%s', $fixer)}->{'condition'})) {
+            Catmandu::BadArg->throw(
+                'message' => sprintf('Missing "condition" option in [plugin_fixer_%s]', $fixer)
+            );
+        }
         if ($self->options->{sprintf('fixer_%s', $fixer)}->{'condition'} eq $self->condition) {
             $fix_file_name = $self->options->{sprintf('fixer_%s', $fixer)}->{'file_name'};
             last;
@@ -57,10 +78,6 @@ sub _build_fix_module {
 
 sub _build_condition {
     my $self = shift;
-    # Check if there is a condition
-    if (!defined($self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'condition'})) {
-                return undef;
-            }
     return data_at($self->options->{sprintf('fixer_%s', $self->options->{'fixer'})}->{'condition'}, $self->item);
 }
 

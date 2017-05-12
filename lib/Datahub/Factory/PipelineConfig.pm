@@ -6,7 +6,7 @@ use warnings;
 use Moo;
 use namespace::clean;
 use Config::Simple;
-use Data::Dumper qw(Dumper);
+#use Data::Dumper qw(Dumper);
 
 has conf_object => (is => 'ro', required => 1);
 
@@ -58,15 +58,18 @@ sub parse {
 	$options->{'fixer'} = $self->cfg->param('Fixer.plugin');
 	$options->{'exporter'} = $self->cfg->param('Exporter.plugin');
 
+	# TODO: move this to ::Fix module
+	if (!defined($options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'})) {
+		die sprintf('Missing required argument id_path in [plugin_fixer_%s]', $options->{'fixer'});
+	}
+	$options->{'id_path'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'};
+
 	# Legacy options
 	$options->{'oimport'} = $options->{sprintf('importer_%s', $options->{'importer'})};
 	$options->{'ofixer'} = $options->{sprintf('fixer_%s', $options->{'fixer'})};
 	$options->{'oexport'} = $options->{sprintf('exporter_%s', $options->{'exporter'})};
 	# Even more legacy
 	$options->{'fixes'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'file_name'};
-	$options->{'id_path'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'};
-
-	#print Dumper($options);
 
 	return $options;
 }
