@@ -60,6 +60,7 @@
             "MooX::Role::Logger" : "0",
             "Ref::Util" : "0",
             "Sub::Exporter" : "0",
+            "Try::Tiny" : "0",
             "namespace::clean" : "0",
             "perl" : "5.008005"
          }
@@ -82,7 +83,7 @@
          "web" : "https://github.com/thedatahub/Datahub-Factory"
       }
    },
-   "version" : "1.2",
+   "version" : "1.3",
    "x_contributors" : [
       "Matthias Vandermaesen <matthias@colada.be>",
       "Pieter De Praetere <pieter.de.praetere@helptux.be>"
