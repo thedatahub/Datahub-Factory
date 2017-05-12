@@ -23,6 +23,7 @@ requires 'Catmandu::Solr';
 requires 'Hash::Merge';
 requires "Ref::Util";
 requires "DateTime";
+requires 'Try::Tiny';
 
 # https://github.com/libwww-perl/libwww-perl/issues/201
 conflicts "LWP::Authen::Negotiate";

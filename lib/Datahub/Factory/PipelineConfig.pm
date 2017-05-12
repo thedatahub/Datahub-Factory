@@ -66,6 +66,8 @@ sub parse {
 	$options->{'fixes'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'file_name'};
 	$options->{'id_path'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'};
 
+	#print Dumper($options);
+
 	return $options;
 }
 

@@ -5,6 +5,7 @@ use Datahub::Factory::Sane;
 use Catmandu;
 use Moose::Role;
 use namespace::clean;
+use Try::Tiny;
 
 has importer => (is  => 'lazy');
 has logger   => (is => 'lazy');
@@ -14,6 +15,23 @@ after _build_importer => sub { };
 sub _build_logger {
     my $self = shift;
     return Log::Log4perl->get_logger('datahub');
+}
+
+# Do the same for exporter
+sub each {
+    my ($self, $callback) = @_;
+    try {
+        return $self->importer->each($callback);
+    } catch {
+        my $error_msg;
+        if ($_->can('message')) {
+            $error_msg = sprintf('Fatal error while executing import: %s', $_->message);
+        } else {
+            $error_msg = sprintf('Fatal error while executing import: %s', $_);
+        }
+        $self->logger->fatal($error_msg);
+        exit 1;
+    };
 }
 
 

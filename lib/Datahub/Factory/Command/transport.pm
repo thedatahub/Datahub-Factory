@@ -77,7 +77,9 @@ sub execute {
   # Not that errors here are _not_ fatal => continue running
   # till all records have been processed
   my $counter = 0;
-  $import_module->importer->each(sub {
+ 
+  # $import_module->importer might also generate to-catch errors
+  $import_module->each(sub {
       my $item = shift;
       $counter++;
       my $f = try {
