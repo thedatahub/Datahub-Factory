@@ -18,7 +18,7 @@ has from            => (is => 'ro');
 has until           => (is => 'ro');
 has username        => (is => 'ro');
 has password        => (is => 'ro');
-has realm           => (is => 'ro', 'default' => '');
+
 
 sub _build_importer {
     my $self = shift;
@@ -31,7 +31,6 @@ sub _build_importer {
         set            => $self->set,
         username       => $self->username,
         password       => $self->password,
-        realm          => $self->realm
     );
     return $importer;
 }
