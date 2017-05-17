@@ -46,10 +46,10 @@ Datahub::Factory::Importer::OAI - Import data from an L<OAI-PMH|https://www.open
 
 =head1 SYNOPSIS
 
-    use Datahub::Factory::Importer::OAI;
+    use Datahub::Factory;
     use Data::Dumper qw(Dumper);
 
-    my $oai = Datahub::Factory::Importer::OAI->new(
+    my $oai = Datahub::Factory->importer('OAI')->new(
         url            => 'https://biblio.ugent.be/oai',
         metadataPrefix => 'oai_dc',
         set            => '2011'
@@ -109,6 +109,14 @@ Optionally, a I<must_be_older_than> date.
 =item C<until>
 
 Optionally, a I<must_be_younger_than> date.
+
+=item C<username>
+
+An optional username.
+
+=item C<password>
+
+An optional password.
 
 =back
 

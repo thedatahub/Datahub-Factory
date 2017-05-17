@@ -54,17 +54,30 @@ It is possible to provide either all importer and/or exporter options on the
 command line, or to create a _pipeline configuration file_ that sets those
 options.
 
-## transport \[OPTIONS\]
+## [transport \[OPTIONS\]](https://metacpan.org/pod/Datahub::Factory::Command::transport)
 
 Fetch data from a local or remote source, convert it to an exchange format and
 export the data.
 
-[Datahub::Factory::Command::transport](https://metacpan.org/pod/Datahub::Factory::Command::transport)
+# PLUGINS
+
+_Datahub::Factory_ uses a plugin-based architecture, making it easy to extend
+with new functionality.
+
+New commands can be added by creating a Perl module that contains a `command_name.pm`
+file in the `lib/Datahub/Factory/Command` path. _Datahub::Factory_ uses the 
+[Datahub::Factory::Command](https://metacpan.org/pod/Datahub::Factory::Command) namespace and [App::Cmd](https://metacpan.org/pod/App::Cmd) internally.
+
+New [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Importer), [Exmporter](https://metacpan.org/pod/Datahub::Factory::Exporter) and [Fixer](https://metacpan.org/pod/Datahub::Factory::Fixer) plugins
+can be added in the same way, in the `lib/Datahub/Factory/Importer`, `Exporter` or `Fixer`
+path. All plugins use the _Datahub::Factory::Importer/Exporter/Fixer_ namespace and the 
+namespace package as a [Moose::Role](https://metacpan.org/pod/Moose::Role).
 
 # AUTHORS
 
-- Pieter De Praetere <pieter@packed.be>
-- Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
+Pieter De Praetere <pieter@packed.be>
+
+Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
 
 # COPYRIGHT
 
