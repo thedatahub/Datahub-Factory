@@ -12,7 +12,7 @@ use namespace::clean;
 use Datahub::Factory::PipelineConfig;
 use Datahub::Factory::Fixer::Condition;
 
-#use Data::Dumper qw(Dumper);
+use Data::Dumper qw(Dumper);
 
 sub abstract { "Transport data from a data source to a datahub instance" }
 
@@ -113,17 +113,39 @@ sub execute {
           # $item. This will have the effect of errorring out on every $item if
           # the first failure occurs. Nihil ad facere. (This is not good Latin)
           ##
-          my $cond = Datahub::Factory::Fixer::Condition->new(
+          my $c = try {
+              my $cond = Datahub::Factory::Fixer::Condition->new(
                     'options'     => $opt,
                     'item'        => $item,
                     'item_number' => $counter,
                 );
         
-         # Load the correct fixer here, we have the data here
-         $fix_module = $cond->fix_module;
+            # Load the correct fixer here, we have the data here
+            # type of error
+            $fix_module = $cond->fix_module;
+          } catch {
+              if ($_->meta->name eq 'Catmandu::BadVal') {
+                  # Non-fatal
+                  $logger->error('Item %d (counted): could not execute fix: %s', $counter, $_->message);
+                  return 1;
+              } else {
+                  my $error_msg;
+                  if ($_->can('message')) {
+                      $error_msg = $_->message;
+                  } else {
+                      $error_msg = $_;
+                  }
+                  $logger->fatal($error_msg);
+                  exit 1;
+              }
+          };
 
-          # Execute the fix
-          $fix_module->fixer->fix($item);
+          if (defined($c) && $c == 1) {
+              return 1;
+          } else {
+             # Execute the fix
+             $fix_module->fixer->fix($item);
+          }
       } catch {
           my $error_msg;
           if ($_->can('message')) {
