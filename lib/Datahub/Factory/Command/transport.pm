@@ -101,23 +101,26 @@ sub execute {
       my $item = shift;
       $counter++;
       my $f = try {
-          try {
-                my $cond = Datahub::Factory::Fixer::Condition->new(
-                    'options' => $opt,
-                    'item'    => $item
+          ##
+          # Normally, failures in loading the fixer (which happens here)
+          # *should* be fatal. However. Perl/Catmandu does not really allow
+          # us to distinguish between errors:
+          # - Failure to load a module should be fatal and end the program.
+          # - Failure to find the correct fix because the $condition does not appear
+          #   *should not* be fatal and continue the run.
+          # The second failure will happen more, and will cause more issues
+          # so, we don't die and simply log the error, and continue to the next
+          # $item. This will have the effect of errorring out on every $item if
+          # the first failure occurs. Nihil ad facere. (This is not good Latin)
+          ##
+          my $cond = Datahub::Factory::Fixer::Condition->new(
+                    'options'     => $opt,
+                    'item'        => $item,
+                    'item_number' => $counter,
                 );
-                # Load the correct fixer here, we have the data here
-                $fix_module = $cond->fix_module;
-          } catch {
-                my $error_msg;
-                if ($_->can('message')) {
-                    $error_msg = $_->message;
-                } else {
-                    $error_msg = $_;
-                }
-                $logger->fatal($error_msg);
-                exit 1;
-          };
+        
+         # Load the correct fixer here, we have the data here
+         $fix_module = $cond->fix_module;
 
           # Execute the fix
           $fix_module->fixer->fix($item);

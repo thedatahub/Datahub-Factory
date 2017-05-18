@@ -19,6 +19,7 @@ use namespace::clean;
 
 has options         => (is => 'ro', required => 1);
 has item            => (is => 'ro', required => 1);
+has item_number     => (is => 'ro', required => 1);
 
 
 has condition  => (is => 'lazy');
@@ -68,9 +69,22 @@ sub _build_fix_module {
         }
         if ($self->options->{sprintf('fixer_%s', $fixer)}->{'condition'} eq $self->condition) {
             $fix_file_name = $self->options->{sprintf('fixer_%s', $fixer)}->{'file_name'};
+            # Guard against missing file_name option in configuration file
+            if (!defined($fix_file_name) || $fix_file_name == '') {
+                Catmandu::BadArg->throw(
+                    'message' => sprintf('Missing "file_name" option in [plugin_fixer_%s]', $fixer)
+                );
+            }
             last;
         }
     }
+
+    if (!defined($fix_file_name) || $fix_file_name == '') {
+        Catmandu::BadVal->throw(
+            'message' => sprintf('Condition "%s" of item "%s" did not appear in any of the fixers.', $self->condition, $self->item_number)
+        );
+    }
+
     return Datahub::Factory->fixer($self->options->{'fixer'})->new(
         'file_name' => $fix_file_name
     );
