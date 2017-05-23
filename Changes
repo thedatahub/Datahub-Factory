@@ -1,6 +1,7 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+	- fixed: string check condition
 
 1.3  2017-05-12 12:45:35 UTC
 	- Improved error handling: try/catch and Catmandu::Error->throw

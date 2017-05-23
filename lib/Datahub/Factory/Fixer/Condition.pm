@@ -70,7 +70,7 @@ sub _build_fix_module {
         if ($self->options->{sprintf('fixer_%s', $fixer)}->{'condition'} eq $self->condition) {
             $fix_file_name = $self->options->{sprintf('fixer_%s', $fixer)}->{'file_name'};
             # Guard against missing file_name option in configuration file
-            if (!defined($fix_file_name) || $fix_file_name == '') {
+            if (!defined($fix_file_name) || $fix_file_name eq '') {
                 Catmandu::BadArg->throw(
                     'message' => sprintf('Missing "file_name" option in [plugin_fixer_%s]', $fixer)
                 );
@@ -79,7 +79,7 @@ sub _build_fix_module {
         }
     }
 
-    if (!defined($fix_file_name) || $fix_file_name == '') {
+    if (!defined($fix_file_name) || $fix_file_name eq '') {
         Catmandu::BadVal->throw(
             'message' => sprintf('Condition "%s" of item "%s" did not appear in any of the fixers.', $self->condition, $self->item_number)
         );
