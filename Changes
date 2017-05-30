@@ -1,6 +1,7 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+	- added: missing dependency Catmandu::Importer::XML
 	- fixed: string check condition
 
 1.3  2017-05-12 12:45:35 UTC
