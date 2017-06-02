@@ -95,7 +95,7 @@ sub execute {
   # Not that errors here are _not_ fatal => continue running
   # till all records have been processed
   my $counter = 0;
- 
+
   # $import_module->importer might also generate to-catch errors
   $import_module->each(sub {
       my $item = shift;
@@ -119,7 +119,7 @@ sub execute {
                     'item'        => $item,
                     'item_number' => $counter,
                 );
-        
+
             # Load the correct fixer here, we have the data here
             # type of error
             $fix_module = $cond->fix_module;
@@ -166,6 +166,7 @@ sub execute {
           $export_module->add($item);
       } catch {
           my $error_msg;
+
           # $item_id can be undefined if it isn't set in the source, but this
           # is only discovered when exporting (and not during fixing)
           my $id_type = 'id';
@@ -186,7 +187,7 @@ sub execute {
           # End the processing of this record, go to the next one.
           return;
       }
-      $logger->info(sprintf('Item %s (id): exported.', $item_id));
+      $logger->info(sprintf('Item #%s : %s (id): exported.', $counter, $item_id));
   });
 
 }
