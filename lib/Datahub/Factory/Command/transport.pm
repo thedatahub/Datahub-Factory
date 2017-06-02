@@ -119,7 +119,6 @@ sub execute {
                     'item'        => $item,
                     'item_number' => $counter,
                 );
-
             # Load the correct fixer here, we have the data here
             # type of error
             $fix_module = $cond->fix_module;
