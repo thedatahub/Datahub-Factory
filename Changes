@@ -1,6 +1,7 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+    - Fixed #33: Datahub::Factory::Fixer::Condition breaks with too many file opens
     - changed: display counter number in debug information
     - changed: confrom to new Catmandu::Store::Datahub API
     - added: missing dependency Catmandu::Importer::XML

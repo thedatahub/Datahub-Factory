@@ -89,6 +89,14 @@ sub execute {
   };
 
   # Perform import/fix/export
+  #try {
+      my $condition = Datahub::Factory::Fixer::Condition->new('options' => $opt);
+      $condition->fixers;
+  #} catch {
+      # todo
+      #   Implement me.
+  #}
+
 
   # Catmandu::Fix treats all warnings as fatal errors (this is good)
   # so we can catch them with try-catch
@@ -99,7 +107,10 @@ sub execute {
   # $import_module->importer might also generate to-catch errors
   $import_module->each(sub {
       my $item = shift;
+      my $fix_module;
+
       $counter++;
+
       my $f = try {
           ##
           # Normally, failures in loading the fixer (which happens here)
@@ -114,14 +125,7 @@ sub execute {
           # the first failure occurs. Nihil ad facere. (This is not good Latin)
           ##
           my $c = try {
-              my $cond = Datahub::Factory::Fixer::Condition->new(
-                    'options'     => $opt,
-                    'item'        => $item,
-                    'item_number' => $counter,
-                );
-            # Load the correct fixer here, we have the data here
-            # type of error
-            $fix_module = $cond->fix_module;
+            $fix_module = $condition->fix_module($item);
           } catch {
               if ($_->meta->name eq 'Catmandu::BadVal') {
                   # Non-fatal
