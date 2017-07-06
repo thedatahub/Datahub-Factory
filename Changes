@@ -1,6 +1,7 @@
 Revision history for Datahub-Factory
 
 {{$NEXT}}
+    - changed: moved fetching id from item before item is fixed.
     - added: JSON exporter.
     - Fixed #33: Datahub::Factory::Fixer::Condition breaks with too many file opens
     - changed: display counter number in debug information

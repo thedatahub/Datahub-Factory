@@ -109,6 +109,8 @@ sub execute {
       my $item = shift;
       my $fix_module;
 
+      my $item_id = data_at($opt->{'id_path'}, $item);
+
       $counter++;
 
       my $f = try {
@@ -164,7 +166,6 @@ sub execute {
           return;
       }
 
-      my $item_id = data_at($opt->{'id_path'}, $item);
       my $e = try {
           $export_module->add($item);
       } catch {
