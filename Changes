@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - removed: deprecated cli options and validation.
+
 1.4  2017-07-08 13:40:43 CEST
     - added: JSON importer per issue ##43
     - changed: moved fetching id from item before item is fixed.

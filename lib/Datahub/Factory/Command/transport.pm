@@ -14,43 +14,41 @@ use Datahub::Factory::Fixer::Condition;
 
 use Data::Dumper qw(Dumper);
 
-sub abstract { "Transport data from a data source to a datahub instance" }
+sub abstract {
+    "Transport data from a data source to a data sink."
+}
 
-sub description { "Long description on blortex algorithm" }
+sub description {
+    "Transport data from a data source to a data sink using pipeline configurations."
+}
 
 sub opt_spec {
-	return (
-		[ "pipeline|p=s", "Location of the pipeline configuration file"]
-	);
+    return (
+        [ "pipeline|p=s", "Location of the pipeline configuration file"]
+    );
 }
 
 sub validate_args {
-	my ($self, $opt, $args) = @_;
+    my ($self, $opt, $args) = @_;
 
     if (! $opt->{'pipeline'}) {
         $self->usage_error('The --pipeline flag is required.');
     }
 
-	my $pcfg = Datahub::Factory->pipeline($opt);
-    try {
-        $pcfg->check_object();
-    } catch {
-        $self->usage_error($_);
-    }
-	# no args allowed but options!
-	$self->usage_error("No args allowed") if @$args;
+    # no args allowed but options!
+    $self->usage_error("No args allowed") if @$args;
 }
 
 sub execute {
-  my ($self, $arguments, $args) = @_;
+    my ($self, $arguments, $args) = @_;
 
-  my $logger = Datahub::Factory->log;
+    my $logger = Datahub::Factory->log;
 
-  my ($pcfg, $opt);
-  try {
-      $pcfg = Datahub::Factory->pipeline($arguments);
-      $opt = $pcfg->opt;
-  } catch {
+    my ($pcfg, $opt);
+    try {
+        $pcfg = Datahub::Factory->pipeline($arguments);
+        $opt = $pcfg->opt;
+    } catch {
         my $error_msg;
         if ($_->can('message')) {
               $error_msg = $_->message;
@@ -59,13 +57,13 @@ sub execute {
         }
         $logger->fatal($error_msg);
         exit 1;
-  };
+    };
 
-  # Load modules
-  my ($import_module, $fix_module, $export_module);
-  try {
-      $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
-  } catch {
+    # Load modules
+     my ($import_module, $fix_module, $export_module);
+    try {
+        $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
+    } catch {
         my $error_msg;
         if ($_->can('message')) {
               $error_msg = sprintf('%s at [plugin_importer_%s]', $_->message, $opt->{'importer'});
@@ -74,126 +72,124 @@ sub execute {
         }
         $logger->fatal($error_msg);
         exit 1;
-  };
-  try {
-      $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
-  } catch {
+    };
+    try {
+        $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
+    } catch {
         my $error_msg;
         if ($_->can('message')) {
-              $error_msg = sprintf('%s at [plugin_exporter_%s]', $_->message, $opt->{'exporter'});
+            $error_msg = sprintf('%s at [plugin_exporter_%s]', $_->message, $opt->{'exporter'});
         } else {
-              $error_msg = sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'});
+            $error_msg = sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'});
         }
         $logger->fatal($error_msg);
         exit 1;
-  };
+    };
 
-  # Perform import/fix/export
-  #try {
-      my $condition = Datahub::Factory::Fixer::Condition->new('options' => $opt);
-      $condition->fixers;
-  #} catch {
-      # todo
-      #   Implement me.
-  #}
+    # Perform import/fix/export
+    #try {
+        my $condition = Datahub::Factory::Fixer::Condition->new('options' => $opt);
+        $condition->fixers;
+    #} catch {
+        # todo
+        #   Implement me.
+    #}
 
+    # Catmandu::Fix treats all warnings as fatal errors (this is good)
+    # so we can catch them with try-catch
+    # Not that errors here are _not_ fatal => continue running
+    # till all records have been processed
+    my $counter = 0;
 
-  # Catmandu::Fix treats all warnings as fatal errors (this is good)
-  # so we can catch them with try-catch
-  # Not that errors here are _not_ fatal => continue running
-  # till all records have been processed
-  my $counter = 0;
+    # $import_module->importer might also generate to-catch errors
+    $import_module->each(sub {
+        my $item = shift;
+        my $fix_module;
 
-  # $import_module->importer might also generate to-catch errors
-  $import_module->each(sub {
-      my $item = shift;
-      my $fix_module;
+        my $item_id = data_at($opt->{'id_path'}, $item);
 
-      my $item_id = data_at($opt->{'id_path'}, $item);
+        $counter++;
 
-      $counter++;
+        my $f = try {
+            ##
+            # Normally, failures in loading the fixer (which happens here)
+            # *should* be fatal. However. Perl/Catmandu does not really allow
+            # us to distinguish between errors:
+            # - Failure to load a module should be fatal and end the program.
+            # - Failure to find the correct fix because the $condition does not appear
+            #   *should not* be fatal and continue the run.
+            # The second failure will happen more, and will cause more issues
+            # so, we don't die and simply log the error, and continue to the next
+            # $item. This will have the effect of errorring out on every $item if
+            # the first failure occurs. Nihil ad facere. (This is not good Latin)
+            ##
+            my $c = try {
+                $fix_module = $condition->fix_module($item);
+            } catch {
+                if ($_->meta->name eq 'Catmandu::BadVal') {
+                    # Non-fatal
+                    $logger->error('Item %d (counted): could not execute fix: %s', $counter, $_->message);
+                    return 1;
+                } else {
+                    my $error_msg;
+                    if ($_->can('message')) {
+                        $error_msg = $_->message;
+                    } else {
+                        $error_msg = $_;
+                    }
+                    $logger->fatal($error_msg);
+                    exit 1;
+                }
+            };
 
-      my $f = try {
-          ##
-          # Normally, failures in loading the fixer (which happens here)
-          # *should* be fatal. However. Perl/Catmandu does not really allow
-          # us to distinguish between errors:
-          # - Failure to load a module should be fatal and end the program.
-          # - Failure to find the correct fix because the $condition does not appear
-          #   *should not* be fatal and continue the run.
-          # The second failure will happen more, and will cause more issues
-          # so, we don't die and simply log the error, and continue to the next
-          # $item. This will have the effect of errorring out on every $item if
-          # the first failure occurs. Nihil ad facere. (This is not good Latin)
-          ##
-          my $c = try {
-            $fix_module = $condition->fix_module($item);
-          } catch {
-              if ($_->meta->name eq 'Catmandu::BadVal') {
-                  # Non-fatal
-                  $logger->error('Item %d (counted): could not execute fix: %s', $counter, $_->message);
-                  return 1;
-              } else {
-                  my $error_msg;
-                  if ($_->can('message')) {
-                      $error_msg = $_->message;
-                  } else {
-                      $error_msg = $_;
-                  }
-                  $logger->fatal($error_msg);
-                  exit 1;
-              }
-          };
+            if (defined($c) && $c == 1) {
+                return 1;
+            } else {
+                # Execute the fix
+                $fix_module->fixer->fix($item);
+            }
+        } catch {
+            my $error_msg;
+            if ($_->can('message')) {
+                $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
+            } else {
+                $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
+            }
+            $logger->error($error_msg);
+            return 1;
+        };
+         if (defined($f) && $f == 1) {
+            # End the processing of this record, go to the next one.
+            return;
+        }
 
-          if (defined($c) && $c == 1) {
-              return 1;
-          } else {
-             # Execute the fix
-             $fix_module->fixer->fix($item);
-          }
-      } catch {
-          my $error_msg;
-          if ($_->can('message')) {
-              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
-          } else {
-              $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
-          }
-          $logger->error($error_msg);
-          return 1;
-      };
-      if (defined($f) && $f == 1) {
-          # End the processing of this record, go to the next one.
-          return;
-      }
+        my $e = try {
+            $export_module->add($item);
+        } catch {
+            my $error_msg;
 
-      my $e = try {
-          $export_module->add($item);
-      } catch {
-          my $error_msg;
+            # $item_id can be undefined if it isn't set in the source, but this
+            # is only discovered when exporting (and not during fixing)
+            my $id_type = 'id';
+            if (!defined($item_id)) {
+                $item_id = $counter;
+                $id_type = 'counted';
+            }
+            if ($_->can('message')) {
+                $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_->message);
+            } else {
+                $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_);
+            }
+            $logger->error($error_msg);
+            return 1;
+        };
 
-          # $item_id can be undefined if it isn't set in the source, but this
-          # is only discovered when exporting (and not during fixing)
-          my $id_type = 'id';
-          if (!defined($item_id)) {
-              $item_id = $counter;
-              $id_type = 'counted';
-          }
-          if ($_->can('message')) {
-              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_->message);
-          } else {
-              $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_);
-          }
-          $logger->error($error_msg);
-          return 1;
-      };
-
-      if (defined($e) && $e == 1) {
-          # End the processing of this record, go to the next one.
-          return;
-      }
-      $logger->info(sprintf('Item #%s : %s (id): exported.', $counter, $item_id));
-  });
-
+        if (defined($e) && $e == 1) {
+            # End the processing of this record, go to the next one.
+            return;
+        }
+        $logger->info(sprintf('Item #%s : %s (id): exported.', $counter, $item_id));
+    });
 }
 
 1;
