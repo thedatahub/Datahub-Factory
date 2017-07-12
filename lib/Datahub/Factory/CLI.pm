@@ -10,6 +10,9 @@ use Log::Any::Adapter;
 use Log::Log4perl;
 use namespace::clean;
 use DateTime;
+use Term::ANSIColor qw(:constants);
+
+use Data::Dumper qw(Dumper);
 
 use parent qw(App::Cmd);
 
@@ -96,9 +99,19 @@ sub run {
     my ($cmd, $opt, @args) = $self->prepare_command(@$argv);
 
     # ...and then run it
-    $self->execute_command($cmd, $opt, @args);
+    try {
+        $self->execute_command($cmd, $opt, @args);
+    }
+    catch {
+        local $Term::ANSIColor::AUTORESET = 1;
+        print RED "Oops! $_";
+        goto ERROR;
+    };
 
     return 1;
+
+ERROR:
+    return undef;
 }
 
 1;

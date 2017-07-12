@@ -24,6 +24,7 @@ requires 'Catmandu::Importer::XML';
 requires 'Hash::Merge';
 requires "Ref::Util";
 requires "DateTime";
+requires 'Term::ANSIColor';
 requires 'Try::Tiny';
 
 # https://github.com/libwww-perl/libwww-perl/issues/201

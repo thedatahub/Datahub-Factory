@@ -6,7 +6,7 @@ use warnings;
 use Moo;
 use namespace::clean;
 use Config::Simple;
-#use Data::Dumper qw(Dumper);
+use Data::Dumper qw(Dumper);
 
 has conf_object => (is => 'ro', required => 1);
 

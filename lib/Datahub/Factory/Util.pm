@@ -38,6 +38,13 @@ sub is_invocant {
     }
 }
 
+sub is_instance {
+    my $obj = shift;
+    Scalar::Util::blessed($obj) || return 0;
+    $obj->isa($_) || return 0 for @_;
+    1;
+}
+
 sub require_package {
     my ($pkg, $ns) = @_;
 

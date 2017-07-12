@@ -6,11 +6,12 @@ use parent 'Datahub::Factory::Cmd';
 
 use Module::Load;
 use Catmandu;
-use Catmandu::Util qw(data_at);
+use Catmandu::Util qw(data_at is_instance);
 use Datahub::Factory;
 use namespace::clean;
 use Datahub::Factory::PipelineConfig;
 use Datahub::Factory::Fixer::Condition;
+use Term::ANSIColor qw(:constants);
 
 use Data::Dumper qw(Dumper);
 
@@ -24,7 +25,8 @@ sub description {
 
 sub opt_spec {
     return (
-        [ "pipeline|p=s", "Location of the pipeline configuration file"]
+        [ "pipeline|p=s", "Location of the pipeline configuration file"],
+        [ "verbose|v", "Verbose output"]
     );
 }
 
@@ -40,156 +42,98 @@ sub validate_args {
 }
 
 sub execute {
-    my ($self, $arguments, $args) = @_;
+    my ($self, $opt, $args) = @_;
 
     my $logger = Datahub::Factory->log;
 
-    my ($pcfg, $opt);
-    try {
-        $pcfg = Datahub::Factory->pipeline($arguments);
-        $opt = $pcfg->opt;
-    } catch {
-        my $error_msg;
-        if ($_->can('message')) {
-              $error_msg = $_->message;
-        } else {
-              $error_msg = $_;
-        }
-        $logger->fatal($error_msg);
-        exit 1;
-    };
+    # Load the configuration
+    # @todo
+    #    Validation of the pipeline configuration happens here
+    $self->info("Loading pipeline configuration...");
+    my ($pipeline, $options);
+    $pipeline = Datahub::Factory->pipeline($opt);
+    $options = $pipeline->opt;
 
     # Load modules
-     my ($import_module, $fix_module, $export_module);
-    try {
-        $import_module = Datahub::Factory->importer($opt->{importer})->new($opt->{oimport});
-    } catch {
-        my $error_msg;
-        if ($_->can('message')) {
-              $error_msg = sprintf('%s at [plugin_importer_%s]', $_->message, $opt->{'importer'});
-        } else {
-              $error_msg = sprintf('%s at [plugin_importer_%s]', $_, $opt->{'importer'});
-        }
-        $logger->fatal($error_msg);
-        exit 1;
-    };
-    try {
-        $export_module = Datahub::Factory->exporter($opt->{exporter})->new($opt->{oexport});
-    } catch {
-        my $error_msg;
-        if ($_->can('message')) {
-            $error_msg = sprintf('%s at [plugin_exporter_%s]', $_->message, $opt->{'exporter'});
-        } else {
-            $error_msg = sprintf('%s at [plugin_exporter_%s]', $_, $opt->{'exporter'});
-        }
-        $logger->fatal($error_msg);
-        exit 1;
-    };
+    $self->info("Initializing importer/exporter...");
+    my ($import_module, $fix_module, $export_module);
+    $import_module = Datahub::Factory->importer($options->{importer})->new($options->{oimport});
+    $export_module = Datahub::Factory->exporter($options->{exporter})->new($options->{oexport});
 
-    # Perform import/fix/export
-    #try {
-        my $condition = Datahub::Factory::Fixer::Condition->new('options' => $opt);
-        $condition->fixers;
-    #} catch {
-        # todo
-        #   Implement me.
-    #}
+    # Load conditions & fixers
+    $self->info("Initializing fixers...");
+    my $condition = Datahub::Factory::Fixer::Condition->new('options' => $options);
+    $condition->fixers;
 
-    # Catmandu::Fix treats all warnings as fatal errors (this is good)
-    # so we can catch them with try-catch
-    # Not that errors here are _not_ fatal => continue running
-    # till all records have been processed
     my $counter = 0;
 
-    # $import_module->importer might also generate to-catch errors
+    # Import data and start processing
+    $self->info("Importing data from source...");
     $import_module->each(sub {
         my $item = shift;
-        my $fix_module;
-
-        my $item_id = data_at($opt->{'id_path'}, $item);
+        my ($msg, $item_id);
 
         $counter++;
 
-        my $f = try {
-            ##
-            # Normally, failures in loading the fixer (which happens here)
-            # *should* be fatal. However. Perl/Catmandu does not really allow
-            # us to distinguish between errors:
-            # - Failure to load a module should be fatal and end the program.
-            # - Failure to find the correct fix because the $condition does not appear
-            #   *should not* be fatal and continue the run.
-            # The second failure will happen more, and will cause more issues
-            # so, we don't die and simply log the error, and continue to the next
-            # $item. This will have the effect of errorring out on every $item if
-            # the first failure occurs. Nihil ad facere. (This is not good Latin)
-            ##
-            my $c = try {
-                $fix_module = $condition->fix_module($item);
-            } catch {
-                if ($_->meta->name eq 'Catmandu::BadVal') {
-                    # Non-fatal
-                    $logger->error('Item %d (counted): could not execute fix: %s', $counter, $_->message);
-                    return 1;
-                } else {
-                    my $error_msg;
-                    if ($_->can('message')) {
-                        $error_msg = $_->message;
-                    } else {
-                        $error_msg = $_;
-                    }
-                    $logger->fatal($error_msg);
-                    exit 1;
-                }
-            };
-
-            if (defined($c) && $c == 1) {
-                return 1;
-            } else {
-                # Execute the fix
-                $fix_module->fixer->fix($item);
-            }
-        } catch {
-            my $error_msg;
-            if ($_->can('message')) {
-                $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_->message);
-            } else {
-                $error_msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $_);
-            }
-            $logger->error($error_msg);
-            return 1;
-        };
-         if (defined($f) && $f == 1) {
-            # End the processing of this record, go to the next one.
-            return;
-        }
-
-        my $e = try {
+        # We use an extra try/catch block here to catch non-fatal errors. If we
+        # didn't, errors thrown by the Catmandu modules would be caught by the
+        # catch block in CLI.pm and break the processing. Errors caused by
+        # dirty data should skip the processing of a particular record.
+        if (try {
+            $fix_module = $condition->fix_module($item);
+            $fix_module->fixer->fix($item);
             $export_module->add($item);
-        } catch {
-            my $error_msg;
 
-            # $item_id can be undefined if it isn't set in the source, but this
-            # is only discovered when exporting (and not during fixing)
-            my $id_type = 'id';
-            if (!defined($item_id)) {
-                $item_id = $counter;
-                $id_type = 'counted';
+            $item_id = data_at($options->{'id_path'}, $item);
+            $msg = sprintf('Item #%s : %s (id): exported.', $counter, $item_id);
+            $self->success($msg);
+            $logger->info($msg);
+        } catch {
+            my $error = ($_->can('message')) ? $_->message : $_;
+
+            # Determine if we should skip, or halt the processing entirely.
+            # Depends on the type of Exception which bubbles up.
+            if (is_instance $_, 'Catmandu::BadVal') {
+                $msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $error);
+                $self->error($msg);
+                $logger->error($msg);
+                return 1;
             }
-            if ($_->can('message')) {
-                $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_->message);
-            } else {
-                $error_msg = sprintf('Item %s (%s): could not export item: %s', $item_id, $id_type, $_);
+            elsif (is_instance $_, 'Datahub::Factory::ModuleNotFound') {
+                # Throw a fatal error if we couldn't load a fix module
+                $logger->fatal($error);
+                exit 1;
             }
-            $logger->error($error_msg);
+            else {
+                # Catmandu modules produce a wide variety of exceptions. This
+                # block catches them, but doesn't halt the processing entirely.
+                $logger->error($error);
+                $self->error($error);
+                return 1;
+            }
+        }) {
+            # skip to the next record if an error was raised.
             return 1;
         };
-
-        if (defined($e) && $e == 1) {
-            # End the processing of this record, go to the next one.
-            return;
-        }
-        $logger->info(sprintf('Item #%s : %s (id): exported.', $counter, $item_id));
     });
+}
+
+sub info {
+    my ($self, $msg) = @_;
+    local $Term::ANSIColor::AUTORESET = 1;
+    say YELLOW, $msg;
+}
+
+sub error {
+    my ($self, $msg) = @_;
+    local $Term::ANSIColor::AUTORESET = 1;
+    say BRIGHT_RED, $msg;
+}
+
+sub success {
+    my ($self, $msg) = @_;
+    local $Term::ANSIColor::AUTORESET = 1;
+    say BRIGHT_GREEN, $msg;
 }
 
 1;
