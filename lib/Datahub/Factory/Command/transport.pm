@@ -4,6 +4,7 @@ use Datahub::Factory::Sane;
 
 use parent 'Datahub::Factory::Cmd';
 
+use Moo;
 use Module::Load;
 use Catmandu;
 use Catmandu::Util qw(data_at is_instance);
@@ -11,9 +12,8 @@ use Datahub::Factory;
 use namespace::clean;
 use Datahub::Factory::PipelineConfig;
 use Datahub::Factory::Fixer::Condition;
-use Term::ANSIColor qw(:constants);
 
-use Data::Dumper qw(Dumper);
+with 'Datahub::Factory::Flash';
 
 sub abstract {
     "Transport data from a data source to a data sink."
@@ -44,7 +44,11 @@ sub validate_args {
 sub execute {
     my ($self, $opt, $args) = @_;
 
+    # Get a logger
     my $logger = Datahub::Factory->log;
+
+    # Enable verbosity based on -v flag
+    $self->verbose($opt->{verbose});
 
     # Load the configuration
     # @todo
@@ -116,24 +120,6 @@ sub execute {
             return 1;
         };
     });
-}
-
-sub info {
-    my ($self, $msg) = @_;
-    local $Term::ANSIColor::AUTORESET = 1;
-    say YELLOW, $msg;
-}
-
-sub error {
-    my ($self, $msg) = @_;
-    local $Term::ANSIColor::AUTORESET = 1;
-    say BRIGHT_RED, $msg;
-}
-
-sub success {
-    my ($self, $msg) = @_;
-    local $Term::ANSIColor::AUTORESET = 1;
-    say BRIGHT_GREEN, $msg;
 }
 
 1;

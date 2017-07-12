@@ -20,6 +20,9 @@ $EXPORT_TAGS{all} = \@EXPORT_OK;
 # globtype Reference
 *is_glob_ref = \&Ref::Util::is_plain_globref;
 
+# Output everything in UTF-8
+binmode STDOUT, ":utf8";
+
 sub is_value {
     defined($_[0]) && !is_ref($_[0]) && !is_glob_ref(\$_[0]);
 }
