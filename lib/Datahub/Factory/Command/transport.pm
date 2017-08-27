@@ -52,7 +52,8 @@ sub execute {
 
     # Load the configuration
     # @todo
-    #    Validation of the pipeline configuration happens here
+    #    Validation of the pipeline configuration happens here. Throw and catch
+    #    nice errors.
     $self->info("Loading pipeline configuration...");
     my ($pipeline, $options);
     $pipeline = Datahub::Factory->pipeline($opt);
@@ -84,11 +85,13 @@ sub execute {
         # catch block in CLI.pm and break the processing. Errors caused by
         # dirty data should skip the processing of a particular record.
         if (try {
+            $item_id = data_at($options->{'id_path'}, $item);
+            $item_id //= 'Undefined ID';
+
             $fix_module = $condition->fix_module($item);
             $fix_module->fixer->fix($item);
             $export_module->add($item);
 
-            $item_id = data_at($options->{'id_path'}, $item);
             $msg = sprintf('Item #%s : %s (id): exported.', $counter, $item_id);
             $self->success($msg);
             $logger->info($msg);

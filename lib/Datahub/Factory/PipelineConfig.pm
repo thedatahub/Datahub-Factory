@@ -58,11 +58,10 @@ sub parse {
 	$options->{'fixer'} = $self->cfg->param('Fixer.plugin');
 	$options->{'exporter'} = $self->cfg->param('Exporter.plugin');
 
-	# TODO: move this to ::Fix module
-	if (!defined($options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'})) {
-		die sprintf('Missing required argument id_path in [plugin_fixer_%s]', $options->{'fixer'});
-	}
-	$options->{'id_path'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'id_path'};
+    if (!defined($self->cfg->param('Importer.id_path'))) {
+        die "Missing required property id_path in the [Importer] block.";
+    }
+    $options->{'id_path'} = $self->cfg->param('Importer.id_path');
 
 	# Legacy options
 	$options->{'oimport'} = $options->{sprintf('importer_%s', $options->{'importer'})};
