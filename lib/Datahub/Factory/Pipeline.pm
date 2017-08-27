@@ -1,4 +1,4 @@
-package Datahub::Factory::PipelineConfig;
+package Datahub::Factory::Pipeline;
 
 use strict;
 use warnings;
@@ -100,3 +100,6 @@ sub from_cli_args {
 }
 
 1;
+
+__END__
+
