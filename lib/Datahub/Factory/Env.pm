@@ -49,7 +49,7 @@ sub exporter {
 
 sub pipeline {
     my $self = shift;
-    require_package('Pipeline', 'Datahub::Factory')->new({'conf_object' => @_});
+    require_package('Pipeline', 'Datahub::Factory')->new({'file_name' => @_});
 }
 
 sub module {

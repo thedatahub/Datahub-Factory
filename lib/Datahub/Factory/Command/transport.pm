@@ -56,8 +56,8 @@ sub execute {
     #    nice errors.
     $self->info("Loading pipeline configuration...");
     my ($pipeline, $options);
-    $pipeline = Datahub::Factory->pipeline($opt);
-    $options = $pipeline->opt;
+    $pipeline = Datahub::Factory->pipeline($opt->{pipeline});
+    $options = $pipeline->parse();
 
     # Load modules
     $self->info("Initializing importer/exporter...");
