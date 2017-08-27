@@ -56,8 +56,6 @@ sub parse {
     $options->{'oimport'} = $options->{sprintf('importer_%s', $options->{'importer'})};
     $options->{'ofixer'} = $options->{sprintf('fixer_%s', $options->{'fixer'})};
     $options->{'oexport'} = $options->{sprintf('exporter_%s', $options->{'exporter'})};
-    # Even more legacy
-    $options->{'fixes'} = $options->{sprintf('fixer_%s', $options->{'fixer'})}->{'file_name'};
 
     return $options;
 }
