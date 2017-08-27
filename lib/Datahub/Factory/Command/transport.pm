@@ -62,8 +62,12 @@ sub execute {
     # Load modules
     $self->info("Initializing importer/exporter...");
     my ($import_module, $fix_module, $export_module);
-    $import_module = Datahub::Factory->importer($options->{importer})->new($options->{oimport});
-    $export_module = Datahub::Factory->exporter($options->{exporter})->new($options->{oexport});
+    $import_module = Datahub::Factory
+        ->importer($options->{importer}->{name})
+        ->new($options->{importer}->{options});
+    $export_module = Datahub::Factory
+        ->exporter($options->{exporter}->{name})
+        ->new($options->{exporter}->{options});
 
     # Load conditions & fixers
     $self->info("Initializing fixers...");
