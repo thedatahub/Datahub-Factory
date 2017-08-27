@@ -44,6 +44,11 @@ All commands share the following switches:
 
     Selects an output for the log messages. By default, it will send them to STDERR (pass `STDERR` as parameter), but STDOUT (`STDOUT`) and a log file (`logs/import_-date-.log`) (`STATISTICS`) are also supported.
 
+- `--verbose`
+
+    Set verbosity. Invoking the command with the --verbose, -v flag will render
+    verbose output to the terminal.
+
 # COMMANDS
 
 ## help COMMAND
@@ -65,12 +70,12 @@ _Datahub::Factory_ uses a plugin-based architecture, making it easy to extend
 with new functionality.
 
 New commands can be added by creating a Perl module that contains a `command_name.pm`
-file in the `lib/Datahub/Factory/Command` path. _Datahub::Factory_ uses the 
+file in the `lib/Datahub/Factory/Command` path. _Datahub::Factory_ uses the
 [Datahub::Factory::Command](https://metacpan.org/pod/Datahub::Factory::Command) namespace and [App::Cmd](https://metacpan.org/pod/App::Cmd) internally.
 
 New [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Importer), [Exmporter](https://metacpan.org/pod/Datahub::Factory::Exporter) and [Fixer](https://metacpan.org/pod/Datahub::Factory::Fixer) plugins
 can be added in the same way, in the `lib/Datahub/Factory/Importer`, `Exporter` or `Fixer`
-path. All plugins use the _Datahub::Factory::Importer/Exporter/Fixer_ namespace and the 
+path. All plugins use the _Datahub::Factory::Importer/Exporter/Fixer_ namespace and the
 namespace package as a [Moose::Role](https://metacpan.org/pod/Moose::Role).
 
 # AUTHORS
