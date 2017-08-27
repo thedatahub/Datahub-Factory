@@ -2,8 +2,9 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
-    - fixed: uninitialized error on item_id
-    - fixed: missing add method in stock datahub module
+    - Updated: Catmandu dependency from 1.0304 to 1.0602.
+    - fixed: uninitialized error on item_id.
+    - fixed: missing add method in stock datahub module.
     - added: verbose output instead of relying on stock log output.
     - changed: refactored the transport command.
     - removed: deprecated cli options and validation.

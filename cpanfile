@@ -4,7 +4,7 @@ requires 'perl', '5.008005';
 
 requires 'App::Cmd';
 requires 'Config::Simple';
-requires 'Catmandu', '1.0304';
+requires 'Catmandu', '1.0602';
 requires 'Catmandu::LIDO';
 requires 'Catmandu::Store::Datahub';
 requires 'Catmandu::Store::Resolver';
