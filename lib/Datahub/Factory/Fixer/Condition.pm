@@ -85,3 +85,87 @@ sub fix_module {
 
 __END__
 
+=pod
+
+=head1 NAME
+
+Datahub::Factory::Fixer::Condition - Load fixer plugins based on a condition
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This module loads and selects a fixer module during runtime. Depending on the
+used pipeline configuration either a default fixer is loaded, or a fixer is
+picked from a set of pre-defined 'conditional' fixers based on a condition which
+matches to a value in a record field.
+
+This mechanism allows data managers to apply multiple fixes selectively to a
+set of records.
+
+=head2 Default configuration
+
+    [Fixer]
+    plugin = Fix
+
+    [plugin_fixer_Fix]
+    file_name = '/opt/datahub-factory/transformer.fix'
+
+=head2 Conditional configuration
+
+Given a set of records structured like this:
+
+    [
+        {
+            'object_number' => '1234',
+            'institution' => 'Museum of Foo'
+        },
+        {
+            'object_number' => '2345',
+            'institution' => 'Museum of Bar'
+        }
+    ]
+
+Then let the configuration be:
+
+    [Fixer]
+    plugin = Fix
+
+    [plugin_fixer_Fix]
+    condition_path = "institution"
+    fixers = FOO, BAR
+
+    [plugin_fixer_FOO]
+    condition = 'Museum of Foo'
+    file_name = '/opt/datahub-factory/transformer_foo.fix'
+
+    [plugin_fixer_BAR]
+    condition = 'Museum of Bar'
+    file_name = '/opt/datahub-factory/transformer_bar.fix'
+
+=head2 Errors
+
+The condition_path is used to fetch a value from the record which is currently
+being processed. If no value could be retrieved, the module will throw an error
+and the factory will skip to the next record.
+
+If a value was found, but doesn't match with the condition property of each of
+the defined conditional fixers, the module will throw an error
+and the factory will skip to the next record.
+
+=head1 AUTHORS
+
+Pieter De Praetere <pieter@packed.be>
+Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
+
+=head1 COPYRIGHT
+
+Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GPLv3.
+
+=cut
+

@@ -142,6 +142,20 @@ The structure of the hash looks like this:
         }
     };
 
+=head1 AUTHORS
+
+Pieter De Praetere <pieter@packed.be>
+Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
+
+=head1 COPYRIGHT
+
+Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the terms of the GPLv3.
+
 =cut
 
 
