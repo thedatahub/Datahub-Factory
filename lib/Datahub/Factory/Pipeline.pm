@@ -52,17 +52,31 @@ sub parse {
     };
 
     # Fixers
-    my $fixer_plugin = $self->config->param('Fixer.plugin');
-    if (!defined($fixer_plugin)) {
-        die 'Undefined value for plugin at [Fixer]';
-    }
-    $options->{sprintf('fixer_%s', $fixer_plugin)} = $self->plugin_options('fixer', $fixer_plugin);
 
-    foreach my $fixer_conditional_plugin (@{$options->{sprintf('fixer_%s', $fixer_plugin)}->{'fixers'}}) {
-        $options->{sprintf('fixer_%s', $fixer_conditional_plugin)} = $self->block_options(sprintf('plugin_fixer_%s', $fixer_conditional_plugin));
+    # Default fixer
+
+    my $fixer = $self->config->param('Fixer.plugin');
+    if (!defined($fixer)) {
+        die 'Undefined value for plugin at [Fixer]'; # Throw Error object instead
     }
 
-    $options->{'fixer'} = $self->config->param('Fixer.plugin');
+    # Check if both condition_path AND fixers are present, if not throw validation error
+    # If fixers exist, check if comma separated list, if not throw validation error
+
+    $options->{'fixer'}->{'plugin'} = $fixer;
+
+    $options->{'fixer'}->{$fixer} = {
+        'name' => $fixer,
+        'options' => $self->plugin_options('fixer', $fixer)
+    };
+
+    my $conditional_fixers = $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'};
+    foreach my $conditional_fixer (@{$conditional_fixers}) {
+        $options->{'fixer'}->{'conditionals'}->{$conditional_fixer} = {
+            'name' => $conditional_fixer,
+            'options' => $self->block_options(sprintf('plugin_fixer_%s', $conditional_fixer))
+        };
+    }
 
     return $options;
 }

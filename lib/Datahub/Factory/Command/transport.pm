@@ -71,8 +71,8 @@ sub execute {
 
     # Load conditions & fixers
     $self->info("Initializing fixers...");
-    my $condition = Datahub::Factory::Fixer::Condition->new('options' => $options);
-    $condition->fixers;
+    my $condition = Datahub::Factory::Fixer::Condition->new('fixer' => $options->{fixer});
+    my $fixers = $condition->get_fixers();
 
     my $counter = 0;
 
@@ -92,7 +92,7 @@ sub execute {
             $item_id = data_at($options->{'id_path'}, $item);
             $item_id //= 'Undefined ID';
 
-            $fix_module = $condition->fix_module($item);
+            $fix_module = $condition->fix_module($fixers, $item);
             $fix_module->fixer->fix($item);
             $export_module->add($item);
 
