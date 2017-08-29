@@ -1,12 +1,11 @@
 package Datahub::Factory::Pipeline;
 
-use strict;
-use warnings;
+use Datahub::Factory::Sane;
 
 use Moo;
 use namespace::clean;
 use Config::Simple;
-use Data::Dumper qw(Dumper);
+use Data::Dumper;
 
 has file_name    => (is => 'ro', required => 1);
 has config       => (is => 'lazy');
@@ -23,7 +22,9 @@ sub parse {
     # Set the id_path of the incoming item. Points to the identifier of an object.
 
     if (!defined($self->config->param('Importer.id_path'))) {
-        die "Missing required property id_path in the [Importer] block."; # Throw an error
+        Datahub::Factory::InvalidPipeline->throw(
+            'message' => sprintf('Missing required property id_path in the [Importer] block.')
+        );
     }
     $options->{'id_path'} = $self->config->param('Importer.id_path');
 
@@ -31,7 +32,9 @@ sub parse {
 
     my $importer = $self->config->param('Importer.plugin');
     if (!defined($importer)) {
-        die 'Undefined value for plugin at [Importer]'; # Throw Error object instead
+        Datahub::Factory::InvalidPipeline->throw(
+            'message' => sprintf('Undefined value for plugin at [Importer]')
+        );
     }
 
     $options->{'importer'} = {
@@ -43,7 +46,9 @@ sub parse {
 
     my $exporter = $self->config->param('Exporter.plugin');
     if (!defined($exporter)) {
-        die 'Undefined value for plugin at [Exporter]'; # Throw Error object instead
+        Datahub::Factory::InvalidPipeline->throw(
+            'message' => sprintf('Undefined value for plugin at [Exporter]')
+        );
     }
 
     $options->{'exporter'} = {
@@ -60,7 +65,23 @@ sub parse {
         die 'Undefined value for plugin at [Fixer]'; # Throw Error object instead
     }
 
-    # Check if both condition_path AND fixers are present, if not throw validation error
+    my $plugin_options = $self->plugin_options('fixer', $fixer);
+
+    # Validate if both condition_path or fixers properties are present
+    if (!defined($plugin_options->{'file_name'})) {
+        if (!defined($plugin_options->{'condition_path'})) {
+            Datahub::Factory::InvalidPipeline->throw(
+                'message' => sprintf('The "condition_path" was not set correctly.')
+            );
+        }
+
+        if (!defined($plugin_options->{'fixers'})) {
+            Datahub::Factory::InvalidPipeline->throw(
+                'message' => sprintf('The "fixers" was not set correctly.')
+            );
+        }
+    }
+
     # If fixers exist, check if comma separated list, if not throw validation error
 
     $options->{'fixer'}->{'plugin'} = $fixer;

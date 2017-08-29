@@ -110,6 +110,12 @@ sub execute {
                 $logger->error($msg);
                 return 1;
             }
+            elsif (is_instance $_, 'Datahub::Factory::InvalidPipeline') {
+                # Throw a fatal error if the pipeline configuration was invalid
+                $self->error($msg);
+                $logger->fatal($error);
+                exit 1;
+            }
             elsif (is_instance $_, 'Datahub::Factory::ModuleNotFound') {
                 # Throw a fatal error if we couldn't load a fix module
                 $logger->fatal($error);

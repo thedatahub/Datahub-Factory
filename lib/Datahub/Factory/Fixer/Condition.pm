@@ -56,7 +56,7 @@ sub fix_module {
 
     # Fetch the appropriate conditional fixer
 
-    my $condition_path = $self->fixer->{$self->fixer_module}->{'options'}->{'condition'};
+    my $condition_path = $self->fixer->{$self->fixer_module}->{'options'}->{'condition_path'};
     my $condition_r = data_at($condition_path, $item);
 
     $condition_r //= 'Undefined condition';
