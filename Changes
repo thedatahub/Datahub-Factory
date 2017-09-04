@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: faulty references to deprecated Datahub::Factory::PipelineConfig.
+
 1.6  2017-08-29 17:00:28 CEST
 
     - Changed: condition property renamed to explicit condition_path.

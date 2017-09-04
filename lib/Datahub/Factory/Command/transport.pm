@@ -10,7 +10,7 @@ use Catmandu;
 use Catmandu::Util qw(data_at is_instance);
 use Datahub::Factory;
 use namespace::clean;
-use Datahub::Factory::PipelineConfig;
+use Datahub::Factory::Pipeline;
 use Datahub::Factory::Fixer::Condition;
 
 with 'Datahub::Factory::Flash';

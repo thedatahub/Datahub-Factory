@@ -6,7 +6,7 @@ use Datahub::Factory::Sane;
 
 use Datahub::Factory::Env;
 use Datahub::Factory::Config;
-use Datahub::Factory::PipelineConfig;
+use Datahub::Factory::Pipeline;
 use namespace::clean;
 use Sub::Exporter::Util qw(curry_method);
 use Sub::Exporter -setup => {
