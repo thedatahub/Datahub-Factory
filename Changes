@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: missing dependencies for testing in cpanfile.
     - Added: first iteration for .travis.yml file.
     - Changed: Clean up use imports for all modules.
     - Changed: Moved dhconveyor executable from script/ to bin/ directory for Module::Build.
