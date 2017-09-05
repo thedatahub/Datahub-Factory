@@ -326,8 +326,8 @@ block.
 
 =head1 AUTHORS
 
-Pieter De Praetere <pieter@packed.be>
 Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
+Pieter De Praetere <pieter@packed.be>
 
 =head1 COPYRIGHT
 

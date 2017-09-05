@@ -88,18 +88,22 @@ sub module {
 1;
 __END__
 
-=encoding utf-8
-
 =head1 NAME
 
-=for html <a href="https://travis-ci.org/thedatahub/Datahub-Factory"><img src="https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master"></a>
+Datahub::Factory - A conveyor belt which transports data from a data source to a data sink.
 
-Datahub::Factory - A conveyor belt which transports data from a data source to
-a data sink.
+=begin markdown
+
+# STATUS
+
+[![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
+[![CPANTS kwalitee](https://cpants.cpanauthors.org/dist/Datahub-Factory.png)](https://cpants.cpanauthors.org/dist/Datahub-Factory)
+
+=end markdown
 
 =head1 SYNOPSIS
 
-dhconveyor [ARGUMENTS] [OPTIONS]
+dhconveyor \[ARGUMENTS\] \[OPTIONS\]
 
 =head1 DESCRIPTION
 
@@ -108,22 +112,17 @@ Datahub::Factory is a command line conveyor belt which automates three tasks:
 =over
 
 =item Data is fetched automatically from a local or remote data source.
-
 =item Data is converted to an exchange format.
-
 =item The output is pushed to a data sink.
 
 =back
 
-Datahub::Factory fetches data from several sources as specified by the
-I<Importer> settings, executes a L<Fix|Catmandu::Fix> and sends it to
-a data sink, set by I<Exporter>. Several importer and exporter modules
-are supported.
+Datahub::Factory fetches data from several sources as specified by the _Importer_ settings, executes a [Fix](https://metacpan.org/pod/Catmandu::Fix) and sends it to
+a data sink, set by _Exporter_. Several importer and exporter modules are supported.
 
 Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
 
-Note: This toolset is not a generic tool. It has been tailored towards the
-functional requirements of the Flemish Art Collection use case.
+Note: This toolset is not a generic tool. It has been tailored towards the functional requirements of the Flemish Art Collection use case.
 
 =head1 CONFIGURATION
 
@@ -133,19 +132,19 @@ All commands share the following switches:
 
 =over
 
-=item C<--log_level>
+=item `--log_level`
 
-Set the log_level. Takes a numeric parameter. Supported levels are:
-1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
+    Set the log\_level. Takes a numeric parameter. Supported levels are:
+    1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
 
-=item C<--log_output>
+=item `--log_output`
 
-Selects an output for the log messages. By default, it will send them to STDERR (pass C<STDERR> as parameter), but STDOUT (C<STDOUT>) and a log file (C<logs/import_-date-.log>) (C<STATISTICS>) are also supported.
+    Selects an output for the log messages. By default, it will send them to STDERR (pass `STDERR` as parameter), but STDOUT (`STDOUT`) and a log file (`logs/import_-date-.log`) (`STATISTICS`) are also supported.
 
-=item C<--verbose>
+=item `--verbose`
 
-Set verbosity. Invoking the command with the --verbose, -v flag will render
-verbose output to the terminal.
+    Set verbosity. Invoking the command with the --verbose, -v flag will render
+    verbose output to the terminal.
 
 =back
 
@@ -155,34 +154,24 @@ verbose output to the terminal.
 
 Documentation about command line options.
 
-It is possible to provide either all importer and/or exporter options on the
-command line, or to create a I<pipeline configuration file> that sets those
-options.
+It is possible to provide either all importer and/or exporter options on the command line, or to create a _pipeline configuration file_ that sets those options.
 
-=head2 L<transport [OPTIONS]|Datahub::Factory::Command::transport>
+=head2 L<transport [OPTIONS]|https://metacpan.org/pod/Datahub::Factory::Command::transport>
 
-Fetch data from a local or remote source, convert it to an exchange format and
-export the data.
+Fetch data from a local or remote source, convert it to an exchange format and export the data.
 
 =head1 PLUGINS
 
-I<Datahub::Factory> uses a plugin-based architecture, making it easy to extend
-with new functionality.
+_Datahub::Factory_ uses a plugin-based architecture, making it easy to extend with new functionality.
 
-New commands can be added by creating a Perl module that contains a C<command_name.pm>
-file in the C<lib/Datahub/Factory/Command> path. I<Datahub::Factory> uses the
-L<Datahub::Factory::Command> namespace and L<App::Cmd> internally.
+New commands can be added by creating a Perl module that contains a `command_name.pm` file in the `lib/Datahub/Factory/Command` path. _Datahub::Factory_ uses the L<Datahub::Factory::Command> namespace and L<App::Cmd> internally.
 
-New L<Datahub::Factory::Importer>, L<Exmporter|Datahub::Factory::Exporter> and L<Fixer|Datahub::Factory::Fixer> plugins
-can be added in the same way, in the C<lib/Datahub/Factory/Importer>, C<Exporter> or C<Fixer>
-path. All plugins use the I<Datahub::Factory::Importer/Exporter/Fixer> namespace and the
-namespace package as a L<Moose::Role>.
+New L<Datahub::Factory::Importer>, L<Datahub::Factory::Exporter> and L<Datahub::Factory::Fixer> plugins can be added in the same way, in the `lib/Datahub/Factory/Importer`, `Exporter` or `Fixer` path. All plugins use the _Datahub::Factory::Importer/Exporter/Fixer_ namespace and the namespace package as a L<Moose::Role>.
 
-=head1 AUTHORS
-
-Pieter De Praetere <pieter@packed.be>
+=head1  AUTHORS
 
 Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
+Pieter De Praetere <pieter@packed.be>
 
 =head1 COPYRIGHT
 
@@ -190,7 +179,6 @@ Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
 
 =head1 LICENSE
 
-This library is free software; you can redistribute it and/or modify
-it under the terms of the GPLv3.
+This library is free software; you can redistribute it and/or modify it under the terms of the GPLv3.
 
 =cut
