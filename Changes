@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+1.70  2017-09-05 14:03:04 CEST
+
     - Changed: improved milla / dzil release flow.
     - Added: missing dependencies for testing in cpanfile.
     - Added: first iteration for .travis.yml file.
