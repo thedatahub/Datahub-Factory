@@ -1,11 +1,11 @@
 # NAME
 
-<div>
-    <a href="https://travis-ci.org/thedatahub/Datahub-Factory"><img src="https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master"></a>
-</div>
+Datahub::Factory - A conveyor belt which transports data from a data source to a data sink.
 
-Datahub::Factory - A conveyor belt which transports data from a data source to
-a data sink.
+# STATUS
+
+[![Build Status](https://travis-ci.org/thedatahub/Datahub-Factory.svg?branch=master)](https://travis-ci.org/thedatahub/Datahub-Factory)
+[![CPANTS kwalitee](https://cpants.cpanauthors.org/dist/Datahub-Factory.png)](https://cpants.cpanauthors.org/dist/Datahub-Factory)
 
 # SYNOPSIS
 
