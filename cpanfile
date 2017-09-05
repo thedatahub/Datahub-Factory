@@ -2,9 +2,9 @@ requires 'perl', '5.008005';
 
 # requires 'Some::Module', 'VERSION';
 
+requires 'Catmandu', '1.0603';
 requires 'App::Cmd';
 requires 'Config::Simple';
-requires 'Catmandu', '1.0602';
 requires 'Catmandu::LIDO';
 requires 'Catmandu::Store::Datahub';
 requires 'Catmandu::Store::Resolver';
