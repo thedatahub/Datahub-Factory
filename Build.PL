@@ -2,6 +2,61 @@
 use strict;
 use warnings;
 
-use 5.008005;
-use Module::Build::Tiny 0.034;
-Build_PL();
+# use 5.008005;
+# use Module::Build::Tiny 0.034;
+# Build_PL();
+
+use Module::Build 0.28;
+
+my %module_build_args = (
+  "build_requires" => {
+    "Module::Build" => "0.28"
+  },
+  "configure_requires" => {
+    "Module::Build" => "0.28"
+  },
+  "dist_abstract" => "Transport metadata between Collection Management Systems and the Datahub",
+  "dist_author" => [
+    "Matthias Vandermaesen, C<< <matthias.vandermaesen at vlaamsekunstcollectie.be> >>"
+  ],
+  "dist_name" => "Datahub::Factory",
+  "dist_version" => "1.6.1",
+  "license" => "MIT",
+  "module_name" => "Datahub::Factory",
+  "recommends" => {
+    "Log::Log4perl" => "1.44"
+  },
+  "recursive_test_files" => 1,
+  "requires" => {
+    "App::Cmd" => 0,
+    "Config::Simple" => 0,
+    "Catmandu" => "1.0603",
+    "Catmandu::LIDO" => 0,
+    "Catmandu::Store::Datahub" => 0,
+    "Lido::XML" => 0,
+    "Log::Any" => 0,
+    "Log::Log4perl" => 0,
+    "Module::Load" => 0,
+    "Moo" => 0,
+    "MooX::Aliases" => 0,
+    "MooX::Role::Logger" => 0,
+    "namespace::clean" => 0,
+    "Sub::Exporter" => 0,
+    "Catmandu::OAI" => 0,
+    "Catmandu::Solr" => 0,
+    "Catmandu::Importer::XML" => 0,
+    "Ref::Util" => 0,
+    "DateTime" => 0,
+    "Term::ANSIColor" => 0,
+    "Try::Tiny" => 0,
+    "perl" => "v5.10.1"
+  },
+  "script_files" => [
+    "bin/dhconveyor"
+  ]
+);
+
+my $build = Module::Build->new(%module_build_args);
+
+
+$build->create_build_script;

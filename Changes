@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: Use Module::Build instead of Module::Build::Tiny
     - Changed: Removed non-used dependencies which should be resolved automatically
     - Changed: Upgraded Catmandu 1.0602 to 1.0603
 
