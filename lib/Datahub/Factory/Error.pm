@@ -2,6 +2,8 @@ package Datahub::Factory::Error;
 
 use Datahub::Factory::Sane;
 
+our $VERSION = '1.70';
+
 use Moo;
 use namespace::clean;
 

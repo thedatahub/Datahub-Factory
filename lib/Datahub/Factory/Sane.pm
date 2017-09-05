@@ -1,7 +1,8 @@
 package Datahub::Factory::Sane;
 
-use strict;
-use warnings;
+use Datahub::Factory::Sane;
+
+our $VERSION = '1.70';
 
 use feature ();
 use utf8;

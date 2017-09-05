@@ -1,13 +1,12 @@
 package Datahub::Factory;
 
-our $VERSION = '1.6.1';
-
 use Datahub::Factory::Sane;
+
+our $VERSION = '1.70';
 
 use Datahub::Factory::Env;
 use Datahub::Factory::Config;
 use Datahub::Factory::Pipeline;
-use namespace::clean;
 use Sub::Exporter::Util qw(curry_method);
 use Sub::Exporter -setup => {
     exports => [
@@ -22,6 +21,7 @@ use Sub::Exporter -setup => {
     ],
     collectors => {'-load' => \'_import_load', ':load' => \'_import_load'},
 };
+use namespace::clean;
 
 sub _import_load {
     my ($self, $value, $data) = @_;

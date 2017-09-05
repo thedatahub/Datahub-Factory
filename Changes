@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: Clean up use imports for all modules.
     - Changed: Moved dhconveyor executable from script/ to bin/ directory for Module::Build.
     - Changed: Use Module::Build instead of Module::Build::Tiny.
     - Changed: Removed non-used dependencies which should be resolved automatically.

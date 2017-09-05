@@ -2,6 +2,8 @@ package Datahub::Factory::Importer::JSON;
 
 use Datahub::Factory::Sane;
 
+our $VERSION = '1.70';
+
 use Moo;
 use Catmandu;
 use namespace::clean;

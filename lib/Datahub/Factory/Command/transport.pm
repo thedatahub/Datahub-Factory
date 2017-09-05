@@ -2,6 +2,8 @@ package Datahub::Factory::Command::transport;
 
 use Datahub::Factory::Sane;
 
+our $VERSION = '1.70';
+
 use parent 'Datahub::Factory::Cmd';
 
 use Moo;
@@ -9,9 +11,9 @@ use Module::Load;
 use Catmandu;
 use Catmandu::Util qw(data_at is_instance);
 use Datahub::Factory;
-use namespace::clean;
 use Datahub::Factory::Pipeline;
 use Datahub::Factory::Fixer::Condition;
+use namespace::clean;
 
 with 'Datahub::Factory::Flash';
 
