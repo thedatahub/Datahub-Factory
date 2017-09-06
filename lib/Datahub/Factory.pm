@@ -112,12 +112,14 @@ Datahub::Factory is a command line conveyor belt which automates three tasks:
 =over
 
 =item Data is fetched automatically from a local or remote data source.
+
 =item Data is converted to an exchange format.
+
 =item The output is pushed to a data sink.
 
 =back
 
-Datahub::Factory fetches data from several sources as specified by the _Importer_ settings, executes a [Fix](https://metacpan.org/pod/Catmandu::Fix) and sends it to
+Datahub::Factory fetches data from several sources as specified by the _Importer_ settings, executes a L<Catmandu::Fix> and sends it to
 a data sink, set by _Exporter_. Several importer and exporter modules are supported.
 
 Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
@@ -132,19 +134,17 @@ All commands share the following switches:
 
 =over
 
-=item `--log_level`
+=item --log_level
 
-    Set the log\_level. Takes a numeric parameter. Supported levels are:
-    1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
+Set the log_level. Takes a numeric parameter. Supported levels are: 1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
 
-=item `--log_output`
+=item --log_output
 
-    Selects an output for the log messages. By default, it will send them to STDERR (pass `STDERR` as parameter), but STDOUT (`STDOUT`) and a log file (`logs/import_-date-.log`) (`STATISTICS`) are also supported.
+Selects an output for the log messages. By default, it will send them to STDERR (pass STDERR as parameter), but STDOUT (STDOUT) and a log file (logs/import_-date-.log) (STATISTICS) are also supported.
 
-=item `--verbose`
+=item --verbose
 
-    Set verbosity. Invoking the command with the --verbose, -v flag will render
-    verbose output to the terminal.
+Set verbosity. Invoking the command with the --verbose, -v flag will render verbose output to the terminal.
 
 =back
 
@@ -166,7 +166,7 @@ _Datahub::Factory_ uses a plugin-based architecture, making it easy to extend wi
 
 New commands can be added by creating a Perl module that contains a `command_name.pm` file in the `lib/Datahub/Factory/Command` path. _Datahub::Factory_ uses the L<Datahub::Factory::Command> namespace and L<App::Cmd> internally.
 
-New L<Datahub::Factory::Importer>, L<Datahub::Factory::Exporter> and L<Datahub::Factory::Fixer> plugins can be added in the same way, in the `lib/Datahub/Factory/Importer`, `Exporter` or `Fixer` path. All plugins use the _Datahub::Factory::Importer/Exporter/Fixer_ namespace and the namespace package as a L<Moose::Role>.
+New L<Datahub::Factory::Importer>, L<Datahub::Factory::Exporter> and L<Datahub::Factory::Fixer> plugins can be added in the same way, in the lib/Datahub/Factory/Importer, lib/Datahub/Factory/Exporter or lib/Datahub/Factory/Fixer path. All plugins use the L<Datahub::Factory::Importer> L<Datahub::Factoryy::Exporter> or L<Datahub::Factory::Fixer> namespace and the namespace package as a L<Moose::Role>.
 
 =head1  AUTHORS
 

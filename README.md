@@ -16,10 +16,10 @@ dhconveyor \\\[ARGUMENTS\\\] \\\[OPTIONS\\\]
 Datahub::Factory is a command line conveyor belt which automates three tasks:
 
 - Data is fetched automatically from a local or remote data source.
-=item Data is converted to an exchange format.
-=item The output is pushed to a data sink.
+- Data is converted to an exchange format.
+- The output is pushed to a data sink.
 
-Datahub::Factory fetches data from several sources as specified by the \_Importer\_ settings, executes a \[Fix\](https://metacpan.org/pod/Catmandu::Fix) and sends it to
+Datahub::Factory fetches data from several sources as specified by the \_Importer\_ settings, executes a [Catmandu::Fix](https://metacpan.org/pod/Catmandu::Fix) and sends it to
 a data sink, set by \_Exporter\_. Several importer and exporter modules are supported.
 
 Datahub::Factory contains Log4perl support to monitor conveyor belt operations.
@@ -32,19 +32,17 @@ Note: This toolset is not a generic tool. It has been tailored towards the funct
 
 All commands share the following switches:
 
-- \`--log\_level\`
+- --log\_level
 
-        Set the log\_level. Takes a numeric parameter. Supported levels are:
-        1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
+    Set the log\_level. Takes a numeric parameter. Supported levels are: 1 (WARN), 2 (INFO), 3 (DEBUG). WARN (1) is the default.
 
-- \`--log\_output\`
+- --log\_output
 
-        Selects an output for the log messages. By default, it will send them to STDERR (pass `STDERR` as parameter), but STDOUT (`STDOUT`) and a log file (`logs/import_-date-.log`) (`STATISTICS`) are also supported.
+    Selects an output for the log messages. By default, it will send them to STDERR (pass STDERR as parameter), but STDOUT (STDOUT) and a log file (logs/import\_-date-.log) (STATISTICS) are also supported.
 
-- \`--verbose\`
+- --verbose
 
-        Set verbosity. Invoking the command with the --verbose, -v flag will render
-        verbose output to the terminal.
+    Set verbosity. Invoking the command with the --verbose, -v flag will render verbose output to the terminal.
 
 # COMMANDS
 
@@ -64,7 +62,7 @@ Fetch data from a local or remote source, convert it to an exchange format and e
 
 New commands can be added by creating a Perl module that contains a \`command\_name.pm\` file in the \`lib/Datahub/Factory/Command\` path. \_Datahub::Factory\_ uses the [Datahub::Factory::Command](https://metacpan.org/pod/Datahub::Factory::Command) namespace and [App::Cmd](https://metacpan.org/pod/App::Cmd) internally.
 
-New [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Importer), [Datahub::Factory::Exporter](https://metacpan.org/pod/Datahub::Factory::Exporter) and [Datahub::Factory::Fixer](https://metacpan.org/pod/Datahub::Factory::Fixer) plugins can be added in the same way, in the \`lib/Datahub/Factory/Importer\`, \`Exporter\` or \`Fixer\` path. All plugins use the \_Datahub::Factory::Importer/Exporter/Fixer\_ namespace and the namespace package as a [Moose::Role](https://metacpan.org/pod/Moose::Role).
+New [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Importer), [Datahub::Factory::Exporter](https://metacpan.org/pod/Datahub::Factory::Exporter) and [Datahub::Factory::Fixer](https://metacpan.org/pod/Datahub::Factory::Fixer) plugins can be added in the same way, in the lib/Datahub/Factory/Importer, lib/Datahub/Factory/Exporter or lib/Datahub/Factory/Fixer path. All plugins use the [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Importer) [Datahub::Factoryy::Exporter](https://metacpan.org/pod/Datahub::Factoryy::Exporter) or [Datahub::Factory::Fixer](https://metacpan.org/pod/Datahub::Factory::Fixer) namespace and the namespace package as a [Moose::Role](https://metacpan.org/pod/Moose::Role).
 
 # AUTHORS
 
