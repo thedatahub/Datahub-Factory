@@ -39,6 +39,7 @@ my %module_build_args = (
     "Moo" => 0,
     "MooX::Aliases" => 0,
     "MooX::Role::Logger" => 0,
+    "Moose::Role" => 0,
     "Ref::Util" => 0,
     "Sub::Exporter" => 0,
     "Term::ANSIColor" => 0,

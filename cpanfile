@@ -24,6 +24,7 @@ requires 'Log::Log4perl';
 requires 'Module::Load';
 requires 'Moo';
 requires 'MooX::Aliases';
+requires 'Moose::Role';
 requires 'MooX::Role::Logger';
 requires 'namespace::clean';
 requires 'Sub::Exporter';
