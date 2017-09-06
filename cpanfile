@@ -20,6 +20,7 @@ requires 'Catmandu::LIDO';
 requires 'Catmandu::Store::Datahub';
 requires 'Log::Any';
 requires 'Log::Any::Adapter';
+requires 'Log::Any::Adapter::Log4perl';
 requires 'Log::Log4perl';
 requires 'Module::Load';
 requires 'Moo';

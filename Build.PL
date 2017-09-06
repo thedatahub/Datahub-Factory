@@ -34,6 +34,7 @@ my %module_build_args = (
     "DateTime" => 0,
     "Log::Any" => 0,
     "Log::Any::Adapter" => 0,
+    'Log::Any::Adapter::Log4perl' => 0,
     "Log::Log4perl" => 0,
     "Module::Load" => 0,
     "Moo" => 0,
