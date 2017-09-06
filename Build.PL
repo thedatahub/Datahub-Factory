@@ -19,7 +19,7 @@ my %module_build_args = (
   ],
   "dist_name" => "Datahub-Factory",
   "dist_version" => "1.70",
-  "license" => "perl",
+  "license" => "gpl",
   "module_name" => "Datahub::Factory",
   "recursive_test_files" => 1,
   "requires" => {

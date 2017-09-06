@@ -69,10 +69,8 @@ New [Datahub::Factory::Importer](https://metacpan.org/pod/Datahub::Factory::Impo
 Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
 Pieter De Praetere <pieter@packed.be>
 
-# COPYRIGHT
+# COPYRIGHT AND LICENSE
 
-Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
+This software is copyright (c) 2016 by PACKED, vzw, Vlaamse Kunstcollectie, vzw.
 
-# LICENSE
-
-This library is free software; you can redistribute it and/or modify it under the terms of the GPLv3.
+This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, Version 3, June 2007.

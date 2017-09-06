@@ -168,17 +168,15 @@ New commands can be added by creating a Perl module that contains a `command_nam
 
 New L<Datahub::Factory::Importer>, L<Datahub::Factory::Exporter> and L<Datahub::Factory::Fixer> plugins can be added in the same way, in the lib/Datahub/Factory/Importer, lib/Datahub/Factory/Exporter or lib/Datahub/Factory/Fixer path. All plugins use the L<Datahub::Factory::Importer> L<Datahub::Factoryy::Exporter> or L<Datahub::Factory::Fixer> namespace and the namespace package as a L<Moose::Role>.
 
-=head1  AUTHORS
+=head1 AUTHORS
 
 Matthias Vandermaesen <matthias.vandermaesen@vlaamsekunstcollectie.be>
 Pieter De Praetere <pieter@packed.be>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2016 - PACKED vzw, Vlaamse Kunstcollectie vzw
+This software is copyright (c) 2016 by PACKED, vzw, Vlaamse Kunstcollectie, vzw.
 
-=head1 LICENSE
-
-This library is free software; you can redistribute it and/or modify it under the terms of the GPLv3.
+This is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License, Version 3, June 2007.
 
 =cut

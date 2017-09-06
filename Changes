@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: Licensing via GPv3 on milla release.
     - Fixed: missing Moose::Role.
 
 1.70  2017-09-05 14:03:04 CEST
