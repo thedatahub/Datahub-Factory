@@ -2,7 +2,7 @@ package Datahub::Factory::Env;
 
 use Datahub::Factory::Sane;
 
-our $VERSION = '1.70';
+our $VERSION = '1.71';
 
 use Datahub::Factory::Util qw(require_package);
 use Moo;
