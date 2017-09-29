@@ -58,7 +58,7 @@ sub fix_module {
 
     my $condition_path = $self->fixer->{$self->fixer_module}->{'options'}->{'condition_path'};
     my $condition_r = data_at($condition_path, $item);
-
+    # my $condition_r =  copy_field($item,$condition_path,'brol')->{'brol'}
     $condition_r //= 'Undefined condition';
 
     if ($condition_r eq 'Undefined condition') {
