@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: Pipeline configuration is now polymorphic to cater different pipeline formats.
     - Fixed: missing Log::Any::Adapter::Log4perl dependency.
 
 1.71  2017-09-06 10:54:08 CEST

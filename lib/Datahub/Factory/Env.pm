@@ -50,7 +50,10 @@ sub exporter {
 
 sub pipeline {
     my $self = shift;
-    require_package('Pipeline', 'Datahub::Factory')->new({'file_name' => @_});
+    my $file_name = shift;
+    my $pipeline = shift;
+    # require_package('Pipeline', 'Datahub::Factory')->new({'file_name' => @_});
+    require_package($pipeline, 'Datahub::Factory::Pipeline')->new({'file_name' => $file_name});
 }
 
 sub module {
