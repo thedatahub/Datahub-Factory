@@ -48,6 +48,18 @@ sub exporter {
     return require_package($name, $ns);
 }
 
+sub indexer {
+    my $self = shift;
+    my $name = shift;
+    my $ns = "Datahub::Factory::Indexer";
+    # If the "plugin" in [Indexer] is empty, $name is an empty array
+    if (!defined($name) || (ref $name eq 'ARRAY' && scalar @{$name} == 0)) {
+        die 'Undefined value for plugin at [Indexer]';
+    }
+
+    return require_package($name, $ns);
+}
+
 sub pipeline {
     my $self = shift;
     my $file_name = shift;

@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: dhconveyor index command with a basic Solr indexer.
     - Changed: Pipeline configuration is now polymorphic to cater different pipeline formats.
     - Fixed: missing Log::Any::Adapter::Log4perl dependency.
 

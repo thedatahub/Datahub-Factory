@@ -16,6 +16,7 @@ use Sub::Exporter -setup => {
         fixer            => curry_method,
         store            => curry_method,
         exporter         => curry_method,
+        indexer          => curry_method,
         pipeline         => curry_method,
         module           => curry_method,
     ],
@@ -64,6 +65,11 @@ sub fixer {
 sub exporter {
     my $class = shift;
     $class->_env->exporter(@_);
+}
+
+sub indexer {
+    my $class = shift;
+    $class->_env->indexer(@_);
 }
 
 sub log {

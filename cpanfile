@@ -18,6 +18,7 @@ requires 'App::Cmd';
 requires 'Config::Simple';
 requires 'Catmandu::LIDO';
 requires 'Catmandu::Store::Datahub';
+requires 'HTTP::Request::StreamingUpload';
 requires 'Log::Any';
 requires 'Log::Any::Adapter';
 requires 'Log::Any::Adapter::Log4perl';
@@ -36,6 +37,7 @@ requires "Ref::Util";
 requires "DateTime";
 requires 'Term::ANSIColor';
 requires 'Try::Tiny';
+requires 'URI::URL';
 
 # https://github.com/libwww-perl/libwww-perl/issues/201
 conflicts "LWP::Authen::Negotiate";
