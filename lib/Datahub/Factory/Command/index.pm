@@ -68,8 +68,21 @@ sub execute {
         ->indexer($options->{indexer}->{name})
         ->new($options->{indexer}->{options});
 
-    # Push the flat file data & commit.
-    $indexer_module->import();
+    # Execute the indexer module.
+    try {
+        $indexer_module->index();
+        $self->success('Indexing job completed.');
+        $indexer_module->commit();
+        $self->success('Commit job completed.');
+    } catch {
+        my $error = ($_->can('message')) ? $_->message : $_;
+
+        # Catmandu modules produce a wide variety of exceptions. This
+        # block catches them, but doesn't halt the processing entirely.
+        $logger->error($error);
+        $self->error($error);
+        exit 1;
+     };
 }
 
 1;

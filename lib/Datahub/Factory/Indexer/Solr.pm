@@ -8,8 +8,10 @@ use Moo;
 use Catmandu;
 use HTTP::Request::Common;
 use HTTP::Request::StreamingUpload;
+use JSON;
 use LWP::UserAgent;
 use URI::URL;
+use XML::LibXML;
 use namespace::clean;
 
 with 'Datahub::Factory::Indexer';
@@ -29,7 +31,7 @@ sub _build_out {
     return $ua;
 }
 
-sub import {
+sub index {
 	my $self = shift;
 
     my ($request_handler, $response, $request); 
@@ -50,8 +52,31 @@ sub import {
 
     $response = $self->out->request($request);
 
-    # Commit the index
+    if ($response->is_success) {
+        return decode_json($response->decoded_content);
+    } else {
+        Catmandu::HTTPError->throw({
+            code             => $response->code,
+            message          => $response->headers->header('message'),
+            url              => $response->request->uri,
+            method           => $response->request->method,
+            request_headers  => [],
+            request_body     => $response->request->decoded_content,
+            response_headers => [],
+            response_body    => $response->decoded_content,
+        });
+        return undef;
+    }
+}
 
+sub commit {
+    my $self = shift;
+
+    my ($request_handler, $response, $request, $result); 
+
+    $request_handler = url $self->{request_handler};
+
+    # Commit the index
     my @path = $request_handler->path_components;
     pop @path;
     $request_handler->path_components(@path);
@@ -63,8 +88,28 @@ sub import {
 
     $response = $self->out->request($request);
 
-	use Data::Dumper;
-	print Dumper($response);
+    if ($response->is_success) {
+        my $dom = XML::LibXML->load_xml(string => $response->decoded_content);
+        
+        foreach my $int ($dom->findnodes('/response/lst'))  {
+            $result->{responseHeader}->{status} = $int->findvalue('./int[@name="status"]');
+            $result->{responseHeader}->{QTime} = $int->findvalue('./int[@name="QTime"]');
+        }
+
+        return $result;
+    } else {
+        Catmandu::HTTPError->throw({
+            code             => $response->code,
+            message          => $response->headers->header('message'),
+            url              => $response->request->uri,
+            method           => $response->request->method,
+            request_headers  => [],
+            request_body     => $response->request->decoded_content,
+            response_headers => [],
+            response_body    => $response->decoded_content,
+        });
+        return undef;
+    }
 }
 
 1;

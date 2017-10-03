@@ -13,7 +13,8 @@ has out       => (is => 'lazy');
 has logger    => (is => 'lazy');
 has file_name => (is => 'ro', required => 1);
 
-requires 'import';
+requires 'index';
+requires 'commit';
 
 sub _build_logger {
     my $self = shift;
