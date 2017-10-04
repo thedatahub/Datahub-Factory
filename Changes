@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: fixes #48 Log4perl throws forgot to call init() error.
     - Changed: processing the output of the Solr indexer. Added error handling.
     - Added: dhconveyor index command with a basic Solr indexer.
     - Changed: Pipeline configuration is now polymorphic to cater different pipeline formats.

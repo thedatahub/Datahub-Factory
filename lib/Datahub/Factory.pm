@@ -52,6 +52,18 @@ sub _env {
         ||= Datahub::Factory::Env->new();
 }
 
+sub config {
+    my ($class, $config) = @_;
+
+    # if ($config) {
+    #     my $env = Datahub::Factory::Env->new(load_paths => $class->_env->load_paths);
+    #     $env->_set_config($config);
+    #     $class->_env($env);
+    # }
+
+    $class->_env->config;
+}
+
 sub importer {
     my $class = shift;
     $class->_env->importer(@_);
