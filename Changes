@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: flexible configuration based on a local datahubfactory.yml file.
     - Changed: fixes #48 Log4perl throws forgot to call init() error.
     - Changed: processing the output of the Solr indexer. Added error handling.
     - Added: dhconveyor index command with a basic Solr indexer.

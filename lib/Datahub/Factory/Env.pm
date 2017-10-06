@@ -4,13 +4,66 @@ use Datahub::Factory::Sane;
 
 our $VERSION = '1.71';
 
-use Datahub::Factory::Util qw(require_package);
-use Moo;
-use Catmandu;
 use Config::Simple;
+use Config::Onion;
+use Datahub::Factory::Util qw(require_package);
+use File::Spec;
+use Moo;
+require Datahub::Factory;
 use namespace::clean;
 
+sub _search_up {
+    my $dir = $_[0];
+    my @dirs = grep length, File::Spec->splitdir(Datahub::Factory->default_load_path);
+    for (; @dirs; pop @dirs) {
+        my $path = File::Spec->catdir(File::Spec->rootdir, @dirs);
+        opendir my $dh, $path or last;
+        return $path
+            if grep {-r File::Spec->catfile($path, $_)}
+            grep /^datahubfactory.+(?:yaml|yml|json|pl)$/, readdir $dh;
+    }
+    Datahub::Factory->default_load_path;
+}
+
+has load_paths => (
+    is      => 'ro',
+    default => sub {[]},
+    coerce  => sub {
+        [
+            map {File::Spec->canonpath($_)}
+                map {$_ eq ':up' ? _search_up($_) : $_} split /,/,
+            join ',',
+            ref $_[0] ? @{$_[0]} : $_[0]
+        ];
+    },
+);
+
+has config => (is => 'rwp', default => sub {+{}});
+
 with 'Datahub::Factory::Logger';
+
+sub BUILD {
+    my ($self) = @_;
+
+    my @config_dirs = @{$self->load_paths};
+
+    if (@config_dirs) {
+        my @globs = map {
+            my $dir = $_;
+            map {File::Spec->catfile($dir, "datahubfactory*.$_")}
+                qw(yaml yml json pl)
+        } reverse @config_dirs;
+
+        my $config = Config::Onion->new(prefix_key => '_prefix');
+        $config->load_glob(@globs);
+
+        if ($self->log->is_debug) {
+            use Data::Dumper;
+            $self->log->debug(Dumper($config->get));
+        }
+        $self->_set_config($config->get);
+    }
+}
 
 sub importer {
     my $self = shift;
