@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+1.72  2017-10-06 15:19:32 CEST
+
     - Changed: removed conf folder.
     - Changed: removed documentation folder.
     - Added: .perltidyrc and .tidyallrc
