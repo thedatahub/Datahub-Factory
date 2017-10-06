@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Changed: removed conf folder.
     - Changed: removed documentation folder.
     - Added: .perltidyrc and .tidyallrc
     - Changed: flexible configuration based on a local datahubfactory.yml file.
