@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed #51: Non-existing pipeline.ini should return proper error message. 
     - Added: documentation for the Datahub::Factory::Flash command.
     - Added: documentation for the Index command.
 

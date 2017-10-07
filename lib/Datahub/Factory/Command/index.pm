@@ -39,6 +39,10 @@ sub validate_args {
         $self->usage_error('The --pipeline flag is required.');
     }
 
+    if (! -e $opt->{'pipeline'}) {
+        $self->usage_error('The provided pipeline file does not exist.'); 
+    }
+
     # no args allowed but options!
     $self->usage_error("No args allowed") if @$args;
 }
