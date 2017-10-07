@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: documentation for the Datahub::Factory::Flash command.
     - Added: documentation for the Index command.
 
 1.72  2017-10-06 15:19:32 CEST
