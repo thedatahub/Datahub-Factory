@@ -35,11 +35,11 @@ Datahub::Factory::Importer::JSON - Import data from JSON flat file data dumps
     use Datahub::Factory;
     use Data::Dumper qw(Dumper);
 
-    my $adlib = Datahub::Factory->importer('JSON')->new(
+    my $json = Datahub::Factory->importer('JSON')->new(
         file_name => '/tmp/export.json',
     );
 
-    $adlib->importer->each(sub {
+    $json->importer->each(sub {
         my $item = shift;
         print Dumper($item);
     });
