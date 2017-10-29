@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: indexer throws an ugly perl error for Catmandu::HTTPError.
     - Changed: generate README.md from separate POD documentation.
     - Proposed fix for missing prereqs as reported by CPANTS.
     - Fixed #51: Non-existing pipeline.ini should return proper error message. 

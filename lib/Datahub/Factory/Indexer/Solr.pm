@@ -55,10 +55,11 @@ sub index {
     if ($response->is_success) {
         return decode_json($response->decoded_content);
     } else {
+        my $message = decode_json($response->decoded_content);
         Catmandu::HTTPError->throw({
             code             => $response->code,
-            message          => $response->headers->header('message'),
-            url              => $response->request->uri,
+            message          => $message->{error}->{msg},
+            url              => $response->request->uri->as_string,
             method           => $response->request->method,
             request_headers  => [],
             request_body     => $response->request->decoded_content,
@@ -98,10 +99,11 @@ sub commit {
 
         return $result;
     } else {
+        my $message = decode_json($response->decoded_content);
         Catmandu::HTTPError->throw({
             code             => $response->code,
-            message          => $response->headers->header('message'),
-            url              => $response->request->uri,
+            message          => $message->{error}->{msg},
+            url              => $response->request->uri->as_string,
             method           => $response->request->method,
             request_headers  => [],
             request_body     => $response->request->decoded_content,
