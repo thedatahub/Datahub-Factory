@@ -130,7 +130,8 @@ Datahub::Factory::Indexer::Solr - Index data in Solr via a data import handler.
 
     my $indexer = Datahub::Factory->indexer('Solr')->new('request_handler' => 'http://path');
 
-    $indexer->import();
+    $indexer->index();
+    $indexer->commit();
 
 =head1 DESCRIPTION
 
