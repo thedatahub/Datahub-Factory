@@ -28,6 +28,7 @@ sub description {
 sub opt_spec {
     return (
         [ "pipeline|p=s", "Location of the pipeline configuration file"],
+        [ "general|g=s", "Location of the general configuration file"],
         [ "importer|i=s", "Location of the importer configuration file"],
         [ "fixer|f=s", "Location of the fixer configuration file"],
         [ "exporter|e=s", "Location of the exporter configuration file"],
@@ -39,7 +40,7 @@ sub validate_args {
     my ($self, $opt, $args) = @_;
 
     if (! $opt->{'pipeline'}) {
-        for my $plugin ('importer', 'fixer', 'exporter') {
+        for my $plugin ('general', 'importer', 'fixer', 'exporter') {
             if (! $opt->{$plugin}) {
                 $self->usage_error(sprintf('The --%s configuration file is required.', $plugin));
             }
@@ -76,7 +77,7 @@ sub execute {
     my ($pipeline, $options);
 
     if (! $opt->{pipeline}) {
-        for my $plugin ('importer', 'fixer', 'exporter') {
+        for my $plugin ('general', 'importer', 'fixer', 'exporter') {
             $pipeline = Datahub::Factory->pipeline($opt->{$plugin}, ucfirst($plugin));
             $pipeline->parse(\$options);
         }
@@ -182,6 +183,10 @@ a Datahub instance.
 =item C<--pipeline>
 
 Location of the pipeline configuration file.
+
+=item C<--general>
+
+Location of the general configuration file.
 
 =item C<--importer>
 
