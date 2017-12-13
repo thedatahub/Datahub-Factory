@@ -2,6 +2,10 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+1.73  2017-11-30 12:03:28 CET
+
+    - Changed: added a General block to the configuration.
+    - Changed: added splitted configuration files.
     - Fixed: indexer throws an ugly perl error for Catmandu::HTTPError.
     - Changed: generate README.md from separate POD documentation.
     - Proposed fix for missing prereqs as reported by CPANTS.

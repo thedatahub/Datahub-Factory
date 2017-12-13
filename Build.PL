@@ -18,7 +18,7 @@ my %module_build_args = (
     "Matthias Vandermaesen <matthias.vandermaesen\@vlaamsekunstcollectie.be>"
   ],
   "dist_name" => "Datahub-Factory",
-  "dist_version" => "1.72",
+  "dist_version" => "1.73",
   "license" => "gpl",
   "module_name" => "Datahub::Factory",
   "recursive_test_files" => 1,
