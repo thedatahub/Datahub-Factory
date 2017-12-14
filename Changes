@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: support display parameter for Catmandu::CA.
+
 1.73  2017-11-30 12:03:28 CET
 
     - Changed: added a General block to the configuration.
