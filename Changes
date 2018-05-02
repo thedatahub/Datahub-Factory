@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: fixes #61 break after finite number of records in transport.
     - Fixed: issue #60 concatenation error when a HTTP error is thrown.
     - Fixed: issue #59 Error when adding only one fixer when Fix plugin is used.
     - Added: support display parameter for Catmandu::CA.

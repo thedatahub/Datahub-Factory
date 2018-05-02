@@ -32,6 +32,7 @@ sub opt_spec {
         [ "importer|i=s", "Location of the importer configuration file"],
         [ "fixer|f=s", "Location of the fixer configuration file"],
         [ "exporter|e=s", "Location of the exporter configuration file"],
+        [ "number|n=i", "Number of records to process before breaking"],
         [ "verbose|v", "Verbose output"]
     );
 }
@@ -164,6 +165,14 @@ sub execute {
                 $logger->error($error);
                 $self->error($error);
                 return 1;
+            }
+        } finally {
+            # Break when we hit the pre-defined number of records to process
+            # if this option was set.
+            if ($opt->{number}) {
+                if ($counter == $opt->{number}) {
+                    exit 1;
+                }
             }
         }) {
             # skip to the next record if an error was raised.
