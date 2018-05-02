@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: issue #59 Error when adding only one fixer when Fix plugin is used.
     - Added: support display parameter for Catmandu::CA.
 
 1.73  2017-11-30 12:03:28 CET
