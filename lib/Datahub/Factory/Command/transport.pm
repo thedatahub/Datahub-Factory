@@ -148,6 +148,16 @@ sub execute {
                 $logger->fatal($error);
                 exit 1;
             }
+            elsif (is_instance $_, 'Catmandu::HTTPError') {
+                # Need to move this to proper Exception handling.
+                if (!defined($error)) {
+                    $error = $_->response_body;
+                }
+                $msg = sprintf('Item %d (counted): %s', $counter, $error);
+                $self->error($msg);
+                $logger->fatal($error);
+                return 1;
+            }
             else {
                 # Catmandu modules produce a wide variety of exceptions. This
                 # block catches them, but doesn't halt the processing entirely.
