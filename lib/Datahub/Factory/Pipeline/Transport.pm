@@ -88,20 +88,22 @@ sub parse {
         'options' => $self->plugin_options('fixer', $fixer)
     };
 
-    my $conditional_fixers;
+    if (defined($options->{'fixer'}->{$fixer}->{'options'}->{'fixers'})) {
+        my $conditional_fixers;
 
-    if (ref($options->{'fixer'}->{$fixer}->{'options'}->{'fixers'}) ne 'ARRAY') {
-        my @items = ();
-        push @items, $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'};
-        $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'} = \@items;
-    }
+        if (ref($options->{'fixer'}->{$fixer}->{'options'}->{'fixers'}) ne 'ARRAY') {
+            my @items = ();
+            push @items, $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'};
+            $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'} = \@items;
+        }
 
-    $conditional_fixers = $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'};
-    foreach my $conditional_fixer (@{$conditional_fixers}) {
-       $options->{'fixer'}->{'conditionals'}->{$conditional_fixer} = {
-           'name' => $conditional_fixer,
-           'options' => $self->block_options(sprintf('plugin_fixer_%s', $conditional_fixer))
-       };
+        $conditional_fixers = $options->{'fixer'}->{$fixer}->{'options'}->{'fixers'};
+        foreach my $conditional_fixer (@{$conditional_fixers}) {
+           $options->{'fixer'}->{'conditionals'}->{$conditional_fixer} = {
+               'name' => $conditional_fixer,
+               'options' => $self->block_options(sprintf('plugin_fixer_%s', $conditional_fixer))
+           };
+        }
     }
 
     return $options;

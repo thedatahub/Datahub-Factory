@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: fixes #62 fixer Fix throws an error file_name is undefined
     - Added: fixes #61 break after finite number of records in transport.
     - Fixed: issue #60 concatenation error when a HTTP error is thrown.
     - Fixed: issue #59 Error when adding only one fixer when Fix plugin is used.
