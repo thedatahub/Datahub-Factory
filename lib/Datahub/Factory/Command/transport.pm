@@ -150,6 +150,12 @@ sub execute {
                 $logger->fatal($error);
                 exit 1;
             }
+            elsif (is_instance $_, 'Datahub::Factory::FixFileNotFound') {
+                # Throw a fatal error if the pipeline configuration was invalid
+                $self->error($msg);
+                $logger->fatal($error);
+                exit 1;
+            }
             elsif (is_instance $_, 'Datahub::Factory::ModuleNotFound') {
                 # Throw a fatal error if we couldn't load a fix module
                 $logger->fatal($error);

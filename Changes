@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Added: Datahub::Factory::FixFileNotFound error.
     - Added: Datahub::Factory::InvalidCondition error.
     - Fixed: fixes #62 fixer Fix throws an error file_name is undefined
     - Added: fixes #61 break after finite number of records in transport.

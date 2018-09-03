@@ -43,6 +43,15 @@ use namespace::clean;
 
 extends 'Datahub::Factory::Error';
 
+package Datahub::Factory::FixFileNotFound;
+
+use Datahub::Factory::Sane;
+
+use Moo;
+use namespace::clean;
+
+extends 'Datahub::Factory::Error';
+
 package Datahub::Factory::ModuleNotFound;
 
 use Datahub::Factory::Sane;
