@@ -27,6 +27,13 @@ sub log_message {
     $self->message;
 }
 
+package Datahub::Factory::InvalidCondition;
+
+use Moo;
+use namespace::clean;
+
+extends 'Datahub::Factory::Error';
+
 package Datahub::Factory::InvalidPipeline;
 
 use Datahub::Factory::Sane;

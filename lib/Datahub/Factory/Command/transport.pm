@@ -133,7 +133,13 @@ sub execute {
             # Determine if we should skip, or halt the processing entirely.
             # Depends on the type of Exception which bubbles up.
             if (is_instance $_, 'Catmandu::BadVal') {
-                $msg = sprintf('Item %d (counted): could not execute fix: %s', $counter, $error);
+                $msg = sprintf('Item #%d (counted): could not execute fix: %s', $counter, $error);
+                $self->error($msg);
+                $logger->error($msg);
+                return 1;
+            }
+            elsif (is_instance $_, 'Datahub::Factory::InvalidCondition') {
+                $msg = sprintf('Item #%d (counted): %s', $counter, $error);
                 $self->error($msg);
                 $logger->error($msg);
                 return 1;
