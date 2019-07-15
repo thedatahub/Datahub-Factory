@@ -46,6 +46,8 @@ requires 'JSON';
 requires 'Try::Tiny::ByClass';
 requires 'XML::LibXML';
 requires 'DBI';
+requires 'LWP::UserAgent';
+requires 'Throwable::Error';
 
 # https://github.com/libwww-perl/libwww-perl/issues/201
 conflicts "LWP::Authen::Negotiate";
