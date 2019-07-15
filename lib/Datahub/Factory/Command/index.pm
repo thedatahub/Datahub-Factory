@@ -76,8 +76,6 @@ sub execute {
     try {
         $indexer_module->index();
         $self->success('Indexing job completed.');
-        $indexer_module->commit();
-        $self->success('Commit job completed.');
     } catch {
         my $error = ($_->can('message')) ? $_->message : $_;
 
