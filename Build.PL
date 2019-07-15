@@ -25,6 +25,7 @@ my %module_build_args = (
   "requires" => {
     "App::Cmd" => 0,
     "Catmandu" => "1.0603",
+    "Catmandu::DBI" => 0,
     "Catmandu::Importer::XML" => 0,
     "Catmandu::LIDO" => 0,
     "Catmandu::OAI" => 0,
