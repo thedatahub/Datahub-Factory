@@ -2,7 +2,7 @@ package Datahub::Factory::Command::transport;
 
 use Datahub::Factory::Sane;
 
-our $VERSION = '1.74';
+our $VERSION = '1.75';
 
 use parent 'Datahub::Factory::Cmd';
 
