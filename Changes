@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Fixed: Error output for Solr indexer without Perl errors.
     - Added: missing Catmandu::DBI dependency
     - Fixed: all errors now prefixed with item_id for improved logging. 
 

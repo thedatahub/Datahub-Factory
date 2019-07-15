@@ -14,7 +14,6 @@ has logger    => (is => 'lazy');
 has file_name => (is => 'ro', required => 1);
 
 requires 'index';
-requires 'commit';
 
 sub _build_logger {
     my $self = shift;
