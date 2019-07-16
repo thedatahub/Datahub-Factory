@@ -54,4 +54,5 @@ conflicts "LWP::Authen::Negotiate";
 
 on test => sub {
     requires 'Test::More', '0.96';
+    requires 'Module::Build';
 };
