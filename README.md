@@ -60,7 +60,7 @@ Features:
 
 All commands share the following switches:
 
-- --log\_level
+- --log\_level --L \[int\]
 
     Set the log\_level. Takes a numeric parameter. Supported levels are: 1 (WARN), 
     2 (INFO), 3 (DEBUG). WARN (1) is the default.
@@ -70,10 +70,14 @@ All commands share the following switches:
     Selects an output for the log messages. By default, it will send them to STDERR 
     (pass STDERR as parameter), but STDOUT (STDOUT) and a log file.
 
-- --verbose
+- --verbose -v
 
     Set verbosity. Invoking the command with the --verbose, -v flag will render 
     verbose output to the terminal.
+
+- --number -n \[int\]
+
+    Set number of records to process. Invoking the transport command with the --number, -n flag will process the first \[int\] records instead of all records available at the data source.
 
 ## Available Commands
 
