@@ -2,6 +2,7 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+    - Removed: stale TMS importer module.
     - Fixed: missing --number documentation in README.
     - Fixed: Add missing Module::Build to make Travis happy.
     - Fixed: Added missing prereq as suggested by CPANTS.
