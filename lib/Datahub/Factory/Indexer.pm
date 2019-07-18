@@ -2,7 +2,7 @@ package Datahub::Factory::Indexer;
 
 use Datahub::Factory::Sane;
 
-our $VERSION = '1.75';
+our $VERSION = '1.76';
 
 use Catmandu;
 use Moose::Role;
