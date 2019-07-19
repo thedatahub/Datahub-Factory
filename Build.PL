@@ -18,7 +18,7 @@ my %module_build_args = (
     "Matthias Vandermaesen <matthias.vandermaesen\@vlaamsekunstcollectie.be>"
   ],
   "dist_name" => "Datahub-Factory",
-  "dist_version" => "1.76",
+  "dist_version" => "1.77",
   "license" => "gpl",
   "module_name" => "Datahub::Factory",
   "recursive_test_files" => 1,
@@ -39,6 +39,7 @@ my %module_build_args = (
     "HTTP::Request::Common" => 0,
     "HTTP::Request::StreamingUpload" => 0,
     "JSON" => 0,
+    "LWP::Protocol::https" => 0,
     "LWP::UserAgent" => 0,
     "Log::Any" => 0,
     "Log::Any::Adapter" => 0,

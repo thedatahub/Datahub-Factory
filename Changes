@@ -2,6 +2,8 @@ Revision history for Datahub-Factory
 
 {{$NEXT}}
 
+1.77  2019-07-19 15:53:48 CEST
+
     - Fixed: Add missing LWP::Protocol::https.
 
 1.76  2019-07-18 12:27:09 CEST

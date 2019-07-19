@@ -2,7 +2,7 @@ package Datahub::Factory::Exporter;
 
 use Datahub::Factory::Sane;
 
-our $VERSION = '1.76';
+our $VERSION = '1.77';
 
 use Catmandu;
 use Moose::Role;
