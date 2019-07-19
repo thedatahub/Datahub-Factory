@@ -47,6 +47,7 @@ requires 'Try::Tiny::ByClass';
 requires 'XML::LibXML';
 requires 'DBI';
 requires 'LWP::UserAgent';
+requires 'LWP::Protocol:https';
 requires 'Throwable::Error';
 
 # https://github.com/libwww-perl/libwww-perl/issues/201
