@@ -1,6 +1,7 @@
 package Datahub::Factory::Exporter::Datahub;
 
 use Datahub::Factory::Sane;
+use Data::Dumper qw(Dumper);
 
 our $VERSION = '1.77';
 
@@ -16,16 +17,18 @@ has oauth_client_id     => (is => 'ro', required => 1);
 has oauth_client_secret => (is => 'ro', required => 1);
 has oauth_username      => (is => 'ro', required => 1);
 has oauth_password      => (is => 'ro', required => 1);
+has raw_parser          => (is => 'ro', default => sub { return 0; });
 
 sub _build_out {
     my $self = shift;
     my $store = Catmandu->store(
         'Datahub',
-        url           => $self->datahub_url,
-        client_id     => $self->oauth_client_id,
-        client_secret => $self->oauth_client_secret,
-        username      => $self->oauth_username,
-        password      => $self->oauth_password
+        url              => $self->datahub_url,
+        client_id        => $self->oauth_client_id,
+        client_secret    => $self->oauth_client_secret,
+        username         => $self->oauth_username,
+        password         => $self->oauth_password,
+        raw_parser       => $self->raw_parser
     );
     return $store;
 }
@@ -58,7 +61,8 @@ Datahub::Factory::Exporter::Datahub - Export items to a Datahub instance
         oauth_client_id     => 'mydatahub',
         oauth_client_secret => 'thedatahub',
         oauth_username      => 'datahub',
-        oauth_password      => 'adatahub'
+        oauth_password      => 'adatahub',
+        raw_parser          => 0
     };
 
     my $exporter = Datahub::Factory->exporter('Datahub')->new($datahub_options);
@@ -98,6 +102,11 @@ Datahub username. Required.
 =item C<oauth_password>
 
 Datahub password. Required.
+
+=item C<raw_parser>
+
+If the input was parsed by the raw XML parser (Catmandu::Importer::OAI::Parser::raw), set this to 1 to pass the XML directly to the exporter.
+
 
 =back
 
